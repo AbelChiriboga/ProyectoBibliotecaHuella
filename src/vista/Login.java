@@ -36,7 +36,7 @@ public class Login extends javax.swing.JFrame {
         jtxtClave.setMinimumSize(tamano);
         pack();
         setLocationRelativeTo(null);
-        
+               
     
     }
 
@@ -66,6 +66,7 @@ public class Login extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
         setPreferredSize(new java.awt.Dimension(825, 510));
 
         jpnlPrincipal.setBackground(new java.awt.Color(248, 242, 242));
@@ -153,7 +154,7 @@ public class Login extends javax.swing.JFrame {
             .addGroup(jpnlPrincipalLayout.createSequentialGroup()
                 .addGap(109, 109, 109)
                 .addComponent(jpnlIniciarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(408, Short.MAX_VALUE))
         );
 
         getContentPane().add(jpnlPrincipal, java.awt.BorderLayout.CENTER);
@@ -211,7 +212,7 @@ public class Login extends javax.swing.JFrame {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel7)
-                .addContainerGap(445, Short.MAX_VALUE))
+                .addContainerGap(437, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel3, java.awt.BorderLayout.WEST);
@@ -221,6 +222,9 @@ public class Login extends javax.swing.JFrame {
 
     private void jbtnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnIngresarActionPerformed
         // TODO add your handling code here:
+        MenuBibliotecario mb = new MenuBibliotecario();
+        mb.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_jbtnIngresarActionPerformed
 
     /**
