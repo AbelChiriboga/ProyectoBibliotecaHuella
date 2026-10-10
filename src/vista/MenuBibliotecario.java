@@ -11,8 +11,8 @@ package vista;
 public class MenuBibliotecario extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MenuBibliotecario.class.getName());
-    public javax.swing.ImageIcon original;
-    public java.awt.Image escalada;
+
+    
     /**
      * Creates new form MenuBibliotecario
      */
@@ -22,33 +22,38 @@ public class MenuBibliotecario extends javax.swing.JFrame {
         IniciarHora();
     }
     
-    public void iniciarImage(){
-     original = new javax.swing.ImageIcon(getClass().getResource("/imagenes/Cerrar.png"));
-     escalada = original.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
-    jbtnCerraSesion.setIcon(new javax.swing.ImageIcon(escalada));
-    jbtnCerraSesion.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-    jbtnCerraSesion.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-    
-    //Libro
-    
-        original = new javax.swing.ImageIcon(getClass().getResource("/imagenes/Cerrar.png"));
-     escalada = original.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
-    jbtnCerraSesion.setIcon(new javax.swing.ImageIcon(escalada));
-    jbtnCerraSesion.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-    jbtnCerraSesion.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-    
-    //Estudiantes
-    
+   public void iniciarImage() {
+        ponerIcono(jbtnCerraSesion, "Cerrar.png");
+        ponerIcono(jbtnLibros, "libros.png");
+        ponerIcono(jbtnEjemplares, "Estudiantes.png");
+        ponerIcono(jbtnNuevo, "Prestamo.png");
+        ponerIcono(jbtnDevolver, "Devolver.png");
+        ponerIcono(jbtnAtrasados, "Atrasado.png");
+        ponerIcono(jbtnInventario, "Invetario.png");
+        ponerIcono(jbtnHistorial, "Historial.png");
+    }
+
+    private void ponerIcono(javax.swing.JButton boton, String archivo) {
+        java.net.URL ruta = getClass().getResource("/imagenes/" + archivo);
+        if (ruta == null) {
+            System.err.println("No se encontró la imagen: /imagenes/" + archivo);
+            return;
+        }
+        javax.swing.ImageIcon original = new javax.swing.ImageIcon(ruta);
+        java.awt.Image escalada = original.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
+        boton.setIcon(new javax.swing.ImageIcon(escalada));
+        boton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        boton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
     }
     
     public void IniciarHora(){
-    javax.swing.Timer reloj = new javax.swing.Timer(1000, e -> {
-    java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
-    jlblFecha.setText(ahora.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-    jlblHora.setText(ahora.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")));
-        });
-        reloj.setInitialDelay(0);
-        reloj.start();
+        javax.swing.Timer reloj = new javax.swing.Timer(1000, e -> {
+        java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
+        jlblFecha.setText(ahora.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        jlblHora.setText(ahora.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")));
+            });
+            reloj.setInitialDelay(0);
+            reloj.start();
     }
     
     
