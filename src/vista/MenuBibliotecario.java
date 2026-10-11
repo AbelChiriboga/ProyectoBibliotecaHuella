@@ -233,7 +233,7 @@ private void armarTarjeta(javax.swing.JPanel tarjeta, javax.swing.JLabel titulo,
             .addGroup(jpnlInicioLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jbtnCerraSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 2346, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 2058, Short.MAX_VALUE)
                 .addGroup(jpnlInicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnlInicioLayout.createSequentialGroup()
                         .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -302,6 +302,7 @@ private void armarTarjeta(javax.swing.JPanel tarjeta, javax.swing.JLabel titulo,
         jbtnLibros.setText("Libros");
         jbtnLibros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jbtnLibros.setPreferredSize(new java.awt.Dimension(95, 110));
+        jbtnLibros.addActionListener(this::jbtnLibrosActionPerformed);
         jpnlCatalogo.add(jbtnLibros);
 
         jbtnEjemplares.setText("Estudiantes");
@@ -432,7 +433,7 @@ private void armarTarjeta(javax.swing.JPanel tarjeta, javax.swing.JLabel titulo,
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 2898, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 2610, Short.MAX_VALUE)
                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -458,6 +459,12 @@ private void armarTarjeta(javax.swing.JPanel tarjeta, javax.swing.JLabel titulo,
         Login lg = new Login();
         lg.setVisible(true);
     }//GEN-LAST:event_jbtnCerraSesionActionPerformed
+
+    private void jbtnLibrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnLibrosActionPerformed
+        // TODO add your handling code here:
+      //  new BLibros(this).setVisible(true);
+    this.setVisible(false);
+    }//GEN-LAST:event_jbtnLibrosActionPerformed
 
     /**
      * @param args the command line arguments
