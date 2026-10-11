@@ -8,28 +8,17 @@ package vista;
  *
  * @author User
  */
-public class BLibros extends javax.swing.JFrame {
+public class CRUDEstudiantes extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(BLibros.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CRUDEstudiantes.class.getName());
 
     /**
-     * Creates new form BLibros
+     * Creates new form BEstudiantes
      */
-    public BLibros() {
+    public CRUDEstudiantes() {
         initComponents();
-        IniciarHora();
     }
 
-    
-    public void IniciarHora(){
-        javax.swing.Timer reloj = new javax.swing.Timer(1000, e -> {
-        java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
-        jlblFecha.setText(ahora.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        jlblHora.setText(ahora.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")));
-            });
-            reloj.setInitialDelay(0);
-            reloj.start();
-    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -50,10 +39,10 @@ public class BLibros extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -65,7 +54,7 @@ public class BLibros extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 28)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("BIENVENIDO");
+        jLabel3.setText("BIBLIOTECARIO");
 
         jlblNombre.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jlblNombre.setForeground(new java.awt.Color(255, 255, 255));
@@ -106,7 +95,7 @@ public class BLibros extends javax.swing.JFrame {
             .addGroup(jpnlInicioLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jbtnRegresar, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 129, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jpnlInicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnlInicioLayout.createSequentialGroup()
                         .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -163,6 +152,19 @@ public class BLibros extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 130, Short.MAX_VALUE)
+        );
+
         jPanel6.setBackground(new java.awt.Color(0, 153, 153));
         jPanel6.setPreferredSize(new java.awt.Dimension(1442, 30));
 
@@ -193,24 +195,11 @@ public class BLibros extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 130, Short.MAX_VALUE)
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 1021, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 910, Short.MAX_VALUE)
             .addComponent(jpnlInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -231,7 +220,7 @@ public class BLibros extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         this.setVisible(false);
-        Login lg = new Login();
+        MenuBibliotecario lg = new MenuBibliotecario();
         lg.setVisible(true);
     }//GEN-LAST:event_jbtnRegresarActionPerformed
 
@@ -257,7 +246,7 @@ public class BLibros extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new BLibros().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new CRUDEstudiantes().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

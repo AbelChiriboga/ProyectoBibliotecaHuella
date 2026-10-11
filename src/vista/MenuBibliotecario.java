@@ -462,8 +462,10 @@ private void armarTarjeta(javax.swing.JPanel tarjeta, javax.swing.JLabel titulo,
 
     private void jbtnLibrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnLibrosActionPerformed
         // TODO add your handling code here:
-      //  new BLibros(this).setVisible(true);
-    this.setVisible(false);
+     CRUDLibros bl = new CRUDLibros();
+     bl.setVisible(true);
+     this.setVisible(false);
+     
     }//GEN-LAST:event_jbtnLibrosActionPerformed
 
     /**

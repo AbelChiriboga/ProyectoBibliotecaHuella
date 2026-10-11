@@ -20,26 +20,170 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();
       InicializarElementos();
+    
+      armarLogin();
+       setLocationRelativeTo(null);
     }
-    
-    public void InicializarElementos(){
-      javax.swing.ImageIcon original = new javax.swing.ImageIcon(getClass().getResource("/imagenes/logo.png"));
-        java.awt.Image escalada = original.getImage().getScaledInstance(
-                jlblLogo.getWidth(), jlblLogo.getHeight(), java.awt.Image.SCALE_SMOOTH);
-        jlblLogo.setIcon(new javax.swing.ImageIcon(escalada));
-        setMinimumSize(new java.awt.Dimension(1000, 640));
-        setLocationRelativeTo(null);
-        java.awt.Dimension tamano = new java.awt.Dimension(60, 27);
-        jtxtCedula.setPreferredSize(tamano);
-        jtxtCedula.setMinimumSize(tamano);
-        jtxtClave.setPreferredSize(tamano);
-        jtxtClave.setMinimumSize(tamano);
-        pack();
-        setLocationRelativeTo(null);
-               
-    
+    private void armarLogin() {
+    java.awt.Color verde = new java.awt.Color(0, 153, 153);
+    java.awt.Dimension campo = new java.awt.Dimension(320, 34);
+    java.awt.Dimension boton = new java.awt.Dimension(320, 38);
+
+    // ---- Textos y tamaños ----
+    jLabel1.setText("Usuario:");
+    jLabel6.setText("Contraseña:");
+    jLabel8.setText("Cédula:");
+    jtglPersonal.setText("Personal");
+    jtglEstudiante.setText("Estudiante");
+    jbtnIngresar.setText("Ingresar");
+    jbtnConsultar.setText("Consultar");
+
+    javax.swing.JComponent[] cajas = {jtxtCedula, jtxtClave, jtxtCedulaE};
+    for (javax.swing.JComponent c : cajas) {
+        c.setPreferredSize(campo);
+        c.setMinimumSize(campo);
+    }
+    for (javax.swing.JButton b : new javax.swing.JButton[]{jbtnIngresar, jbtnConsultar}) {
+        b.setPreferredSize(boton);
+        b.setMinimumSize(boton);
+        b.setBackground(verde);
+        b.setForeground(java.awt.Color.WHITE);
+        b.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 15));
+        b.setFocusPainted(false);
     }
 
+    // ---- Tarjeta Personal: Usuario, Contraseña, Ingresar ----
+    apilar(jpnlPersonal, jLabel1, jtxtCedula, jLabel6, jtxtClave, jbtnIngresar);
+
+    // ---- Tarjeta Estudiante: Cédula, Consultar ----
+    apilar(jpnlEstudiante, jLabel8, jtxtCedulaE, jbtnConsultar);
+
+    // ---- Contenedor de tarjetas ----
+    jpnlFormularios.removeAll();
+    jpnlFormularios.setLayout(new java.awt.CardLayout());
+    jpnlFormularios.setBackground(java.awt.Color.WHITE);
+    jpnlFormularios.add(jpnlPersonal, "personal");
+    jpnlFormularios.add(jpnlEstudiante, "estudiante");
+
+    // ---- Selector Personal | Estudiante (split bloqueado) ----
+    jsplSelector.setLeftComponent(jtglPersonal);
+    jsplSelector.setRightComponent(jtglEstudiante);
+    jsplSelector.setEnabled(false);
+    jsplSelector.setDividerSize(0);
+    jsplSelector.setResizeWeight(0.5);
+    jsplSelector.setBorder(null);
+    java.awt.Dimension selector = new java.awt.Dimension(320, 38);
+    jsplSelector.setPreferredSize(selector);
+    jsplSelector.setMinimumSize(selector);
+    javax.swing.SwingUtilities.invokeLater(() -> jsplSelector.setDividerLocation(0.5));
+
+    javax.swing.ButtonGroup grupoTipo = new javax.swing.ButtonGroup();
+    grupoTipo.add(jtglPersonal);
+    grupoTipo.add(jtglEstudiante);
+
+    // ---- Tarjeta blanca: título, selector y formularios uno debajo del otro ----
+    jpnlIniciarSesion.removeAll();
+    jpnlIniciarSesion.setPreferredSize(null);   // quita el 526x102 del diseñador
+    jpnlIniciarSesion.setCursor(java.awt.Cursor.getDefaultCursor());
+    jpnlIniciarSesion.setLayout(new java.awt.GridBagLayout());
+    jpnlIniciarSesion.setBackground(java.awt.Color.WHITE);
+    jpnlIniciarSesion.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(60, 60, 60), 1),
+            javax.swing.BorderFactory.createEmptyBorder(36, 50, 40, 50)));
+
+    java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
+    g.gridx = 0;
+    g.gridy = 0;
+    g.insets = new java.awt.Insets(0, 0, 24, 0);
+    jpnlIniciarSesion.add(jLabel2, g);          // "Iniciar Sesión"
+
+    g.gridy = 1;
+    g.insets = new java.awt.Insets(0, 0, 24, 0);
+    jpnlIniciarSesion.add(jsplSelector, g);
+
+    g.gridy = 2;
+    g.insets = new java.awt.Insets(0, 0, 0, 0);
+    jpnlIniciarSesion.add(jpnlFormularios, g);
+
+    // ---- Panel rosado: centra la tarjeta ----
+    jpnlPrincipal.removeAll();
+    jpnlPrincipal.setLayout(new java.awt.GridBagLayout());
+    jpnlPrincipal.add(jpnlIniciarSesion);
+
+    jtglPersonal.setSelected(true);
+    mostrarTarjeta("personal");
+
+    jpnlPrincipal.revalidate();
+    jpnlPrincipal.repaint();
+    
+}
+
+/** Pone los componentes uno debajo del otro, alineados a la izquierda y del mismo ancho. */
+    private void apilar(javax.swing.JPanel panel, javax.swing.JComponent... comps) {
+        panel.removeAll();
+        panel.setLayout(new java.awt.GridBagLayout());
+        panel.setBackground(java.awt.Color.WHITE);
+
+        java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
+        g.gridx = 0;
+        g.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        g.anchor = java.awt.GridBagConstraints.WEST;
+
+        int fila = 0;
+        for (javax.swing.JComponent c : comps) {
+            g.gridy = fila++;
+            if (c instanceof javax.swing.JLabel) {
+                ((javax.swing.JLabel) c).setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 15));
+                g.insets = new java.awt.Insets(0, 0, 6, 0);
+            } else if (c instanceof javax.swing.JButton) {
+                g.insets = new java.awt.Insets(14, 0, 0, 0);
+            } else {
+                g.insets = new java.awt.Insets(0, 0, 16, 0);
+            }
+            panel.add(c, g);
+        }
+
+        // Relleno al final: empuja todo hacia arriba para que ambas tarjetas empiecen igual
+        g.gridy = fila;
+        g.weighty = 1;
+        g.fill = java.awt.GridBagConstraints.BOTH;
+        javax.swing.JPanel relleno = new javax.swing.JPanel();
+        relleno.setOpaque(false);
+        panel.add(relleno, g);
+    }
+
+    private void mostrarTarjeta(String nombre) {
+        java.awt.CardLayout cl = (java.awt.CardLayout) jpnlFormularios.getLayout();
+        cl.show(jpnlFormularios, nombre);
+
+        java.awt.Color verde = new java.awt.Color(0, 153, 153);
+        estiloToggle(jtglPersonal, nombre.equals("personal"), verde);
+        estiloToggle(jtglEstudiante, nombre.equals("estudiante"), verde);
+
+        getRootPane().setDefaultButton(nombre.equals("personal") ? jbtnIngresar : jbtnConsultar);
+    }
+
+    private void estiloToggle(javax.swing.JToggleButton t, boolean activo, java.awt.Color verde) {
+        t.setContentAreaFilled(false);
+        t.setOpaque(true);
+        t.setFocusPainted(false);
+        t.setFont(new java.awt.Font("Segoe UI", activo ? java.awt.Font.BOLD : java.awt.Font.PLAIN, 14));
+        t.setBackground(activo ? verde : java.awt.Color.WHITE);
+        t.setForeground(activo ? java.awt.Color.WHITE : new java.awt.Color(60, 70, 80));
+        t.setBorder(javax.swing.BorderFactory.createLineBorder(verde, 1));
+    }
+    
+   public void InicializarElementos() {
+        javax.swing.ImageIcon original = new javax.swing.ImageIcon(getClass().getResource("/imagenes/logo.png"));
+        java.awt.Image escalada = original.getImage().getScaledInstance(213, 183, java.awt.Image.SCALE_SMOOTH);
+        jlblLogo.setIcon(new javax.swing.ImageIcon(escalada));
+
+        setPreferredSize(null);   // quita el 825x510 del diseñador
+        getContentPane().setPreferredSize(new java.awt.Dimension(1130, 700));
+        setMinimumSize(new java.awt.Dimension(1000, 640));
+        pack();
+        setLocationRelativeTo(null);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -48,16 +192,24 @@ public class Login extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         jpnlPrincipal = new javax.swing.JPanel();
         jpnlIniciarSesion = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jsplSelector = new javax.swing.JSplitPane();
+        jtglPersonal = new javax.swing.JToggleButton();
+        jtglEstudiante = new javax.swing.JToggleButton();
+        jpnlFormularios = new javax.swing.JPanel();
+        jpnlPersonal = new javax.swing.JPanel();
+        jbtnIngresar = new javax.swing.JButton();
+        jtxtClave = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jtxtCedula = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        jtxtClave = new javax.swing.JTextField();
-        jbtnIngresar = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
+        jpnlEstudiante = new javax.swing.JPanel();
+        jbtnConsultar = new javax.swing.JButton();
+        jtxtCedulaE = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jlblLogo = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -76,85 +228,150 @@ public class Login extends javax.swing.JFrame {
         jpnlIniciarSesion.setBackground(new java.awt.Color(255, 255, 255));
         jpnlIniciarSesion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jpnlIniciarSesion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jpnlIniciarSesion.setLayout(new java.awt.GridBagLayout());
+        jpnlIniciarSesion.setPreferredSize(new java.awt.Dimension(526, 102));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel1.setText("Cedula:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.ipadx = 25;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(12, 34, 0, 0);
-        jpnlIniciarSesion.add(jLabel1, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.ipadx = 193;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 34, 0, 45);
-        jpnlIniciarSesion.add(jtxtCedula, gridBagConstraints);
+        jLabel2.setFont(new java.awt.Font("Yu Gothic", 1, 24)); // NOI18N
+        jLabel2.setText("Iniciar Sesión");
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel6.setText("Contraseña:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.ipadx = 29;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(30, 33, 0, 0);
-        jpnlIniciarSesion.add(jLabel6, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.ipadx = 193;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 34, 0, 45);
-        jpnlIniciarSesion.add(jtxtClave, gridBagConstraints);
+        jsplSelector.setDividerSize(0);
+        jsplSelector.setResizeWeight(0.5);
+        jsplSelector.setEnabled(false);
+
+        jtglPersonal.setText("Personal");
+        jtglPersonal.addActionListener(this::jtglPersonalActionPerformed);
+        jsplSelector.setLeftComponent(jtglPersonal);
+
+        jtglEstudiante.setText("Estudiante");
+        jtglEstudiante.addActionListener(this::jtglEstudianteActionPerformed);
+        jsplSelector.setRightComponent(jtglEstudiante);
+
+        jpnlFormularios.setBackground(new java.awt.Color(255, 255, 255));
+        jpnlFormularios.setLayout(new java.awt.CardLayout());
+
+        jpnlPersonal.setBackground(new java.awt.Color(255, 255, 255));
 
         jbtnIngresar.setBackground(new java.awt.Color(0, 153, 153));
         jbtnIngresar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jbtnIngresar.setForeground(new java.awt.Color(255, 255, 255));
         jbtnIngresar.setText("Ingresar");
         jbtnIngresar.addActionListener(this::jbtnIngresarActionPerformed);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.ipadx = 171;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(44, 34, 43, 45);
-        jpnlIniciarSesion.add(jbtnIngresar, gridBagConstraints);
 
-        jLabel2.setFont(new java.awt.Font("Yu Gothic", 1, 24)); // NOI18N
-        jLabel2.setText("Iniciar Sesión");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.ipadx = 11;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(36, 80, 0, 0);
-        jpnlIniciarSesion.add(jLabel2, gridBagConstraints);
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel6.setText("Contraseña:");
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setText("Cedula:");
+
+        javax.swing.GroupLayout jpnlPersonalLayout = new javax.swing.GroupLayout(jpnlPersonal);
+        jpnlPersonal.setLayout(jpnlPersonalLayout);
+        jpnlPersonalLayout.setHorizontalGroup(
+            jpnlPersonalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpnlPersonalLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(jpnlPersonalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jbtnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jtxtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jtxtClave, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jpnlPersonalLayout.setVerticalGroup(
+            jpnlPersonalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnlPersonalLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(3, 3, 3)
+                .addComponent(jtxtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jtxtClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jbtnIngresar)
+                .addContainerGap())
+        );
+
+        jpnlFormularios.add(jpnlPersonal, "personal");
+
+        jpnlEstudiante.setBackground(new java.awt.Color(255, 255, 255));
+
+        jbtnConsultar.setText("Consultar");
+
+        jLabel8.setText("Cédula:");
+
+        javax.swing.GroupLayout jpnlEstudianteLayout = new javax.swing.GroupLayout(jpnlEstudiante);
+        jpnlEstudiante.setLayout(jpnlEstudianteLayout);
+        jpnlEstudianteLayout.setHorizontalGroup(
+            jpnlEstudianteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpnlEstudianteLayout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addGroup(jpnlEstudianteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jpnlEstudianteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jbtnConsultar)
+                        .addComponent(jtxtCedulaE, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(379, Short.MAX_VALUE))
+        );
+        jpnlEstudianteLayout.setVerticalGroup(
+            jpnlEstudianteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnlEstudianteLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jtxtCedulaE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jbtnConsultar)
+                .addGap(127, 127, 127))
+        );
+
+        jpnlFormularios.add(jpnlEstudiante, "estudiante");
+
+        javax.swing.GroupLayout jpnlIniciarSesionLayout = new javax.swing.GroupLayout(jpnlIniciarSesion);
+        jpnlIniciarSesion.setLayout(jpnlIniciarSesionLayout);
+        jpnlIniciarSesionLayout.setHorizontalGroup(
+            jpnlIniciarSesionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpnlIniciarSesionLayout.createSequentialGroup()
+                .addGroup(jpnlIniciarSesionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jpnlIniciarSesionLayout.createSequentialGroup()
+                        .addGap(167, 167, 167)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnlIniciarSesionLayout.createSequentialGroup()
+                        .addGap(244, 244, 244)
+                        .addComponent(jsplSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(23, 23, 23)))
+                .addComponent(jpnlFormularios, javax.swing.GroupLayout.PREFERRED_SIZE, 491, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jpnlIniciarSesionLayout.setVerticalGroup(
+            jpnlIniciarSesionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpnlIniciarSesionLayout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jsplSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jpnlIniciarSesionLayout.createSequentialGroup()
+                .addComponent(jpnlFormularios, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 57, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jpnlPrincipalLayout = new javax.swing.GroupLayout(jpnlPrincipal);
         jpnlPrincipal.setLayout(jpnlPrincipalLayout);
         jpnlPrincipalLayout.setHorizontalGroup(
             jpnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnlPrincipalLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jpnlPrincipalLayout.createSequentialGroup()
+                .addGap(86, 86, 86)
                 .addComponent(jpnlIniciarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(76, 76, 76))
+                .addContainerGap(112, Short.MAX_VALUE))
         );
         jpnlPrincipalLayout.setVerticalGroup(
             jpnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpnlPrincipalLayout.createSequentialGroup()
-                .addGap(109, 109, 109)
-                .addComponent(jpnlIniciarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(408, Short.MAX_VALUE))
+                .addGap(67, 67, 67)
+                .addComponent(jpnlIniciarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(280, Short.MAX_VALUE))
         );
 
         getContentPane().add(jpnlPrincipal, java.awt.BorderLayout.CENTER);
@@ -212,7 +429,7 @@ public class Login extends javax.swing.JFrame {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel7)
-                .addContainerGap(437, Short.MAX_VALUE))
+                .addContainerGap(284, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel3, java.awt.BorderLayout.WEST);
@@ -226,6 +443,16 @@ public class Login extends javax.swing.JFrame {
         mb.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jbtnIngresarActionPerformed
+
+    private void jtglEstudianteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtglEstudianteActionPerformed
+        // TODO add your handling code here:
+        mostrarTarjeta("estudiante");
+    }//GEN-LAST:event_jtglEstudianteActionPerformed
+
+    private void jtglPersonalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtglPersonalActionPerformed
+        // TODO add your handling code here:
+         mostrarTarjeta("personal");
+    }//GEN-LAST:event_jtglPersonalActionPerformed
 
     /**
      * @param args the command line arguments
@@ -260,12 +487,21 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JButton jbtnConsultar;
     private javax.swing.JButton jbtnIngresar;
     private javax.swing.JLabel jlblLogo;
+    private javax.swing.JPanel jpnlEstudiante;
+    private javax.swing.JPanel jpnlFormularios;
     private javax.swing.JPanel jpnlIniciarSesion;
+    private javax.swing.JPanel jpnlPersonal;
     private javax.swing.JPanel jpnlPrincipal;
+    private javax.swing.JSplitPane jsplSelector;
+    private javax.swing.JToggleButton jtglEstudiante;
+    private javax.swing.JToggleButton jtglPersonal;
     private javax.swing.JTextField jtxtCedula;
+    private javax.swing.JTextField jtxtCedulaE;
     private javax.swing.JTextField jtxtClave;
     // End of variables declaration//GEN-END:variables
 }
