@@ -4,8 +4,6 @@
  */
 package vista;
 
-import java.awt.Color;
-
 /**
  *
  * @author User
@@ -19,104 +17,112 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
-      InicializarElementos();
+        InicializarElementos();
+        armarLogin();
+        estiloSalir();
+        setLocationRelativeTo(null);
+    }
     
-      armarLogin();
-       setLocationRelativeTo(null);
+    private void estiloSalir() {
+        util.Estilos.boton(jbtnSalir);   // blanco, verde suave al pasar el mouse, verde al hacer clic
+        jbtnSalir.setToolTipText("Cerrar el sistema");
+        jbtnSalir.setPreferredSize(new java.awt.Dimension(120, 40));
+        util.Estilos.icono(jbtnSalir, "Exit.png", 50, false);  
+        jbtnSalir.setBackground(util.Estilos.VERDE);// ícono a la izquierda del texto
     }
     private void armarLogin() {
-    java.awt.Color verde = new java.awt.Color(0, 153, 153);
-    java.awt.Dimension campo = new java.awt.Dimension(320, 34);
-    java.awt.Dimension boton = new java.awt.Dimension(320, 38);
+        java.awt.Color verde = new java.awt.Color(0, 153, 153);
+        java.awt.Dimension campo = new java.awt.Dimension(320, 34);
+        java.awt.Dimension boton = new java.awt.Dimension(320, 38);
 
-    // ---- Textos y tamaños ----
-    jLabel1.setText("Usuario:");
-    jLabel6.setText("Contraseña:");
-    jLabel8.setText("Cédula:");
-    jtglPersonal.setText("Personal");
-    jtglEstudiante.setText("Estudiante");
-    jbtnIngresar.setText("Ingresar");
-    jbtnConsultar.setText("Consultar");
+        // ---- Textos y tamaños ----
+        jLabel1.setText("Usuario:");
+        jLabel6.setText("Contraseña:");
+        jLabel8.setText("Cédula:");
+        jtglPersonal.setText("Personal");
+        jtglEstudiante.setText("Estudiante");
+        jbtnIngresar.setText("Ingresar");
+        jbtnConsultar.setText("Consultar");
 
-    javax.swing.JComponent[] cajas = {jtxtCedula, jtxtClave, jtxtCedulaE};
-    for (javax.swing.JComponent c : cajas) {
-        c.setPreferredSize(campo);
-        c.setMinimumSize(campo);
+        javax.swing.JComponent[] cajas = {jtxtCedula, jtxtClave, jtxtCedulaE};
+        for (javax.swing.JComponent c : cajas) {
+            c.setPreferredSize(campo);
+            c.setMinimumSize(campo);
+        }
+        for (javax.swing.JButton b : new javax.swing.JButton[]{jbtnIngresar, jbtnConsultar}) {
+            b.setPreferredSize(boton);
+            b.setMinimumSize(boton);
+            b.setBackground(verde);
+            b.setForeground(java.awt.Color.WHITE);
+            b.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 15));
+            b.setFocusPainted(false);
+        }
+
+        // ---- Tarjeta Personal: Usuario, Contraseña, Ingresar ----
+        apilar(jpnlPersonal, jLabel1, jtxtCedula, jLabel6, jtxtClave, jbtnIngresar);
+
+        // ---- Tarjeta Estudiante: Cédula, Consultar ----
+        apilar(jpnlEstudiante, jLabel8, jtxtCedulaE, jbtnConsultar);
+
+        // ---- Contenedor de tarjetas ----
+        jpnlFormularios.removeAll();
+        jpnlFormularios.setLayout(new java.awt.CardLayout());
+        jpnlFormularios.setBackground(java.awt.Color.WHITE);
+        jpnlFormularios.add(jpnlPersonal, "personal");
+        jpnlFormularios.add(jpnlEstudiante, "estudiante");
+
+        // ---- Selector Personal | Estudiante (split bloqueado) ----
+        jsplSelector.setLeftComponent(jtglPersonal);
+        jsplSelector.setRightComponent(jtglEstudiante);
+        jsplSelector.setEnabled(false);
+        jsplSelector.setDividerSize(0);
+        jsplSelector.setResizeWeight(0.5);
+        jsplSelector.setBorder(null);
+        java.awt.Dimension selector = new java.awt.Dimension(320, 38);
+        jsplSelector.setPreferredSize(selector);
+        jsplSelector.setMinimumSize(selector);
+        javax.swing.SwingUtilities.invokeLater(() -> jsplSelector.setDividerLocation(0.5));
+
+        javax.swing.ButtonGroup grupoTipo = new javax.swing.ButtonGroup();
+        grupoTipo.add(jtglPersonal);
+        grupoTipo.add(jtglEstudiante);
+
+        // ---- Tarjeta blanca: título, selector y formularios uno debajo del otro ----
+        jpnlIniciarSesion.removeAll();
+        jpnlIniciarSesion.setPreferredSize(null);   // quita el 526x102 del diseñador
+        jpnlIniciarSesion.setCursor(java.awt.Cursor.getDefaultCursor());
+        jpnlIniciarSesion.setLayout(new java.awt.GridBagLayout());
+        jpnlIniciarSesion.setBackground(java.awt.Color.WHITE);
+        jpnlIniciarSesion.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(60, 60, 60), 1),
+                javax.swing.BorderFactory.createEmptyBorder(36, 50, 40, 50)));
+
+        java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
+        g.gridx = 0;
+        g.gridy = 0;
+        g.insets = new java.awt.Insets(0, 0, 24, 0);
+        jpnlIniciarSesion.add(jLabel2, g);          // "Iniciar Sesión"
+
+        g.gridy = 1;
+        g.insets = new java.awt.Insets(0, 0, 24, 0);
+        jpnlIniciarSesion.add(jsplSelector, g);
+
+        g.gridy = 2;
+        g.insets = new java.awt.Insets(0, 0, 0, 0);
+        jpnlIniciarSesion.add(jpnlFormularios, g);
+
+        // ---- Panel rosado: centra la tarjeta ----
+        jpnlPrincipal.removeAll();
+        jpnlPrincipal.setLayout(new java.awt.GridBagLayout());
+        jpnlPrincipal.add(jpnlIniciarSesion);
+
+        jtglPersonal.setSelected(true);
+        mostrarTarjeta("personal");
+
+        jpnlPrincipal.revalidate();
+        jpnlPrincipal.repaint();
+
     }
-    for (javax.swing.JButton b : new javax.swing.JButton[]{jbtnIngresar, jbtnConsultar}) {
-        b.setPreferredSize(boton);
-        b.setMinimumSize(boton);
-        b.setBackground(verde);
-        b.setForeground(java.awt.Color.WHITE);
-        b.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 15));
-        b.setFocusPainted(false);
-    }
-
-    // ---- Tarjeta Personal: Usuario, Contraseña, Ingresar ----
-    apilar(jpnlPersonal, jLabel1, jtxtCedula, jLabel6, jtxtClave, jbtnIngresar);
-
-    // ---- Tarjeta Estudiante: Cédula, Consultar ----
-    apilar(jpnlEstudiante, jLabel8, jtxtCedulaE, jbtnConsultar);
-
-    // ---- Contenedor de tarjetas ----
-    jpnlFormularios.removeAll();
-    jpnlFormularios.setLayout(new java.awt.CardLayout());
-    jpnlFormularios.setBackground(java.awt.Color.WHITE);
-    jpnlFormularios.add(jpnlPersonal, "personal");
-    jpnlFormularios.add(jpnlEstudiante, "estudiante");
-
-    // ---- Selector Personal | Estudiante (split bloqueado) ----
-    jsplSelector.setLeftComponent(jtglPersonal);
-    jsplSelector.setRightComponent(jtglEstudiante);
-    jsplSelector.setEnabled(false);
-    jsplSelector.setDividerSize(0);
-    jsplSelector.setResizeWeight(0.5);
-    jsplSelector.setBorder(null);
-    java.awt.Dimension selector = new java.awt.Dimension(320, 38);
-    jsplSelector.setPreferredSize(selector);
-    jsplSelector.setMinimumSize(selector);
-    javax.swing.SwingUtilities.invokeLater(() -> jsplSelector.setDividerLocation(0.5));
-
-    javax.swing.ButtonGroup grupoTipo = new javax.swing.ButtonGroup();
-    grupoTipo.add(jtglPersonal);
-    grupoTipo.add(jtglEstudiante);
-
-    // ---- Tarjeta blanca: título, selector y formularios uno debajo del otro ----
-    jpnlIniciarSesion.removeAll();
-    jpnlIniciarSesion.setPreferredSize(null);   // quita el 526x102 del diseñador
-    jpnlIniciarSesion.setCursor(java.awt.Cursor.getDefaultCursor());
-    jpnlIniciarSesion.setLayout(new java.awt.GridBagLayout());
-    jpnlIniciarSesion.setBackground(java.awt.Color.WHITE);
-    jpnlIniciarSesion.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(60, 60, 60), 1),
-            javax.swing.BorderFactory.createEmptyBorder(36, 50, 40, 50)));
-
-    java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
-    g.gridx = 0;
-    g.gridy = 0;
-    g.insets = new java.awt.Insets(0, 0, 24, 0);
-    jpnlIniciarSesion.add(jLabel2, g);          // "Iniciar Sesión"
-
-    g.gridy = 1;
-    g.insets = new java.awt.Insets(0, 0, 24, 0);
-    jpnlIniciarSesion.add(jsplSelector, g);
-
-    g.gridy = 2;
-    g.insets = new java.awt.Insets(0, 0, 0, 0);
-    jpnlIniciarSesion.add(jpnlFormularios, g);
-
-    // ---- Panel rosado: centra la tarjeta ----
-    jpnlPrincipal.removeAll();
-    jpnlPrincipal.setLayout(new java.awt.GridBagLayout());
-    jpnlPrincipal.add(jpnlIniciarSesion);
-
-    jtglPersonal.setSelected(true);
-    mostrarTarjeta("personal");
-
-    jpnlPrincipal.revalidate();
-    jpnlPrincipal.repaint();
-    
-}
 
 /** Pone los componentes uno debajo del otro, alineados a la izquierda y del mismo ancho. */
     private void apilar(javax.swing.JPanel panel, javax.swing.JComponent... comps) {
@@ -216,6 +222,7 @@ public class Login extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jbtnSalir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -308,9 +315,8 @@ public class Login extends javax.swing.JFrame {
                 .addGap(32, 32, 32)
                 .addGroup(jpnlEstudianteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jpnlEstudianteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jbtnConsultar)
-                        .addComponent(jtxtCedulaE, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jbtnConsultar)
+                    .addComponent(jtxtCedulaE, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(379, Short.MAX_VALUE))
         );
         jpnlEstudianteLayout.setVerticalGroup(
@@ -396,6 +402,14 @@ public class Login extends javax.swing.JFrame {
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("tu huella dactilar. Nadie presta tu nombre");
 
+        jbtnSalir.setBackground(new java.awt.Color(0, 153, 153));
+        jbtnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Exit.png"))); // NOI18N
+        jbtnSalir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jbtnSalir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jbtnSalir.setIconTextGap(8);
+        jbtnSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jbtnSalir.addActionListener(this::jbtnSalirActionPerformed);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -404,24 +418,26 @@ public class Login extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(91, 91, 91)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(jlblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel3))))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(94, 94, 94)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jbtnSalir)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(103, 103, 103)
+                        .addComponent(jlblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(80, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(73, 73, 73)
-                .addComponent(jlblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(91, 91, 91)
+                .addComponent(jlblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
@@ -429,7 +445,8 @@ public class Login extends javax.swing.JFrame {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel7)
-                .addContainerGap(284, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 228, Short.MAX_VALUE)
+                .addComponent(jbtnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         getContentPane().add(jPanel3, java.awt.BorderLayout.WEST);
@@ -453,6 +470,11 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
          mostrarTarjeta("personal");
     }//GEN-LAST:event_jtglPersonalActionPerformed
+
+    private void jbtnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSalirActionPerformed
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_jbtnSalirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -491,6 +513,7 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JButton jbtnConsultar;
     private javax.swing.JButton jbtnIngresar;
+    private javax.swing.JButton jbtnSalir;
     private javax.swing.JLabel jlblLogo;
     private javax.swing.JPanel jpnlEstudiante;
     private javax.swing.JPanel jpnlFormularios;
