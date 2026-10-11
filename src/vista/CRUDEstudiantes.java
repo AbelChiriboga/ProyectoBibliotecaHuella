@@ -481,11 +481,12 @@ public class CRUDEstudiantes extends javax.swing.JFrame {
                     .addComponent(jLabel40)
                     .addComponent(jLabel37))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jpnlDatosEstLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jcbxCarrera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jtxtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jcbxSemestre, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jtxtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jpnlDatosEstLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jcbxSemestre, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jpnlDatosEstLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jcbxCarrera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jtxtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jtxtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jpnlDatosEstLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbtnnuevo)
@@ -500,6 +501,7 @@ public class CRUDEstudiantes extends javax.swing.JFrame {
         jpnlEstReg.setBorder(javax.swing.BorderFactory.createTitledBorder("Estudiantes Registrados"));
 
         jbtnBuscar.setText("Buscar");
+        jbtnBuscar.addActionListener(this::jbtnBuscarActionPerformed);
 
         jtblEst.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -521,11 +523,14 @@ public class CRUDEstudiantes extends javax.swing.JFrame {
             .addGroup(jpnlEstRegLayout.createSequentialGroup()
                 .addGroup(jpnlEstRegLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jpnlEstRegLayout.createSequentialGroup()
-                        .addComponent(jtxtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbtnFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbtnBuscar))
+                        .addGroup(jpnlEstRegLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jpnlEstRegLayout.createSequentialGroup()
+                                .addComponent(jtxtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnlEstRegLayout.createSequentialGroup()
+                                .addComponent(jbtnBuscar)
+                                .addGap(27, 27, 27)))
+                        .addComponent(jbtnFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 898, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -534,10 +539,11 @@ public class CRUDEstudiantes extends javax.swing.JFrame {
             .addGroup(jpnlEstRegLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jpnlEstRegLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jbtnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jpnlEstRegLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jbtnFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jpnlEstRegLayout.createSequentialGroup()
                         .addComponent(jtxtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jbtnFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jbtnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(177, 177, 177))
@@ -652,6 +658,10 @@ public class CRUDEstudiantes extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jtxtApellidosActionPerformed
 
+    private void jbtnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jbtnBuscarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -678,32 +688,10 @@ public class CRUDEstudiantes extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel26;
-    private javax.swing.JLabel jLabel27;
-    private javax.swing.JLabel jLabel28;
-    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel31;
-    private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel35;
@@ -715,67 +703,23 @@ public class CRUDEstudiantes extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JButton jbtnAutor;
-    private javax.swing.JButton jbtnAutor1;
-    private javax.swing.JButton jbtnAutor2;
-    private javax.swing.JButton jbtnAutor3;
     private javax.swing.JButton jbtnBuscar;
-    private javax.swing.JButton jbtnCancelar;
-    private javax.swing.JButton jbtnCancelar1;
-    private javax.swing.JButton jbtnCancelar2;
-    private javax.swing.JButton jbtnCancelar3;
     private javax.swing.JButton jbtnCapturar;
-    private javax.swing.JButton jbtnCategoria;
-    private javax.swing.JButton jbtnCategoria1;
-    private javax.swing.JButton jbtnCategoria2;
-    private javax.swing.JButton jbtnCategoria3;
-    private javax.swing.JButton jbtnEditar;
-    private javax.swing.JButton jbtnEditar1;
-    private javax.swing.JButton jbtnEditar2;
-    private javax.swing.JButton jbtnEditar3;
-    private javax.swing.JButton jbtnEjemplares;
-    private javax.swing.JButton jbtnEjemplares1;
-    private javax.swing.JButton jbtnEjemplares2;
-    private javax.swing.JButton jbtnEjemplares3;
-    private javax.swing.JButton jbtnEliminar;
-    private javax.swing.JButton jbtnEliminar1;
-    private javax.swing.JButton jbtnEliminar2;
-    private javax.swing.JButton jbtnEliminar3;
     private javax.swing.JButton jbtnFiltro;
-    private javax.swing.JButton jbtnGuardar;
-    private javax.swing.JButton jbtnGuardar1;
-    private javax.swing.JButton jbtnGuardar2;
-    private javax.swing.JButton jbtnGuardar3;
-    private javax.swing.JButton jbtnNuevo;
-    private javax.swing.JButton jbtnNuevo1;
-    private javax.swing.JButton jbtnNuevo2;
-    private javax.swing.JButton jbtnNuevo3;
     private javax.swing.JButton jbtnRegresar;
     private javax.swing.JButton jbtncancelar;
     private javax.swing.JButton jbtneditar;
     private javax.swing.JButton jbtneliminar;
     private javax.swing.JButton jbtnguardar;
     private javax.swing.JButton jbtnnuevo;
-    private javax.swing.JComboBox<String> jcbxAutor;
-    private javax.swing.JComboBox<String> jcbxAutor1;
-    private javax.swing.JComboBox<String> jcbxAutor2;
-    private javax.swing.JComboBox<String> jcbxAutor3;
     private javax.swing.JComboBox<String> jcbxCarrera;
-    private javax.swing.JComboBox<String> jcbxCategoria;
-    private javax.swing.JComboBox<String> jcbxCategoria1;
-    private javax.swing.JComboBox<String> jcbxCategoria2;
-    private javax.swing.JComboBox<String> jcbxCategoria3;
     private javax.swing.JComboBox<String> jcbxDedo;
     private javax.swing.JComboBox<String> jcbxSemestre;
     private javax.swing.JLabel jlblFecha;
@@ -784,35 +728,15 @@ public class CRUDEstudiantes extends javax.swing.JFrame {
     private javax.swing.JLabel jlblNombre;
     private javax.swing.JProgressBar jpgrHuella;
     private javax.swing.JPanel jpnlDatosEst;
-    private javax.swing.JPanel jpnlDatosLibro;
-    private javax.swing.JPanel jpnlDatosLibro1;
-    private javax.swing.JPanel jpnlDatosLibro2;
-    private javax.swing.JPanel jpnlDatosLibro3;
     private javax.swing.JPanel jpnlEstReg;
     private javax.swing.JPanel jpnlInicio;
     private javax.swing.JTable jtblEst;
     private javax.swing.JTextArea jtxtAInfo;
-    private javax.swing.JTextField jtxtAnio;
-    private javax.swing.JTextField jtxtAnio1;
-    private javax.swing.JTextField jtxtAnio2;
-    private javax.swing.JTextField jtxtAnio3;
     private javax.swing.JTextField jtxtApellidos;
     private javax.swing.JTextField jtxtBuscar;
     private javax.swing.JTextField jtxtCedula;
     private javax.swing.JTextField jtxtCorreo;
-    private javax.swing.JTextField jtxtEditorial;
-    private javax.swing.JTextField jtxtEditorial1;
-    private javax.swing.JTextField jtxtEditorial2;
-    private javax.swing.JTextField jtxtEditorial3;
-    private javax.swing.JTextField jtxtISBN;
-    private javax.swing.JTextField jtxtISBN1;
-    private javax.swing.JTextField jtxtISBN2;
-    private javax.swing.JTextField jtxtISBN3;
     private javax.swing.JTextField jtxtNombre;
     private javax.swing.JTextField jtxtTelefono;
-    private javax.swing.JTextField jtxtTitulo;
-    private javax.swing.JTextField jtxtTitulo1;
-    private javax.swing.JTextField jtxtTitulo2;
-    private javax.swing.JTextField jtxtTitulo3;
     // End of variables declaration//GEN-END:variables
 }
