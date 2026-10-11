@@ -154,7 +154,7 @@ public class Devoluciones extends javax.swing.JFrame {
 
         java.awt.Color normalBorde = util.Estilos.BORDE;
         java.awt.Color naranjaBorde = new java.awt.Color(224, 179, 147);
-        java.awt.Color naranjaFondo = new java.awt.Color(253, 241, 232);
+        java.awt.Color naranjaFondo = new java.awt.Color(255, 255, 255);
         java.awt.Color naranjaTexto = new java.awt.Color(138, 58, 18);
 
         tarjeta(jpblDiasRetraso, jLabel1, "Días de retraso", jLabel2, "0",
@@ -297,7 +297,7 @@ public class Devoluciones extends javax.swing.JFrame {
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel13.setText("PRESTAMO DE LIBROS");
+        jLabel13.setText("DEVOLUCIÓN DE LIBROS");
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 255, 255));

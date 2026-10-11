@@ -114,7 +114,7 @@ public class BEstudiantes extends javax.swing.JFrame {
         tarjeta(jpnlPrestamosA, jLabel10, "Préstamos activos", jLabel11, "— / 3",
                 java.awt.Color.WHITE, util.Estilos.BORDE, util.Estilos.TEXTO);
         tarjeta(jpnlAtrasos, jLabel15, "Atrasados", jLabel16, "—",
-                new java.awt.Color(253, 241, 232), new java.awt.Color(224, 179, 147), new java.awt.Color(138, 58, 18));
+                new java.awt.Color(255,255,255), new java.awt.Color(224, 179, 147), new java.awt.Color(138, 58, 18));
         indicadores.add(jpnlPrestamosA);
         indicadores.add(jpnlAtrasos);
 
@@ -266,7 +266,7 @@ public class BEstudiantes extends javax.swing.JFrame {
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel13.setText("REGISTRO DE LIBROS");
+        jLabel13.setText("ESTADO DE ESTUDIANTES");
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 255, 255));
@@ -451,6 +451,8 @@ public class BEstudiantes extends javax.swing.JFrame {
                 .addComponent(jLabel11)
                 .addGap(29, 29, 29))
         );
+
+        jpnlAtrasos.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel15.setText("Atrasados");
 

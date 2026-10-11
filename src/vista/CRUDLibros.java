@@ -21,6 +21,78 @@ public class CRUDLibros extends javax.swing.JFrame {
         ponerIcono(jbtnRegresar, "Regresar.png", 50);
         ajustarDiseno();
     }
+        /** Formulario del libro: campos uno debajo del otro, Ejemplares y botones parejos. */
+    private void armarFormulario(java.awt.Color verde, java.awt.Color borde) {
+        jpnlDatosLibro.removeAll();
+        jpnlDatosLibro.setLayout(new java.awt.GridBagLayout());
+        jpnlDatosLibro.setPreferredSize(new java.awt.Dimension(360, 0));
+
+        java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
+        g.gridx = 0;
+        g.gridwidth = 2;
+        g.weightx = 1;
+        g.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        int fila = 0;
+
+        // ---- ISBN y Título ----
+        g.gridy = fila++; g.insets = new java.awt.Insets(4, 6, 4, 6);   jpnlDatosLibro.add(jLabel1, g);
+        g.gridy = fila++; g.insets = new java.awt.Insets(0, 6, 10, 6);  jpnlDatosLibro.add(jtxtISBN, g);
+        g.gridy = fila++; g.insets = new java.awt.Insets(0, 6, 4, 6);   jpnlDatosLibro.add(jLabel2, g);
+        g.gridy = fila++; g.insets = new java.awt.Insets(0, 6, 10, 6);  jpnlDatosLibro.add(jtxtTitulo, g);
+
+        // ---- Autor y Categoría con su botón + ----
+        g.gridy = fila++; g.insets = new java.awt.Insets(0, 6, 4, 6);   jpnlDatosLibro.add(jLabel7, g);
+        g.gridy = fila++; g.insets = new java.awt.Insets(0, 6, 10, 6);  jpnlDatosLibro.add(conBoton(jcbxAutor, jbtnAutor), g);
+        g.gridy = fila++; g.insets = new java.awt.Insets(0, 6, 4, 6);   jpnlDatosLibro.add(jLabel9, g);
+        g.gridy = fila++; g.insets = new java.awt.Insets(0, 6, 10, 6);  jpnlDatosLibro.add(conBoton(jcbxCategoria, jbtnCategoria), g);
+
+        // ---- Editorial | Año ----
+        g.gridwidth = 1;
+        g.gridy = fila;
+        g.gridx = 0; g.insets = new java.awt.Insets(0, 6, 4, 6); jpnlDatosLibro.add(jLabel10, g);
+        g.gridx = 1; jpnlDatosLibro.add(jLabel11, g);
+        fila++;
+        g.gridy = fila;
+        g.gridx = 0; g.insets = new java.awt.Insets(0, 6, 12, 6); jpnlDatosLibro.add(jtxtEditorial, g);
+        g.gridx = 1; jpnlDatosLibro.add(jtxtAnio, g);
+        fila++;
+
+        // ---- Ejemplares a lo ancho ----
+        g.gridx = 0;
+        g.gridwidth = 2;
+        jbtnEjemplares.setPreferredSize(new java.awt.Dimension(120, 36));
+        g.gridy = fila++; g.insets = new java.awt.Insets(0, 6, 14, 6);  jpnlDatosLibro.add(jbtnEjemplares, g);
+
+        // ---- Botones de acción: 2 x 2 y Cancelar a lo ancho, todos del mismo alto ----
+        javax.swing.JPanel botones = new javax.swing.JPanel(new java.awt.GridLayout(2, 2, 10, 10));
+        botones.setOpaque(false);
+        for (javax.swing.JButton b : new javax.swing.JButton[]{jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar}) {
+            b.setPreferredSize(new java.awt.Dimension(120, 36));
+            botones.add(b);
+        }
+        jbtnCancelar.setPreferredSize(new java.awt.Dimension(120, 36));
+
+        g.gridy = fila++; g.insets = new java.awt.Insets(0, 6, 10, 6);  jpnlDatosLibro.add(botones, g);
+        g.gridy = fila++; g.insets = new java.awt.Insets(0, 6, 0, 6);   jpnlDatosLibro.add(jbtnCancelar, g);
+
+        // ---- Relleno: empuja todo hacia arriba ----
+        g.gridy = fila;
+        g.weighty = 1;
+        g.fill = java.awt.GridBagConstraints.BOTH;
+        javax.swing.JPanel relleno = new javax.swing.JPanel();
+        relleno.setOpaque(false);
+        jpnlDatosLibro.add(relleno, g);
+    }
+
+    /** Combo que se estira y su botón + de tamaño fijo a la derecha. */
+    private javax.swing.JPanel conBoton(javax.swing.JComboBox<?> combo, javax.swing.JButton boton) {
+        javax.swing.JPanel p = new javax.swing.JPanel(new java.awt.BorderLayout(8, 0));
+        p.setOpaque(false);
+        boton.setPreferredSize(new java.awt.Dimension(36, 32));
+        p.add(combo, java.awt.BorderLayout.CENTER);
+        p.add(boton, java.awt.BorderLayout.EAST);
+        return p;
+    }
     private void ajustarDiseno() {
     java.awt.Color verde = new java.awt.Color(0, 153, 153);
     java.awt.Color borde = new java.awt.Color(185, 198, 204);
@@ -63,6 +135,7 @@ public class CRUDLibros extends javax.swing.JFrame {
     }
     jbtnAutor.setToolTipText("Agregar autor");
     jbtnCategoria.setToolTipText("Agregar categoría");
+    armarFormulario(verde, borde);
 
     // ---- Botón de filtro con imagen ----
     estiloBoton(jbtnFiltro, verde, borde);
@@ -260,7 +333,7 @@ private void estiloBoton(javax.swing.JButton b, java.awt.Color verde, java.awt.C
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel13.setText("REGISTRO DE LIBROS");
+        jLabel13.setText("GESTIÓN DE LIBROS");
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 255, 255));
@@ -392,6 +465,7 @@ private void estiloBoton(javax.swing.JButton b, java.awt.Color verde, java.awt.C
         jbtnCancelar.setText("Cancelar");
 
         jbtnEjemplares.setText("Ejemplares");
+        jbtnEjemplares.addActionListener(this::jbtnEjemplaresActionPerformed);
 
         javax.swing.GroupLayout jpnlDatosLibroLayout = new javax.swing.GroupLayout(jpnlDatosLibro);
         jpnlDatosLibro.setLayout(jpnlDatosLibroLayout);
@@ -587,6 +661,11 @@ private void estiloBoton(javax.swing.JButton b, java.awt.Color verde, java.awt.C
         // TODO add your handling code here:
         util.Navegacion.abrir(this, new CRUDCategoria());
     }//GEN-LAST:event_jbtnCategoriaActionPerformed
+
+    private void jbtnEjemplaresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnEjemplaresActionPerformed
+        // TODO add your handling code here:
+        util.Navegacion.abrir(this, new CRUDEjemplares());
+    }//GEN-LAST:event_jbtnEjemplaresActionPerformed
 
     /**
      * @param args the command line arguments
