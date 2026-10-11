@@ -10,13 +10,199 @@ package vista;
  */
 public class Prestamos extends javax.swing.JFrame {
     
+    private final javax.swing.JPanel pnlContenido = new javax.swing.JPanel();
+    private final javax.swing.JLabel lblNombreEst = new javax.swing.JLabel("—");
+    private final javax.swing.JLabel lblDatosEst = new javax.swing.JLabel("Cédula: —   ·   Carrera: —");
+    private final javax.swing.JLabel lblActivos = new javax.swing.JLabel("Préstamos activos: — de 3");
+    private final javax.swing.JLabel lblEstadoEst = new javax.swing.JLabel("SIN IDENTIFICAR");
+    private final javax.swing.JLabel lblFechaLimite = new javax.swing.JLabel("Devolver hasta: —     ·     Seleccionados: 0");
+    private final javax.swing.JButton btnCancelar = new javax.swing.JButton("Cancelar");
+    private final javax.swing.JButton btnConfirmar = new javax.swing.JButton("Confirmar préstamo");
+    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Prestamos.class.getName());
 
     /**
      * Creates new form CRUDPrestamos
      */
     public Prestamos() {
-        initComponents();
+        initComponents();util.Estilos.reloj(jlblFecha, jlblHora);
+        util.Estilos.icono(jbtnRegresar, "Regresar.png", 50, true);
+        ajustarDiseno();
+        
+    }
+    
+    private void ajustarDiseno() {
+        jLabel13.setText("NUEVO PRÉSTAMO");
+
+        // ---- Contenido: huella a la izquierda, ejemplares a la derecha ----
+        pnlContenido.setLayout(new java.awt.BorderLayout(16, 0));
+        pnlContenido.add(jpnlHuella, java.awt.BorderLayout.WEST);
+        pnlContenido.add(jPanel2, java.awt.BorderLayout.CENTER);
+
+        util.Estilos.grupo(jpnlHuella, "1. Huella del estudiante");
+        util.Estilos.grupo(jPanel2, "2. Ejemplares a prestar");
+        jpnlHuella.setPreferredSize(new java.awt.Dimension(300, 0));
+
+        armarPanelHuella();
+        armarPanelEjemplares();
+
+        // ---- Encabezado + contenido + pie, tamaño estándar ----
+        util.Estilos.estructura(this, jpnlInicio, pnlContenido, jPanel6);
+    }
+
+    /** Lado izquierdo: lectura de huella y datos del estudiante identificado. */
+    private void armarPanelHuella() {
+        jpnlHuella.removeAll();
+        jpnlHuella.setLayout(new java.awt.GridBagLayout());
+
+        // Recuadro de la huella
+        jlblHuella.setOpaque(true);
+        jlblHuella.setBackground(new java.awt.Color(242, 249, 248));
+        jlblHuella.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlblHuella.setBorder(javax.swing.BorderFactory.createDashedBorder(
+                new java.awt.Color(127, 191, 186), 2, 6, 4, true));
+        jlblHuella.setFont(util.Estilos.FUENTE);
+        jlblHuella.setForeground(new java.awt.Color(90, 110, 115));
+        jlblHuella.setText("Coloque el dedo");
+        jlblHuella.setPreferredSize(new java.awt.Dimension(190, 210));
+
+        // Mensaje de estado de la lectura
+        jlblInfo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlblInfo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 13));
+        jlblInfo.setForeground(new java.awt.Color(60, 75, 85));
+        jlblInfo.setText("Esperando lectura del lector...");
+
+        util.Estilos.boton(jbtnCapNuevo);
+        jbtnCapNuevo.setText("Capturar de nuevo");
+        jbtnCapNuevo.setPreferredSize(new java.awt.Dimension(200, 36));
+
+        // Datos del estudiante identificado
+        javax.swing.JPanel pnlEst = new javax.swing.JPanel(new java.awt.GridLayout(4, 1, 0, 4));
+        pnlEst.setBackground(new java.awt.Color(247, 249, 250));
+        pnlEst.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(util.Estilos.BORDE, 1, true),
+                javax.swing.BorderFactory.createEmptyBorder(10, 12, 10, 12)));
+
+        lblNombreEst.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        lblNombreEst.setForeground(util.Estilos.TEXTO);
+        lblDatosEst.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 13));
+        lblDatosEst.setForeground(new java.awt.Color(60, 75, 85));
+        lblActivos.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 13));
+        lblActivos.setForeground(new java.awt.Color(60, 75, 85));
+
+        lblEstadoEst.setOpaque(true);
+        lblEstadoEst.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEstadoEst.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        lblEstadoEst.setBackground(new java.awt.Color(225, 230, 233));
+        lblEstadoEst.setForeground(new java.awt.Color(60, 75, 85));
+
+        pnlEst.add(lblNombreEst);
+        pnlEst.add(lblDatosEst);
+        pnlEst.add(lblActivos);
+        pnlEst.add(lblEstadoEst);
+
+        // Acomodar todo de arriba hacia abajo
+        java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
+        g.gridx = 0;
+        g.weightx = 1;
+        g.fill = java.awt.GridBagConstraints.HORIZONTAL;
+
+        g.gridy = 0;
+        g.fill = java.awt.GridBagConstraints.NONE;
+        g.insets = new java.awt.Insets(6, 6, 10, 6);
+        jpnlHuella.add(jlblHuella, g);
+
+        g.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        g.gridy = 1;
+        g.insets = new java.awt.Insets(0, 6, 8, 6);
+        jpnlHuella.add(jlblInfo, g);
+
+        g.gridy = 2;
+        g.insets = new java.awt.Insets(0, 6, 14, 6);
+        jpnlHuella.add(jbtnCapNuevo, g);
+
+        g.gridy = 3;
+        g.insets = new java.awt.Insets(0, 6, 0, 6);
+        jpnlHuella.add(pnlEst, g);
+
+        // Relleno: empuja todo hacia arriba
+        g.gridy = 4;
+        g.weighty = 1;
+        g.fill = java.awt.GridBagConstraints.BOTH;
+        javax.swing.JPanel relleno = new javax.swing.JPanel();
+        relleno.setOpaque(false);
+        jpnlHuella.add(relleno, g);
+    }
+
+    /** Lado derecho: búsqueda, tabla con casillas y confirmación. */
+    private void armarPanelEjemplares() {
+        jPanel2.removeAll();
+        jPanel2.setLayout(new java.awt.BorderLayout(0, 10));
+
+        // Barra de búsqueda
+        javax.swing.JPanel barra = new javax.swing.JPanel(new java.awt.BorderLayout(8, 0));
+        barra.setOpaque(false);
+        barra.add(jTextField1, java.awt.BorderLayout.CENTER);
+        javax.swing.JPanel botonesBusqueda = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 8, 0));
+        botonesBusqueda.setOpaque(false);
+        botonesBusqueda.add(jbtnFiltro);
+        botonesBusqueda.add(jButton1);
+        barra.add(botonesBusqueda, java.awt.BorderLayout.EAST);
+
+        jTextField1.setFont(util.Estilos.FUENTE);
+        jTextField1.setPreferredSize(new java.awt.Dimension(200, 32));
+        jTextField1.setToolTipText("Buscar por título, autor o código");
+        util.Estilos.boton(jButton1);
+        jButton1.setText("Buscar");
+        jButton1.setPreferredSize(new java.awt.Dimension(90, 32));
+        util.Estilos.boton(jbtnFiltro);
+        jbtnFiltro.setText("");
+        jbtnFiltro.setToolTipText("Filtrar");
+        jbtnFiltro.setPreferredSize(new java.awt.Dimension(36, 32));
+        util.Estilos.icono(jbtnFiltro, "filtro.png", 18, false);
+
+        // Tabla con casillas en la primera columna (para elegir hasta 3)
+        util.Estilos.tabla(jTable1, jScrollPane1, "", "Código", "Título", "Autor", "Ubicación");
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{}, new String[]{"", "Código", "Título", "Autor", "Ubicación"}) {
+            @Override
+            public Class<?> getColumnClass(int col) {
+                return col == 0 ? Boolean.class : String.class;   // la columna 0 se dibuja como casilla
+            }
+            @Override
+            public boolean isCellEditable(int fila, int col) {
+                return col == 0;   // solo se puede marcar la casilla
+            }
+        });
+        jTable1.getColumnModel().getColumn(0).setMaxWidth(40);
+        jTable1.getColumnModel().getColumn(1).setPreferredWidth(110);
+        jTable1.getColumnModel().getColumn(2).setPreferredWidth(260);
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(400, 200));
+
+        // Pie: fecha límite y botones
+        javax.swing.JPanel pie = new javax.swing.JPanel(new java.awt.BorderLayout(10, 0));
+        pie.setOpaque(false);
+        pie.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(227, 232, 235)),
+                javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0)));
+
+        lblFechaLimite.setFont(util.Estilos.FUENTE);
+        lblFechaLimite.setForeground(util.Estilos.TEXTO);
+        pie.add(lblFechaLimite, java.awt.BorderLayout.CENTER);
+
+        javax.swing.JPanel botones = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 8, 0));
+        botones.setOpaque(false);
+        util.Estilos.boton(btnCancelar);
+        util.Estilos.boton(btnConfirmar);
+        btnCancelar.setPreferredSize(new java.awt.Dimension(110, 36));
+        btnConfirmar.setPreferredSize(new java.awt.Dimension(170, 36));
+        botones.add(btnCancelar);
+        botones.add(btnConfirmar);
+        pie.add(botones, java.awt.BorderLayout.EAST);
+
+        jPanel2.add(barra, java.awt.BorderLayout.NORTH);
+        jPanel2.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        jPanel2.add(pie, java.awt.BorderLayout.SOUTH);
     }
 
     /**
@@ -42,7 +228,16 @@ public class Prestamos extends javax.swing.JFrame {
         jPanel6 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
+        jpnlHuella = new javax.swing.JPanel();
+        jlblHuella = new javax.swing.JLabel();
+        jlblInfo = new javax.swing.JLabel();
+        jbtnCapNuevo = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jTextField1 = new javax.swing.JTextField();
+        jbtnFiltro = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -82,7 +277,7 @@ public class Prestamos extends javax.swing.JFrame {
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel13.setText("REGISTRO DE LIBROS");
+        jLabel13.setText("PRESTAMO DE LIBROS");
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 255, 255));
@@ -180,34 +375,106 @@ public class Prestamos extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jpnlHuella.setBackground(new java.awt.Color(255, 255, 255));
+        jpnlHuella.setBorder(javax.swing.BorderFactory.createTitledBorder("Huella"));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+        jbtnCapNuevo.setText("Capturar de Nuevo");
+
+        javax.swing.GroupLayout jpnlHuellaLayout = new javax.swing.GroupLayout(jpnlHuella);
+        jpnlHuella.setLayout(jpnlHuellaLayout);
+        jpnlHuellaLayout.setHorizontalGroup(
+            jpnlHuellaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpnlHuellaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jpnlHuellaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnlHuellaLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jlblHuella, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jlblInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jbtnCapNuevo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 130, Short.MAX_VALUE)
+        jpnlHuellaLayout.setVerticalGroup(
+            jpnlHuellaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpnlHuellaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jlblHuella, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jlblInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jbtnCapNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Ejemplar a prestar"));
+
+        jButton1.setText("Buscar");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 522, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jbtnFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)
+                        .addGap(0, 3, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jbtnFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 898, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 905, Short.MAX_VALUE)
             .addComponent(jpnlInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jpnlHuella, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jpnlInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jpnlHuella, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -216,10 +483,7 @@ public class Prestamos extends javax.swing.JFrame {
 
     private void jbtnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnRegresarActionPerformed
         // TODO add your handling code here:
-
-        this.setVisible(false);
-        MenuBibliotecario lg = new MenuBibliotecario();
-        lg.setVisible(true);
+        dispose();
     }//GEN-LAST:event_jbtnRegresarActionPerformed
 
     /**
@@ -248,6 +512,7 @@ public class Prestamos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
@@ -256,12 +521,20 @@ public class Prestamos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JButton jbtnCapNuevo;
+    private javax.swing.JButton jbtnFiltro;
     private javax.swing.JButton jbtnRegresar;
     private javax.swing.JLabel jlblFecha;
     private javax.swing.JLabel jlblHora;
+    private javax.swing.JLabel jlblHuella;
+    private javax.swing.JLabel jlblInfo;
     private javax.swing.JLabel jlblNombre;
+    private javax.swing.JPanel jpnlHuella;
     private javax.swing.JPanel jpnlInicio;
     // End of variables declaration//GEN-END:variables
 }

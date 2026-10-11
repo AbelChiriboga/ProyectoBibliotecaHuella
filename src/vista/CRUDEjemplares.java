@@ -10,6 +10,12 @@ package vista;
  */
 public class CRUDEjemplares extends javax.swing.JFrame {
     
+    private final javax.swing.JLabel lblResumen = new javax.swing.JLabel();
+    private final javax.swing.JPanel pnlLibro = new javax.swing.JPanel();
+    private final javax.swing.JLabel lblTitulo = new javax.swing.JLabel("—");
+    private final javax.swing.JLabel lblAutor = new javax.swing.JLabel("—");
+    private final javax.swing.JLabel lblIsbn = new javax.swing.JLabel("—");
+    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CRUDEjemplares.class.getName());
 
     /**
@@ -17,7 +23,7 @@ public class CRUDEjemplares extends javax.swing.JFrame {
      */
     public CRUDEjemplares() {
         initComponents();
-         util.Estilos.reloj(jlblFecha, jlblHora);
+        util.Estilos.reloj(jlblFecha, jlblHora);
         util.Estilos.icono(jbtnRegresar, "Regresar.png", 50, true);
         ajustarDiseno();
     }
