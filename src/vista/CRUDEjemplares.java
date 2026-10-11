@@ -17,6 +17,104 @@ public class CRUDEjemplares extends javax.swing.JFrame {
      */
     public CRUDEjemplares() {
         initComponents();
+         util.Estilos.reloj(jlblFecha, jlblHora);
+        util.Estilos.icono(jbtnRegresar, "Regresar.png", 50, true);
+        ajustarDiseno();
+    }
+    private void ajustarDiseno() {
+        jLabel13.setText("EJEMPLARES DEL LIBRO");
+
+        // ---- Distribución: franja del libro arriba, formulario a la izquierda, tabla a la derecha ----
+        jPanel1.removeAll();
+        jPanel1.setLayout(new java.awt.BorderLayout(16, 16));
+        jPanel1.add(jlblLibro, java.awt.BorderLayout.NORTH);
+        jPanel1.add(jpnlDatosLibro, java.awt.BorderLayout.WEST);
+        jPanel1.add(jpnlEjemplares, java.awt.BorderLayout.CENTER);
+
+        // ---- Franja con los datos del libro seleccionado ----
+        jlblLibro.setOpaque(true);
+        jlblLibro.setBackground(new java.awt.Color(227, 241, 241));
+        jlblLibro.setForeground(new java.awt.Color(10, 69, 69));
+        jlblLibro.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 15));
+        jlblLibro.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 16, 12, 16));
+        jlblLibro.setText("Libro: —     Autor: —     ISBN: —");   // se llena al abrir desde CRUDLibros
+
+        // ---- Grupos ----
+        util.Estilos.grupo(jpnlDatosLibro, "Datos del ejemplar");
+        util.Estilos.grupo(jpnlEjemplares, "Ejemplares de este libro");
+        jpnlDatosLibro.setPreferredSize(new java.awt.Dimension(330, 0));
+
+        // ---- Formulario: label arriba, campo abajo ----
+        jpnlDatosLibro.removeAll();
+        jpnlDatosLibro.setLayout(new java.awt.GridBagLayout());
+        int fila = 0;
+        fila = campo(jLabel1, "Código de inventario", jtxtCodInv, fila);
+        fila = campo(jLabel2, "Ubicación", jtxtUbicacion, fila);
+        fila = campo(jLabel7, "Estado", jcbxEstado, fila);
+        jcbxEstado.removeAllItems();   // se llena más adelante
+
+        javax.swing.JPanel botones = new javax.swing.JPanel(new java.awt.GridLayout(2, 2, 10, 10));
+        botones.setOpaque(false);
+        for (javax.swing.JButton b : new javax.swing.JButton[]{jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnCancelar}) {
+            util.Estilos.boton(b);
+            b.setPreferredSize(new java.awt.Dimension(120, 36));
+            botones.add(b);
+        }
+        java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
+        g.gridx = 0;
+        g.gridy = fila++;
+        g.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        g.insets = new java.awt.Insets(10, 6, 0, 6);
+        jpnlDatosLibro.add(botones, g);
+
+        // Relleno: empuja todo hacia arriba
+        g.gridy = fila;
+        g.weighty = 1;
+        g.fill = java.awt.GridBagConstraints.BOTH;
+        javax.swing.JPanel relleno = new javax.swing.JPanel();
+        relleno.setOpaque(false);
+        jpnlDatosLibro.add(relleno, g);
+
+        // ---- Tabla y resumen ----
+        jpnlEjemplares.removeAll();
+        jpnlEjemplares.setLayout(new java.awt.BorderLayout(0, 10));
+        jpnlEjemplares.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        jpnlEjemplares.add(jlblLibro, java.awt.BorderLayout.SOUTH);
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(400, 200));
+
+        util.Estilos.tabla(jtblLibros, jScrollPane1, "Código de inventario", "Ubicación", "Estado");
+
+        jlblLibro.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
+        jlblLibro.setForeground(new java.awt.Color(60, 75, 85));
+        jlblLibro.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 2, 0, 2));
+        jlblLibro.setText("Total: 0     ·     Disponibles: 0     ·     Prestados: 0     ·     Dañados: 0     ·     Perdidos: 0");
+
+        // ---- Encabezado + contenido + pie, tamaño estándar ----
+        util.Estilos.estructura(this, jpnlInicio, jPanel1, jPanel6);
+    }
+
+    /** Agrega un label y su campo uno debajo del otro. Devuelve la siguiente fila libre. */
+    private int campo(javax.swing.JLabel etiqueta, String texto, javax.swing.JComponent campo, int fila) {
+        etiqueta.setText(texto);
+        etiqueta.setFont(util.Estilos.FUENTE);
+        campo.setFont(util.Estilos.FUENTE);
+        campo.setPreferredSize(new java.awt.Dimension(200, 32));
+
+        java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
+        g.gridx = 0;
+        g.weightx = 1;
+        g.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        g.anchor = java.awt.GridBagConstraints.WEST;
+
+        g.gridy = fila;
+        g.insets = new java.awt.Insets(4, 6, 4, 6);
+        jpnlDatosLibro.add(etiqueta, g);
+
+        g.gridy = fila + 1;
+        g.insets = new java.awt.Insets(0, 6, 12, 6);
+        jpnlDatosLibro.add(campo, g);
+
+        return fila + 2;
     }
 
     /**
@@ -43,6 +141,21 @@ public class CRUDEjemplares extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
+        jpnlDatosLibro = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jtxtCodInv = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jtxtUbicacion = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jcbxEstado = new javax.swing.JComboBox<>();
+        jbtnNuevo = new javax.swing.JButton();
+        jbtnGuardar = new javax.swing.JButton();
+        jbtnEditar = new javax.swing.JButton();
+        jbtnCancelar = new javax.swing.JButton();
+        jpnlEjemplares = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jtblLibros = new javax.swing.JTable();
+        jlblLibro = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -182,32 +295,149 @@ public class CRUDEjemplares extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
+        jpnlDatosLibro.setBackground(new java.awt.Color(255, 255, 255));
+        jpnlDatosLibro.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos Del Ejemplar"));
+
+        jLabel1.setText("Código de inventario");
+
+        jLabel2.setText("Ubicación");
+
+        jLabel7.setText("Estado");
+
+        jbtnNuevo.setText("Nuevo");
+
+        jbtnGuardar.setText("Guardar");
+
+        jbtnEditar.setText("Editar");
+
+        jbtnCancelar.setText("Cancelar");
+
+        javax.swing.GroupLayout jpnlDatosLibroLayout = new javax.swing.GroupLayout(jpnlDatosLibro);
+        jpnlDatosLibro.setLayout(jpnlDatosLibroLayout);
+        jpnlDatosLibroLayout.setHorizontalGroup(
+            jpnlDatosLibroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpnlDatosLibroLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jpnlDatosLibroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jtxtUbicacion)
+                    .addComponent(jtxtCodInv)
+                    .addComponent(jcbxEstado, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jpnlDatosLibroLayout.createSequentialGroup()
+                        .addGroup(jpnlDatosLibroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(jpnlDatosLibroLayout.createSequentialGroup()
+                .addGap(41, 41, 41)
+                .addGroup(jpnlDatosLibroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jbtnNuevo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jbtnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jpnlDatosLibroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jbtnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbtnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(52, Short.MAX_VALUE))
+        );
+        jpnlDatosLibroLayout.setVerticalGroup(
+            jpnlDatosLibroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpnlDatosLibroLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jtxtCodInv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jtxtUbicacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jcbxEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jpnlDatosLibroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jbtnGuardar)
+                    .addComponent(jbtnNuevo))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jpnlDatosLibroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jbtnEditar)
+                    .addComponent(jbtnCancelar))
+                .addContainerGap())
+        );
+
+        jpnlEjemplares.setBackground(new java.awt.Color(255, 255, 255));
+        jpnlEjemplares.setBorder(javax.swing.BorderFactory.createTitledBorder("Ejemplares de este Libro"));
+
+        jtblLibros.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jtblLibros);
+
+        javax.swing.GroupLayout jpnlEjemplaresLayout = new javax.swing.GroupLayout(jpnlEjemplares);
+        jpnlEjemplares.setLayout(jpnlEjemplaresLayout);
+        jpnlEjemplaresLayout.setHorizontalGroup(
+            jpnlEjemplaresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpnlEjemplaresLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 704, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jpnlEjemplaresLayout.setVerticalGroup(
+            jpnlEjemplaresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpnlEjemplaresLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jpnlDatosLibro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jpnlEjemplares, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 130, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jpnlEjemplares, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jpnlDatosLibro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 898, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 1029, Short.MAX_VALUE)
             .addComponent(jpnlInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jlblLibro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jpnlInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jlblLibro, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -216,10 +446,7 @@ public class CRUDEjemplares extends javax.swing.JFrame {
 
     private void jbtnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnRegresarActionPerformed
         // TODO add your handling code here:
-
-        this.setVisible(false);
-        MenuBibliotecario lg = new MenuBibliotecario();
-        lg.setVisible(true);
+        dispose();
     }//GEN-LAST:event_jbtnRegresarActionPerformed
 
     /**
@@ -248,20 +475,35 @@ public class CRUDEjemplares extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton jbtnCancelar;
+    private javax.swing.JButton jbtnEditar;
+    private javax.swing.JButton jbtnGuardar;
+    private javax.swing.JButton jbtnNuevo;
     private javax.swing.JButton jbtnRegresar;
+    private javax.swing.JComboBox<String> jcbxEstado;
     private javax.swing.JLabel jlblFecha;
     private javax.swing.JLabel jlblHora;
+    private javax.swing.JLabel jlblLibro;
     private javax.swing.JLabel jlblNombre;
+    private javax.swing.JPanel jpnlDatosLibro;
+    private javax.swing.JPanel jpnlEjemplares;
     private javax.swing.JPanel jpnlInicio;
+    private javax.swing.JTable jtblLibros;
+    private javax.swing.JTextField jtxtCodInv;
+    private javax.swing.JTextField jtxtUbicacion;
     // End of variables declaration//GEN-END:variables
 }
