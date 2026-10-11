@@ -17,6 +17,87 @@ public class Atrasos extends javax.swing.JFrame {
      */
     public Atrasos() {
         initComponents();
+        initComponents();
+        util.Estilos.reloj(jlblFecha, jlblHora);
+        util.Estilos.icono(jbtnRegresar, "Regresar.png", 50, true);
+        ajustarDiseno();
+    }
+    
+
+    private void ajustarDiseno() {
+        jLabel13.setText("PRÉSTAMOS ATRASADOS");
+
+        // ---- Contenedor nuevo: jpnlContenido (el grupo) va adentro y conserva su borde verde ----
+        javax.swing.JPanel contenedor = new javax.swing.JPanel(new java.awt.BorderLayout());
+        getContentPane().remove(jpnlContenido);
+        contenedor.add(jpnlContenido, java.awt.BorderLayout.CENTER);
+
+        util.Estilos.grupo(jpnlContenido, "Préstamos atrasados");
+        jpnlContenido.removeAll();
+        jpnlContenido.setLayout(new java.awt.BorderLayout(0, 12));
+
+        // ---- Barra superior: búsqueda a la izquierda, acciones a la derecha ----
+        javax.swing.JPanel barra = new javax.swing.JPanel(new java.awt.BorderLayout(8, 0));
+        barra.setOpaque(false);
+
+        jtxtBuscar.setFont(util.Estilos.FUENTE);
+        jtxtBuscar.setPreferredSize(new java.awt.Dimension(200, 32));
+        jtxtBuscar.setToolTipText("Buscar por cédula o nombre");
+        barra.add(jtxtBuscar, java.awt.BorderLayout.CENTER);
+
+        javax.swing.JPanel acciones = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 8, 0));
+        acciones.setOpaque(false);
+
+        util.Estilos.boton(jbtnFiltro);
+        jbtnFiltro.setText("");
+        jbtnFiltro.setToolTipText("Filtrar");
+        jbtnFiltro.setPreferredSize(new java.awt.Dimension(36, 32));
+        util.Estilos.icono(jbtnFiltro, "filtro.png", 18, false);
+
+        util.Estilos.boton(jbtnBuscar);
+        jbtnBuscar.setPreferredSize(new java.awt.Dimension(90, 32));
+
+        util.Estilos.boton(jbtnActualizar);
+        jbtnActualizar.setPreferredSize(new java.awt.Dimension(110, 32));
+
+        util.Estilos.boton(jbtnReporte);
+        jbtnReporte.setPreferredSize(new java.awt.Dimension(150, 32));
+
+        javax.swing.JSeparator sep = new javax.swing.JSeparator(javax.swing.SwingConstants.VERTICAL);
+        sep.setPreferredSize(new java.awt.Dimension(1, 26));
+        sep.setForeground(util.Estilos.BORDE);
+
+        acciones.add(jbtnFiltro);
+        acciones.add(jbtnBuscar);
+        acciones.add(sep);
+        acciones.add(jbtnActualizar);
+        acciones.add(jbtnReporte);
+        barra.add(acciones, java.awt.BorderLayout.EAST);
+
+        // ---- Tabla ----
+        util.Estilos.tabla(jtblAtrasos, jScrollPane1,
+                "Cédula", "Estudiante", "Correo", "Teléfono", "Libro", "Ejemplar",
+                "Fecha límite", "Días", "Multa hasta hoy");
+        jtblAtrasos.getColumnModel().getColumn(1).setPreferredWidth(150);
+        jtblAtrasos.getColumnModel().getColumn(2).setPreferredWidth(170);
+        jtblAtrasos.getColumnModel().getColumn(4).setPreferredWidth(200);
+        jtblAtrasos.getColumnModel().getColumn(7).setPreferredWidth(50);
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(400, 200));
+
+        // ---- Totales abajo ----
+        jlblInfo.setFont(util.Estilos.FUENTE);
+        jlblInfo.setForeground(util.Estilos.TEXTO);
+        jlblInfo.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(227, 232, 235)),
+                javax.swing.BorderFactory.createEmptyBorder(10, 2, 0, 2)));
+        jlblInfo.setText("Libros atrasados: 0          Multas pendientes estimadas: $0.00");
+
+        jpnlContenido.add(barra, java.awt.BorderLayout.NORTH);
+        jpnlContenido.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        jpnlContenido.add(jlblInfo, java.awt.BorderLayout.SOUTH);
+
+        // ---- Encabezado + contenedor + pie, tamaño estándar ----
+        util.Estilos.estructura(this, jpnlInicio, contenedor, jPanel6);
     }
 
     /**
@@ -42,7 +123,15 @@ public class Atrasos extends javax.swing.JFrame {
         jPanel6 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
+        jpnlContenido = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jtblAtrasos = new javax.swing.JTable();
+        jtxtBuscar = new javax.swing.JTextField();
+        jbtnFiltro = new javax.swing.JButton();
+        jbtnBuscar = new javax.swing.JButton();
+        jbtnReporte = new javax.swing.JButton();
+        jbtnActualizar = new javax.swing.JButton();
+        jlblInfo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -180,34 +269,85 @@ public class Atrasos extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jpnlContenido.setBackground(new java.awt.Color(255, 255, 255));
+        jpnlContenido.setBorder(javax.swing.BorderFactory.createTitledBorder("Prestamos Atrasados"));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+        jtblAtrasos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jtblAtrasos);
+
+        jbtnBuscar.setText("Buscar");
+
+        jbtnReporte.setText("Generar reporte");
+
+        jbtnActualizar.setText("Actualizar");
+
+        javax.swing.GroupLayout jpnlContenidoLayout = new javax.swing.GroupLayout(jpnlContenido);
+        jpnlContenido.setLayout(jpnlContenidoLayout);
+        jpnlContenidoLayout.setHorizontalGroup(
+            jpnlContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpnlContenidoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jpnlContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jpnlContenidoLayout.createSequentialGroup()
+                        .addComponent(jtxtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 559, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jbtnFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jbtnBuscar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jbtnActualizar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jbtnReporte)
+                        .addContainerGap())
+                    .addComponent(jScrollPane1)))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnlContenidoLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jlblInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 130, Short.MAX_VALUE)
+        jpnlContenidoLayout.setVerticalGroup(
+            jpnlContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpnlContenidoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jpnlContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jtxtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jpnlContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jbtnBuscar)
+                        .addComponent(jbtnReporte)
+                        .addComponent(jbtnActualizar))
+                    .addComponent(jbtnFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jlblInfo, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 898, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 901, Short.MAX_VALUE)
             .addComponent(jpnlInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jpnlContenido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jpnlInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jpnlContenido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -217,9 +357,7 @@ public class Atrasos extends javax.swing.JFrame {
     private void jbtnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnRegresarActionPerformed
         // TODO add your handling code here:
 
-        this.setVisible(false);
-        MenuBibliotecario lg = new MenuBibliotecario();
-        lg.setVisible(true);
+        dispose();
     }//GEN-LAST:event_jbtnRegresarActionPerformed
 
     /**
@@ -256,12 +394,20 @@ public class Atrasos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton jbtnActualizar;
+    private javax.swing.JButton jbtnBuscar;
+    private javax.swing.JButton jbtnFiltro;
     private javax.swing.JButton jbtnRegresar;
+    private javax.swing.JButton jbtnReporte;
     private javax.swing.JLabel jlblFecha;
     private javax.swing.JLabel jlblHora;
+    private javax.swing.JLabel jlblInfo;
     private javax.swing.JLabel jlblNombre;
+    private javax.swing.JPanel jpnlContenido;
     private javax.swing.JPanel jpnlInicio;
+    private javax.swing.JTable jtblAtrasos;
+    private javax.swing.JTextField jtxtBuscar;
     // End of variables declaration//GEN-END:variables
 }

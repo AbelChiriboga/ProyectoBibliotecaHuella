@@ -370,10 +370,12 @@ private void estiloBoton(javax.swing.JButton b, java.awt.Color verde, java.awt.C
         jLabel7.setText("Autor");
 
         jbtnAutor.setText("+");
+        jbtnAutor.addActionListener(this::jbtnAutorActionPerformed);
 
         jLabel9.setText("Categoría");
 
         jbtnCategoria.setText("+");
+        jbtnCategoria.addActionListener(this::jbtnCategoriaActionPerformed);
 
         jLabel10.setText("Editorial");
 
@@ -574,6 +576,16 @@ private void estiloBoton(javax.swing.JButton b, java.awt.Color verde, java.awt.C
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_jbtnRegresarActionPerformed
+
+    private void jbtnAutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnAutorActionPerformed
+        // TODO add your handling code here:
+        util.Navegacion.abrir(this, new CRUDAutores());
+    }//GEN-LAST:event_jbtnAutorActionPerformed
+
+    private void jbtnCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCategoriaActionPerformed
+        // TODO add your handling code here:
+        util.Navegacion.abrir(this, new CRUDCategoria());
+    }//GEN-LAST:event_jbtnCategoriaActionPerformed
 
     /**
      * @param args the command line arguments
