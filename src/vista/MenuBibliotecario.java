@@ -473,7 +473,7 @@ private void armarTarjeta(javax.swing.JPanel tarjeta, javax.swing.JLabel titulo,
 
     private void jbtnEjemplaresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnEjemplaresActionPerformed
         // TODO add your handling code here:
-        util.Navegacion.abrir(this, new CRUDEstudiantes());
+        util.Navegacion.abrir(this, new BEstudiantes());
     }//GEN-LAST:event_jbtnEjemplaresActionPerformed
 
     private void jbtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnNuevoActionPerformed

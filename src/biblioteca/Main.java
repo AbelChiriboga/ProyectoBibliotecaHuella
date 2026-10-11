@@ -1,20 +1,19 @@
 package biblioteca;
 
+import javax.swing.JOptionPane;
+
 public class Main {
 
     public static void main(String[] args) {
         aplicarEstilo();
 
-        // Abrir el login en el hilo de Swing
+        
         javax.swing.SwingUtilities.invokeLater(() -> {
             new vista.Login().setVisible(true);
         });
     }
 
-    /**
-     * Usa FlatLaf si está agregada al proyecto (se ve plano y moderno).
-     * Si no está, usa Nimbus, que viene incluido en Java.
-     */
+   
     private static void aplicarEstilo() {
         try {
             javax.swing.UIManager.setLookAndFeel("com.formdev.flatlaf.FlatLightLaf");
@@ -27,7 +26,7 @@ public class Main {
                     }
                 }
             } catch (Exception ex) {
-                // Si falla todo, se queda el estilo por defecto de Java
+                JOptionPane.showMessageDialog(null, ex.getMessage());
             }
         }
     }

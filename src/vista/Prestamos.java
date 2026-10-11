@@ -37,10 +37,10 @@ public class Prestamos extends javax.swing.JFrame {
         // ---- Contenido: huella a la izquierda, ejemplares a la derecha ----
         pnlContenido.setLayout(new java.awt.BorderLayout(16, 0));
         pnlContenido.add(jpnlHuella, java.awt.BorderLayout.WEST);
-        pnlContenido.add(jPanel2, java.awt.BorderLayout.CENTER);
+        pnlContenido.add(jpnlPrestamos, java.awt.BorderLayout.CENTER);
 
-        util.Estilos.grupo(jpnlHuella, "1. Huella del estudiante");
-        util.Estilos.grupo(jPanel2, "2. Ejemplares a prestar");
+        util.Estilos.grupo(jpnlHuella, "Huella");
+        util.Estilos.grupo(jpnlPrestamos, "Ejemplares a prestar");
         jpnlHuella.setPreferredSize(new java.awt.Dimension(300, 0));
 
         armarPanelHuella();
@@ -136,25 +136,25 @@ public class Prestamos extends javax.swing.JFrame {
 
     /** Lado derecho: búsqueda, tabla con casillas y confirmación. */
     private void armarPanelEjemplares() {
-        jPanel2.removeAll();
-        jPanel2.setLayout(new java.awt.BorderLayout(0, 10));
+        jpnlPrestamos.removeAll();
+        jpnlPrestamos.setLayout(new java.awt.BorderLayout(0, 10));
 
         // Barra de búsqueda
         javax.swing.JPanel barra = new javax.swing.JPanel(new java.awt.BorderLayout(8, 0));
         barra.setOpaque(false);
-        barra.add(jTextField1, java.awt.BorderLayout.CENTER);
+        barra.add(jtxtBuscar, java.awt.BorderLayout.CENTER);
         javax.swing.JPanel botonesBusqueda = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 8, 0));
         botonesBusqueda.setOpaque(false);
         botonesBusqueda.add(jbtnFiltro);
-        botonesBusqueda.add(jButton1);
+        botonesBusqueda.add(jbtnFiltro);
         barra.add(botonesBusqueda, java.awt.BorderLayout.EAST);
 
-        jTextField1.setFont(util.Estilos.FUENTE);
-        jTextField1.setPreferredSize(new java.awt.Dimension(200, 32));
-        jTextField1.setToolTipText("Buscar por título, autor o código");
-        util.Estilos.boton(jButton1);
-        jButton1.setText("Buscar");
-        jButton1.setPreferredSize(new java.awt.Dimension(90, 32));
+        jtxtBuscar.setFont(util.Estilos.FUENTE);
+        jtxtBuscar.setPreferredSize(new java.awt.Dimension(200, 32));
+        jtxtBuscar.setToolTipText("Buscar por título, autor o código");
+        util.Estilos.boton(jbtnFiltro);
+        jbtnFiltro.setText("Buscar");
+        jbtnFiltro.setPreferredSize(new java.awt.Dimension(90, 32));
         util.Estilos.boton(jbtnFiltro);
         jbtnFiltro.setText("");
         jbtnFiltro.setToolTipText("Filtrar");
@@ -162,8 +162,8 @@ public class Prestamos extends javax.swing.JFrame {
         util.Estilos.icono(jbtnFiltro, "filtro.png", 18, false);
 
         // Tabla con casillas en la primera columna (para elegir hasta 3)
-        util.Estilos.tabla(jTable1, jScrollPane1, "", "Código", "Título", "Autor", "Ubicación");
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        util.Estilos.tabla(jtblPrestamos, jScrollPane1, "", "Código", "Título", "Autor", "Ubicación");
+        jtblPrestamos.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{}, new String[]{"", "Código", "Título", "Autor", "Ubicación"}) {
             @Override
             public Class<?> getColumnClass(int col) {
@@ -174,9 +174,9 @@ public class Prestamos extends javax.swing.JFrame {
                 return col == 0;   // solo se puede marcar la casilla
             }
         });
-        jTable1.getColumnModel().getColumn(0).setMaxWidth(40);
-        jTable1.getColumnModel().getColumn(1).setPreferredWidth(110);
-        jTable1.getColumnModel().getColumn(2).setPreferredWidth(260);
+        jtblPrestamos.getColumnModel().getColumn(0).setMaxWidth(40);
+        jtblPrestamos.getColumnModel().getColumn(1).setPreferredWidth(110);
+        jtblPrestamos.getColumnModel().getColumn(2).setPreferredWidth(260);
         jScrollPane1.setPreferredSize(new java.awt.Dimension(400, 200));
 
         // Pie: fecha límite y botones
@@ -200,9 +200,9 @@ public class Prestamos extends javax.swing.JFrame {
         botones.add(btnConfirmar);
         pie.add(botones, java.awt.BorderLayout.EAST);
 
-        jPanel2.add(barra, java.awt.BorderLayout.NORTH);
-        jPanel2.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-        jPanel2.add(pie, java.awt.BorderLayout.SOUTH);
+        jpnlPrestamos.add(barra, java.awt.BorderLayout.NORTH);
+        jpnlPrestamos.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        jpnlPrestamos.add(pie, java.awt.BorderLayout.SOUTH);
     }
 
     /**
@@ -232,12 +232,12 @@ public class Prestamos extends javax.swing.JFrame {
         jlblHuella = new javax.swing.JLabel();
         jlblInfo = new javax.swing.JLabel();
         jbtnCapNuevo = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jbtnFiltro = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        jpnlPrestamos = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jtblPrestamos = new javax.swing.JTable();
+        jtxtBuscar = new javax.swing.JTextField();
+        jbtnFiltro = new javax.swing.JButton();
+        jbtnBuscar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -290,7 +290,7 @@ public class Prestamos extends javax.swing.JFrame {
             .addGroup(jpnlInicioLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jbtnRegresar, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                 .addGroup(jpnlInicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel13)
                     .addComponent(jLabel12))
@@ -406,12 +406,10 @@ public class Prestamos extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Ejemplar a prestar"));
+        jpnlPrestamos.setBackground(new java.awt.Color(255, 255, 255));
+        jpnlPrestamos.setBorder(javax.swing.BorderFactory.createTitledBorder("Prestamos"));
 
-        jButton1.setText("Buscar");
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jtblPrestamos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -422,36 +420,37 @@ public class Prestamos extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jtblPrestamos);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        jbtnBuscar.setText("Buscar");
+
+        javax.swing.GroupLayout jpnlPrestamosLayout = new javax.swing.GroupLayout(jpnlPrestamos);
+        jpnlPrestamos.setLayout(jpnlPrestamosLayout);
+        jpnlPrestamosLayout.setHorizontalGroup(
+            jpnlPrestamosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpnlPrestamosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jpnlPrestamosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 522, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jpnlPrestamosLayout.createSequentialGroup()
+                        .addComponent(jtxtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 521, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jbtnFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)
-                        .addGap(0, 3, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jbtnBuscar)))
                 .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        jpnlPrestamosLayout.setVerticalGroup(
+            jpnlPrestamosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnlPrestamosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jbtnFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jpnlPrestamosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jpnlPrestamosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jtxtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jbtnFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jbtnBuscar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -464,17 +463,17 @@ public class Prestamos extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jpnlHuella, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jpnlPrestamos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jpnlInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jpnlHuella, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jpnlHuella, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jpnlPrestamos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -512,7 +511,6 @@ public class Prestamos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
@@ -521,11 +519,9 @@ public class Prestamos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JButton jbtnBuscar;
     private javax.swing.JButton jbtnCapNuevo;
     private javax.swing.JButton jbtnFiltro;
     private javax.swing.JButton jbtnRegresar;
@@ -536,5 +532,8 @@ public class Prestamos extends javax.swing.JFrame {
     private javax.swing.JLabel jlblNombre;
     private javax.swing.JPanel jpnlHuella;
     private javax.swing.JPanel jpnlInicio;
+    private javax.swing.JPanel jpnlPrestamos;
+    private javax.swing.JTable jtblPrestamos;
+    private javax.swing.JTextField jtxtBuscar;
     // End of variables declaration//GEN-END:variables
 }
