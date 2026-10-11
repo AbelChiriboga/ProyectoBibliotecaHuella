@@ -240,10 +240,7 @@ public class CRUDLibros extends javax.swing.JFrame {
 
     private void jbtnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnRegresarActionPerformed
         // TODO add your handling code here:
-
-        this.setVisible(false);
-        MenuBibliotecario lg = new MenuBibliotecario();
-        lg.setVisible(true);
+        dispose();
     }//GEN-LAST:event_jbtnRegresarActionPerformed
 
     /**

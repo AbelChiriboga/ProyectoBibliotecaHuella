@@ -289,6 +289,9 @@
                   <Dimension value="[95, 110]"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnEjemplaresActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -319,6 +322,9 @@
                   <Dimension value="[95, 110]"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnNuevoActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="jbtnDevolver">
               <Properties>
@@ -330,6 +336,9 @@
                   <Dimension value="[95, 110]"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnDevolverActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="jbtnAtrasados">
               <Properties>
@@ -341,6 +350,9 @@
                   <Dimension value="[95, 110]"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnAtrasadosActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -371,6 +383,9 @@
                   <Dimension value="[95, 110]"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnInventarioActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="jbtnHistorial">
               <Properties>

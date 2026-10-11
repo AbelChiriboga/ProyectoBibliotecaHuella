@@ -3,12 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package vista;
-
+ import javax.swing.JFrame;
 /**
  *
  * @author User
  */
 public class MenuBibliotecario extends javax.swing.JFrame {
+    
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MenuBibliotecario.class.getName());
 
@@ -130,6 +131,8 @@ private void armarTarjeta(javax.swing.JPanel tarjeta, javax.swing.JLabel titulo,
             reloj.setInitialDelay(0);
             reloj.start();
     }
+    
+ 
     
     
     
@@ -308,6 +311,7 @@ private void armarTarjeta(javax.swing.JPanel tarjeta, javax.swing.JLabel titulo,
         jbtnEjemplares.setText("Estudiantes");
         jbtnEjemplares.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jbtnEjemplares.setPreferredSize(new java.awt.Dimension(95, 110));
+        jbtnEjemplares.addActionListener(this::jbtnEjemplaresActionPerformed);
         jpnlCatalogo.add(jbtnEjemplares);
 
         jpnlMenu.add(jpnlCatalogo);
@@ -319,16 +323,19 @@ private void armarTarjeta(javax.swing.JPanel tarjeta, javax.swing.JLabel titulo,
         jbtnNuevo.setText("Nuevo");
         jbtnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jbtnNuevo.setPreferredSize(new java.awt.Dimension(95, 110));
+        jbtnNuevo.addActionListener(this::jbtnNuevoActionPerformed);
         jpnlPrestamos.add(jbtnNuevo);
 
         jbtnDevolver.setText("Devolución");
         jbtnDevolver.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jbtnDevolver.setPreferredSize(new java.awt.Dimension(95, 110));
+        jbtnDevolver.addActionListener(this::jbtnDevolverActionPerformed);
         jpnlPrestamos.add(jbtnDevolver);
 
         jbtnAtrasados.setText("Atrasado");
         jbtnAtrasados.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jbtnAtrasados.setPreferredSize(new java.awt.Dimension(95, 110));
+        jbtnAtrasados.addActionListener(this::jbtnAtrasadosActionPerformed);
         jpnlPrestamos.add(jbtnAtrasados);
 
         jpnlMenu.add(jpnlPrestamos);
@@ -340,6 +347,7 @@ private void armarTarjeta(javax.swing.JPanel tarjeta, javax.swing.JLabel titulo,
         jbtnInventario.setText("Inventario");
         jbtnInventario.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jbtnInventario.setPreferredSize(new java.awt.Dimension(95, 110));
+        jbtnInventario.addActionListener(this::jbtnInventarioActionPerformed);
         jpnlReportes.add(jbtnInventario);
 
         jbtnHistorial.setText("Historial");
@@ -454,19 +462,39 @@ private void armarTarjeta(javax.swing.JPanel tarjeta, javax.swing.JLabel titulo,
 
     private void jbtnCerraSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCerraSesionActionPerformed
         // TODO add your handling code here:
-        
-        this.setVisible(false);
-        Login lg = new Login();
-        lg.setVisible(true);
+        util.Navegacion.abrir(this, new Login());
     }//GEN-LAST:event_jbtnCerraSesionActionPerformed
 
     private void jbtnLibrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnLibrosActionPerformed
         // TODO add your handling code here:
-     CRUDLibros bl = new CRUDLibros();
-     bl.setVisible(true);
-     this.setVisible(false);
+      util.Navegacion.abrir(this, new CRUDLibros());
      
     }//GEN-LAST:event_jbtnLibrosActionPerformed
+
+    private void jbtnEjemplaresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnEjemplaresActionPerformed
+        // TODO add your handling code here:
+        util.Navegacion.abrir(this, new CRUDEstudiantes());
+    }//GEN-LAST:event_jbtnEjemplaresActionPerformed
+
+    private void jbtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnNuevoActionPerformed
+        // TODO add your handling code here:
+        util.Navegacion.abrir(this, new Prestamos());
+    }//GEN-LAST:event_jbtnNuevoActionPerformed
+
+    private void jbtnDevolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnDevolverActionPerformed
+        // TODO add your handling code here:
+        util.Navegacion.abrir(this, new Devoluciones());
+    }//GEN-LAST:event_jbtnDevolverActionPerformed
+
+    private void jbtnAtrasadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnAtrasadosActionPerformed
+        // TODO add your handling code here:
+        util.Navegacion.abrir(this, new Atrasos());
+    }//GEN-LAST:event_jbtnAtrasadosActionPerformed
+
+    private void jbtnInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnInventarioActionPerformed
+        // TODO add your handling code here:
+       
+    }//GEN-LAST:event_jbtnInventarioActionPerformed
 
     /**
      * @param args the command line arguments
