@@ -33,33 +33,52 @@ public class Estilos {
                 BorderFactory.createEmptyBorder(4, 8, 8, 8)));
     }
 
-    /** Botón blanco; verde suave al pasar el mouse y verde completo al hacer clic. */
+    /** Verde más oscuro para el botón principal al pasar el mouse. */
+    public static final Color VERDE_OSCURO = new Color(0, 98, 98);
+
+    /**
+     * Botón blanco; verde suave al pasar el mouse y verde completo al hacer clic.
+     * Si el botón tiene la marca "primario" (BotonSistema.setPrimario) va verde desde el inicio.
+     */
     public static void boton(JButton b) {
         b.setFocusPainted(false);
         b.setContentAreaFilled(false);
         b.setOpaque(true);
         b.setCursor(new Cursor(Cursor.HAND_CURSOR));
         b.setFont(FUENTE);
-        b.setBackground(Color.WHITE);
-        b.setForeground(TEXTO);
-        b.setBorder(BorderFactory.createLineBorder(BORDE, 1, true));
+        pintarBoton(b);
+        b.getModel().addChangeListener(e -> pintarBoton(b));
+    }
 
-        b.getModel().addChangeListener(e -> {
-            ButtonModel m = b.getModel();
-            if (m.isPressed()) {
-                b.setBackground(VERDE);
-                b.setForeground(Color.WHITE);
-                b.setBorder(BorderFactory.createLineBorder(VERDE, 1, true));
-            } else if (m.isRollover()) {
-                b.setBackground(HOVER);
-                b.setForeground(TEXTO);
-                b.setBorder(BorderFactory.createLineBorder(VERDE, 1, true));
-            } else {
-                b.setBackground(Color.WHITE);
-                b.setForeground(TEXTO);
-                b.setBorder(BorderFactory.createLineBorder(BORDE, 1, true));
-            }
-        });
+    /** Colores del botón según su estado (normal, mouse encima, presionado). */
+    public static void pintarBoton(JButton b) {
+        ButtonModel m = b.getModel();
+        boolean primario = Boolean.TRUE.equals(b.getClientProperty("primario"));
+        Color fondo, texto, borde;
+        if (m.isPressed()) {
+            fondo = primario ? VERDE_OSCURO : VERDE;
+            texto = Color.WHITE;
+            borde = fondo;
+        } else if (m.isRollover()) {
+            fondo = primario ? VERDE_OSCURO : HOVER;
+            texto = primario ? Color.WHITE : TEXTO;
+            borde = primario ? VERDE_OSCURO : VERDE;
+        } else {
+            fondo = primario ? VERDE_TITULO : Color.WHITE;
+            texto = primario ? Color.WHITE : TEXTO;
+            borde = primario ? VERDE_TITULO : BORDE;
+        }
+        b.setBackground(fondo);
+        b.setForeground(texto);
+        b.setBorder(BorderFactory.createLineBorder(borde, 1, true));
+    }
+
+    /** Barra de progreso plana y verde (Nimbus ignora el color si no se cambia el UI). */
+    public static void barra(JProgressBar barra) {
+        barra.setUI(new javax.swing.plaf.basic.BasicProgressBarUI());
+        barra.setForeground(VERDE);
+        barra.setBackground(new Color(227, 232, 235));
+        barra.setBorderPainted(false);
     }
 
     /** Imagen escalada en un botón. Texto debajo si abajo = true, a la derecha si false. */
@@ -100,33 +119,5 @@ public class Estilos {
         t.getTableHeader().setReorderingAllowed(false);
         scroll.getViewport().setBackground(Color.WHITE);
         scroll.setBorder(BorderFactory.createLineBorder(BORDE));
-    }
-
-    /** Reloj en vivo para los labels de fecha y hora del encabezado. */
-    public static void reloj(JLabel fecha, JLabel hora) {
-        Timer t = new Timer(1000, e -> {
-            java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
-            fecha.setText(ahora.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-            hora.setText(ahora.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")));
-        });
-        t.setInitialDelay(0);
-        t.start();
-    }
-
-    /** Encabezado, contenido y pie pegados (sin franjas grises) y tamaño estándar 1130x700. */
-    public static void estructura(JFrame frame, JPanel encabezado,
-                                  JPanel contenido, JPanel pie) {
-        Container cp = frame.getContentPane();
-        cp.removeAll();
-        cp.setLayout(new BorderLayout());
-        cp.add(encabezado, BorderLayout.NORTH);
-        cp.add(contenido, BorderLayout.CENTER);
-        cp.add(pie, BorderLayout.SOUTH);
-        contenido.setBackground(Color.WHITE);
-        contenido.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        cp.setPreferredSize(new Dimension(1130, 700));
-        frame.pack();
-        frame.setLocationRelativeTo(null);
     }
 }
