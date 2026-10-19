@@ -8,12 +8,160 @@ package vista;
  */
 public class CRUDBibliotecarios extends componentes.VentanaBase {
 
+    private final servicio.UsuarioService servicio = new servicio.UsuarioService();
+    private final componentes.TablaObjetos<modelo.Usuario> tabla;
+    private final componentes.ControlCrud control;
+    /**
+     * Qué hacer al presionar Guardar. Nuevo lo cambia a "registrar" y Editar a "actualizar"
+     * (estrategia con lambdas: así guardar() no necesita un if para saber el modo).
+     */
+    private java.util.function.Consumer<modelo.Usuario> alGuardar = u -> { };
+    /** Estado (activo) del usuario mostrado; un usuario nuevo empieza activo. */
+    private boolean activoActual = true;
+
     public CRUDBibliotecarios() {
         initComponents();
         montar("GESTIÓN DE USUARIOS", jpnlContenido);
         componentes.Tablas.soloLectura(jtblUsuarios, jScrollPane1,
                 "Cédula", "Nombres", "Apellidos", "Usuario", "Rol", "Estado");
         util.Estilos.barra(jpgrSeguridad);
+        tabla = new componentes.TablaObjetos<>(jtblUsuarios, u -> new Object[]{u.getCedula(), u.getNombres(),
+            u.getApellidos(), u.getUsuario(), u.getRol(), u.isActivo() ? "Activo" : "Inactivo"});
+        control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtCedula, jtxtNombres, jtxtApellidos,
+            jtxtCorreo, jtxtDireccion, jtxtTelefono, jtxtUsuario, jcbxRol, jpswClave, jpswRepClave},
+                jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnDesactivar, jbtnCancelar);
+        componentes.Combos.llenar(jcbxRol, modelo.Rol.class);
+        tabla.alSeleccionar(this::mostrar);
+        tabla.usarBarra(barraBuscar);   // búsqueda al escribir + filtro por columnas
+        util.Eventos.alCambiar(jpswClave, this::mostrarFortaleza);
+        cancelar();
+    }
+
+    // ---------- Acciones de los botones ----------
+
+    private void nuevo() {
+        limpiar();
+        tabla.limpiarSeleccion();
+        activoActual = true;
+        alGuardar = u -> servicio.registrar(u, clave(), claveRepetida());
+        control.nuevo();
+        jtxtCedula.requestFocus();
+    }
+
+    private void editar() {
+        ejecutar(() -> {
+            tabla.exigirSeleccionado("un usuario");
+            alGuardar = u -> servicio.actualizar(u, clave(), claveRepetida());
+            control.edicion();
+            jtxtCedula.setEnabled(false);           // la cédula es la llave: no se cambia
+            jlblSeguridad.setText("Deje la contraseña vacía para no cambiarla");
+            jtxtNombres.requestFocus();
+        });
+    }
+
+    private void guardar() {
+        ejecutar(() -> {
+            modelo.Usuario u = leerFormulario();
+            alGuardar.accept(u);
+            util.Mensajes.info(this, "Usuario guardado.");
+            recargarYSeleccionar(u);
+        });
+    }
+
+    /** Borrado lógico: desactiva o vuelve a activar al usuario seleccionado. */
+    private void cambiarEstado() {
+        ejecutar(() -> {
+            modelo.Usuario u = tabla.exigirSeleccionado("un usuario");
+            String accion = u.isActivo() ? "desactivar" : "activar";
+            if (util.Mensajes.confirmar(this, "¿Desea " + accion + " al usuario " + u.getNombreCompleto() + "?")) {
+                servicio.cambiarEstado(u);
+                recargarYSeleccionar(u);
+            }
+        });
+    }
+
+    /** Vuelve al estado inicial y recarga la tabla (descarta cambios sin guardar). */
+    private void cancelar() {
+        limpiar();
+        cargar();
+        control.consulta(false);
+    }
+
+    // ---------- Métodos de apoyo ----------
+
+    private void cargar() {
+        ejecutar(() -> tabla.mostrar(servicio.listar()));
+    }
+
+    private void recargarYSeleccionar(modelo.Usuario u) {
+        limpiar();
+        cargar();
+        control.consulta(false);
+        tabla.seleccionar(u);
+    }
+
+    /**
+     * Arma el usuario con los datos del formulario. La subclase (Administrador o Bibliotecario)
+     * la decide el rol elegido, mediante la fábrica del enum Rol.
+     */
+    private modelo.Usuario leerFormulario() {
+        modelo.Usuario u = servicio.crear(componentes.Combos.seleccionado(jcbxRol));
+        u.setCedula(jtxtCedula.getText());
+        u.setNombres(jtxtNombres.getText());
+        u.setApellidos(jtxtApellidos.getText());
+        u.setCorreo(jtxtCorreo.getText());
+        u.setDireccion(jtxtDireccion.getText());
+        u.setTelefono(jtxtTelefono.getText());
+        u.setUsuario(jtxtUsuario.getText());
+        u.setActivo(activoActual);
+        return u;
+    }
+
+    private void mostrar(modelo.Usuario u) {
+        activoActual = u.isActivo();
+        jtxtCedula.setText(u.getCedula());
+        jtxtNombres.setText(u.getNombres());
+        jtxtApellidos.setText(u.getApellidos());
+        jtxtCorreo.setText(u.getCorreo());
+        jtxtDireccion.setText(u.getDireccion());
+        jtxtTelefono.setText(u.getTelefono());
+        jtxtUsuario.setText(u.getUsuario());
+        componentes.Combos.seleccionar(jcbxRol, u.getRol());
+        limpiarClaves();
+        jbtnDesactivar.setText(u.isActivo() ? "Desactivar" : "Activar");
+        control.consulta(true);
+    }
+
+    private void limpiar() {
+        for (javax.swing.JTextField t : new javax.swing.JTextField[]{jtxtCedula, jtxtNombres, jtxtApellidos,
+            jtxtCorreo, jtxtDireccion, jtxtTelefono, jtxtUsuario}) {
+            t.setText("");
+        }
+        componentes.Combos.seleccionar(jcbxRol, modelo.Rol.BIBLIOTECARIO);
+        jbtnDesactivar.setText("Desactivar");
+        limpiarClaves();
+    }
+
+    private void limpiarClaves() {
+        jpswClave.setText("");
+        jpswRepClave.setText("");
+        mostrarFortaleza();
+    }
+
+    /** Barra de seguridad: se actualiza mientras se escribe la contraseña. */
+    private void mostrarFortaleza() {
+        int fortaleza = util.Seguridad.fortaleza(clave());
+        jpgrSeguridad.setValue(fortaleza);
+        jlblSeguridad.setText(fortaleza == 0 ? "Seguridad de la contraseña"
+                : "Seguridad de la contraseña: " + util.Seguridad.nivel(fortaleza));
+    }
+
+    private String clave() {
+        return new String(jpswClave.getPassword());
+    }
+
+    private String claveRepetida() {
+        return new String(jpswRepClave.getPassword());
     }
 
     /**
@@ -264,7 +412,6 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         jpnlDatosUsuario.add(jlblRol, gridBagConstraints);
 
         jcbxRol.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jcbxRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrador", "Bibliotecario" }));
         jcbxRol.setPreferredSize(new java.awt.Dimension(120, 32));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -348,23 +495,28 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
 
         jbtnNuevo.setText("Nuevo");
         jbtnNuevo.setPreferredSize(new java.awt.Dimension(70, 36));
+        jbtnNuevo.addActionListener(this::jbtnNuevoActionPerformed);
         jpnlBotones.add(jbtnNuevo);
 
         jbtnGuardar.setText("Guardar");
         jbtnGuardar.setPrimario(true);
         jbtnGuardar.setPreferredSize(new java.awt.Dimension(70, 36));
+        jbtnGuardar.addActionListener(this::jbtnGuardarActionPerformed);
         jpnlBotones.add(jbtnGuardar);
 
         jbtnEditar.setText("Editar");
         jbtnEditar.setPreferredSize(new java.awt.Dimension(70, 36));
+        jbtnEditar.addActionListener(this::jbtnEditarActionPerformed);
         jpnlBotones.add(jbtnEditar);
 
         jbtnDesactivar.setText("Desactivar");
         jbtnDesactivar.setPreferredSize(new java.awt.Dimension(70, 36));
+        jbtnDesactivar.addActionListener(this::jbtnDesactivarActionPerformed);
         jpnlBotones.add(jbtnDesactivar);
 
         jbtnCancelar.setText("Cancelar");
         jbtnCancelar.setPreferredSize(new java.awt.Dimension(70, 36));
+        jbtnCancelar.addActionListener(this::jbtnCancelarActionPerformed);
         jpnlBotones.add(jbtnCancelar);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -399,6 +551,26 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
     }// </editor-fold>//GEN-END:initComponents
 
 
+    private void jbtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnNuevoActionPerformed
+        nuevo();
+    }//GEN-LAST:event_jbtnNuevoActionPerformed
+
+    private void jbtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGuardarActionPerformed
+        guardar();
+    }//GEN-LAST:event_jbtnGuardarActionPerformed
+
+    private void jbtnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnEditarActionPerformed
+        editar();
+    }//GEN-LAST:event_jbtnEditarActionPerformed
+
+    private void jbtnDesactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnDesactivarActionPerformed
+        cambiarEstado();
+    }//GEN-LAST:event_jbtnDesactivarActionPerformed
+
+    private void jbtnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCancelarActionPerformed
+        cancelar();
+    }//GEN-LAST:event_jbtnCancelarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private componentes.BarraBusqueda barraBuscar;
     private javax.swing.JScrollPane jScrollPane1;
@@ -407,7 +579,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
     private componentes.BotonSistema jbtnEditar;
     private componentes.BotonSistema jbtnGuardar;
     private componentes.BotonSistema jbtnNuevo;
-    private javax.swing.JComboBox<String> jcbxRol;
+    private javax.swing.JComboBox<modelo.Rol> jcbxRol;
     private javax.swing.JLabel jlblApellidos;
     private javax.swing.JLabel jlblCedula;
     private javax.swing.JLabel jlblClave;

@@ -37,7 +37,7 @@ public class Ejemplar extends Entidad {
 
     public final void setCodigoInventario(String codigoInventario) {
         this.codigoInventario = Validaciones.maximo(
-                Validaciones.obligatorio(codigoInventario, "código de inventario").toUpperCase(), 30, "código de inventario");
+                Validaciones.obligatorio(codigoInventario, "código de inventario").toUpperCase(), 20, "código de inventario");
     }
 
     public String getUbicacion() {
@@ -45,7 +45,7 @@ public class Ejemplar extends Entidad {
     }
 
     public final void setUbicacion(String ubicacion) {
-        this.ubicacion = Validaciones.maximo(Validaciones.opcional(ubicacion), 60, "ubicación");
+        this.ubicacion = Validaciones.maximo(Validaciones.opcional(ubicacion), 50, "ubicación");
     }
 
     public EstadoEjemplar getEstado() {

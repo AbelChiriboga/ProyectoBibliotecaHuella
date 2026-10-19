@@ -10,7 +10,7 @@ import util.Validaciones;
  */
 public class Huella extends Entidad {
 
-    private String cedulaEstudiante;
+    private int idEstudiante;
     private Dedo dedo;
     private byte[] plantilla;
     private LocalDateTime fechaRegistro;
@@ -23,12 +23,12 @@ public class Huella extends Entidad {
         setPlantilla(plantilla);
     }
 
-    public String getCedulaEstudiante() {
-        return cedulaEstudiante;
+    public int getIdEstudiante() {
+        return idEstudiante;
     }
 
-    public void setCedulaEstudiante(String cedulaEstudiante) {
-        this.cedulaEstudiante = cedulaEstudiante;
+    public void setIdEstudiante(int idEstudiante) {
+        this.idEstudiante = idEstudiante;
     }
 
     public Dedo getDedo() {

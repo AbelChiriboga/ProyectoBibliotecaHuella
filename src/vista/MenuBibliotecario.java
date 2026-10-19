@@ -10,8 +10,7 @@ public class MenuBibliotecario extends componentes.VentanaBase {
 
     public MenuBibliotecario() {
         initComponents();
-        montarMenu("MENÚ PRINCIPAL BIBLIOTECARIO", jpnlContenido);
-        encabezado.getBotonCerrarSesion().addActionListener(e -> util.Navegacion.abrir(this, new Login()));
+        montarMenu("MENÚ PRINCIPAL BIBLIOTECARIO", jpnlContenido, Login::new);   // Cerrar sesión vuelve al Login
     }
 
     /**

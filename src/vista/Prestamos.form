@@ -147,6 +147,9 @@
                           <Dimension value="[110, 36]"/>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnCancelarActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="componentes.BotonSistema" name="jbtnConfirmar">
                       <Properties>
@@ -156,6 +159,9 @@
                           <Dimension value="[180, 36]"/>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnConfirmarActionPerformed"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>

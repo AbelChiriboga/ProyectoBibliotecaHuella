@@ -26,7 +26,7 @@ public class Autor extends Entidad {
     }
 
     public final void setNombres(String nombres) {
-        this.nombres = Validaciones.maximo(Validaciones.obligatorio(nombres, "nombres"), 100, "nombres");
+        this.nombres = Validaciones.maximo(Validaciones.obligatorio(nombres, "nombres"), 60, "nombres");
     }
 
     public String getApellidos() {
@@ -34,7 +34,7 @@ public class Autor extends Entidad {
     }
 
     public final void setApellidos(String apellidos) {
-        this.apellidos = Validaciones.maximo(Validaciones.obligatorio(apellidos, "apellidos"), 100, "apellidos");
+        this.apellidos = Validaciones.maximo(Validaciones.obligatorio(apellidos, "apellidos"), 60, "apellidos");
     }
 
     public String getNacionalidad() {
@@ -42,7 +42,7 @@ public class Autor extends Entidad {
     }
 
     public void setNacionalidad(String nacionalidad) {
-        this.nacionalidad = Validaciones.maximo(Validaciones.opcional(nacionalidad), 60, "nacionalidad");
+        this.nacionalidad = Validaciones.maximo(Validaciones.opcional(nacionalidad), 50, "nacionalidad");
     }
 
     /** El combo de autores en CRUDLibros muestra el nombre completo. */

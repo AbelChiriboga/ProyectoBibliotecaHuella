@@ -232,7 +232,7 @@
                     </Property>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;modelo.Carrera&gt;"/>
                   </AuxValues>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -309,6 +309,9 @@
                           <Dimension value="[100, 36]"/>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnNuevoActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="componentes.BotonSistema" name="jbtnGuardar">
                       <Properties>
@@ -318,6 +321,9 @@
                           <Dimension value="[100, 36]"/>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnGuardarActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="componentes.BotonSistema" name="jbtnEditar">
                       <Properties>
@@ -326,6 +332,9 @@
                           <Dimension value="[100, 36]"/>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnEditarActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="componentes.BotonSistema" name="jbtnEliminar">
                       <Properties>
@@ -334,6 +343,9 @@
                           <Dimension value="[100, 36]"/>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnEliminarActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="componentes.BotonSistema" name="jbtnCancelar">
                       <Properties>
@@ -342,6 +354,9 @@
                           <Dimension value="[100, 36]"/>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnCancelarActionPerformed"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>

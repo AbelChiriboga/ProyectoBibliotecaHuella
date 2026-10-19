@@ -198,8 +198,8 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jbtnIngresar" min="-2" pref="257" max="-2" attributes="0"/>
                                   <Component id="jLabel6" min="-2" pref="103" max="-2" attributes="0"/>
-                                  <Component id="jtxtCedula" min="-2" pref="257" max="-2" attributes="0"/>
-                                  <Component id="jtxtClave" min="-2" pref="257" max="-2" attributes="0"/>
+                                  <Component id="jtxtUsuario" min="-2" pref="257" max="-2" attributes="0"/>
+                                  <Component id="jpswClave" min="-2" pref="257" max="-2" attributes="0"/>
                                   <Component id="jLabel1" min="-2" pref="160" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
@@ -212,11 +212,11 @@
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
-                              <Component id="jtxtCedula" min="-2" max="-2" attributes="0"/>
+                              <Component id="jtxtUsuario" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jtxtClave" min="-2" max="-2" attributes="0"/>
+                              <Component id="jpswClave" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jbtnIngresar" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -242,7 +242,7 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnIngresarActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jtxtClave">
+                    <Component class="javax.swing.JPasswordField" name="jpswClave">
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel6">
                       <Properties>
@@ -260,7 +260,7 @@
                         <Property name="text" type="java.lang.String" value="Cedula:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jtxtCedula">
+                    <Component class="javax.swing.JTextField" name="jtxtUsuario">
                     </Component>
                   </SubComponents>
                 </Container>
@@ -309,6 +309,9 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Consultar"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnConsultarActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JTextField" name="jtxtCedulaE">
                     </Component>

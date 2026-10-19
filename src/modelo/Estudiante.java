@@ -14,9 +14,11 @@ public class Estudiante extends Persona {
     public static final int SEMESTRE_MIN = 1;
     public static final int SEMESTRE_MAX = 10;
 
+    private int idEstudiante;          // llave de la tabla estudiantes (la cédula es UNIQUE)
     private Carrera carrera;
     private int semestre = SEMESTRE_MIN;
     private EstadoEstudiante estado = EstadoEstudiante.ACTIVO;
+    private java.time.LocalDateTime fechaRegistro;
     private final List<Huella> huellas = new ArrayList<>();
 
     public Estudiante() {
@@ -59,8 +61,13 @@ public class Estudiante extends Persona {
                 throw new excepciones.ValidacionException("El dedo " + huella.getDedo() + " ya está registrado.");
             }
         }
-        huella.setCedulaEstudiante(getCedula());
+        huella.setIdEstudiante(idEstudiante);
         huellas.add(huella);
+    }
+
+    /** Huella ya registrada de ese dedo, si existe. */
+    public java.util.Optional<Huella> buscarHuella(Dedo dedo) {
+        return huellas.stream().filter(h -> h.getDedo() == dedo).findFirst();
     }
 
     /** Lista de solo lectura: desde afuera no se puede modificar sin pasar por agregarHuella. */
@@ -73,6 +80,27 @@ public class Estudiante extends Persona {
     }
 
     // ---------- Getters y setters ----------
+
+    public int getIdEstudiante() {
+        return idEstudiante;
+    }
+
+    /** Lo asigna la BD (AUTO_INCREMENT); 0 = todavía no guardado. */
+    public void setIdEstudiante(int idEstudiante) {
+        this.idEstudiante = idEstudiante;
+    }
+
+    public boolean esNuevo() {
+        return idEstudiante == 0;
+    }
+
+    public java.time.LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(java.time.LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
 
     public Carrera getCarrera() {
         return carrera;

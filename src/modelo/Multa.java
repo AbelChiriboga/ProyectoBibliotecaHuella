@@ -16,6 +16,7 @@ public class Multa extends Entidad {
     private BigDecimal monto = BigDecimal.ZERO;
     private boolean pagada;
     private LocalDateTime fechaGeneracion;
+    private LocalDateTime fechaPago;
 
     public Multa() {
     }
@@ -69,6 +70,14 @@ public class Multa extends Entidad {
 
     public void setFechaGeneracion(LocalDateTime fechaGeneracion) {
         this.fechaGeneracion = fechaGeneracion;
+    }
+
+    public LocalDateTime getFechaPago() {
+        return fechaPago;
+    }
+
+    public void setFechaPago(LocalDateTime fechaPago) {
+        this.fechaPago = fechaPago;
     }
 
     /** Monto con formato de dinero, por ejemplo "$2.00". */

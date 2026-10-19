@@ -8,10 +8,86 @@ package vista;
  */
 public class Prestamos extends componentes.VentanaBase {
 
+    private final servicio.PrestamoService servicio = new servicio.PrestamoService();
+    private final componentes.TablaObjetos<modelo.Ejemplar> tabla;
+    private final LecturaHuella lectura;
+    /** Fecha límite si se presta hoy (se calcula al cargar, no en cada casilla). */
+    private String devolverHasta = "—";
+
     public Prestamos() {
         initComponents();
         montar("NUEVO PRÉSTAMO", jpnlContenido);
         componentes.Tablas.conSeleccion(jtblEjemplares, jScrollPane1, "Código", "Título", "Autor", "Ubicación");
+        componentes.Tablas.anchos(jtblEjemplares, 40, 110, 260, 170, 110);
+        tabla = new componentes.TablaObjetos<>(jtblEjemplares, e -> new Object[]{Boolean.FALSE,
+            e.getCodigoInventario(), e.getLibro().getTitulo(), e.getLibro().getAutor(), e.getUbicacion()});
+        tabla.usarBarra(barraBuscar);
+        tabla.alMarcar(this::actualizarResumen);
+        lectura = new LecturaHuella(this, jpnlHuella, servicio::identificar, this::estudianteIdentificado);
+        jpnlHuella.getBotonCapturar().addActionListener(e -> lectura.leer());
+        alCambiarLector(lectura::lectorCambio);
+        cargarEjemplares();
+    }
+
+    // ---------- Acciones de los botones ----------
+
+    /** Registra el préstamo de los libros marcados al estudiante identificado con su huella. */
+    private void confirmarPrestamo() {
+        ejecutar(() -> {
+            java.util.List<modelo.Prestamo> hechos = servicio.prestar(lectura.getFicha(), tabla.getMarcados());
+            util.Mensajes.info(this, comprobante(hechos));
+            nuevoPrestamo();
+        });
+    }
+
+    /** Deja la pantalla lista para el siguiente estudiante. */
+    private void nuevoPrestamo() {
+        lectura.limpiar();
+        barraBuscar.limpiar();
+        cargarEjemplares();
+    }
+
+    // ---------- Ayudantes ----------
+
+    private void cargarEjemplares() {
+        ejecutar(() -> {
+            devolverHasta = util.Formatos.fecha(servicio.fechaLimite());
+            tabla.mostrar(servicio.listarDisponibles());
+        });
+        actualizarResumen();
+    }
+
+    /** Tarjeta del estudiante: verde si puede llevar libros; naranja con el motivo si no. */
+    private void estudianteIdentificado(servicio.FichaEstudiante ficha) {
+        java.util.Optional<String> bloqueo = servicio.motivoBloqueo(ficha);
+        String estado = bloqueo.orElse("PUEDE LLEVAR " + ficha.getCupos() + " LIBRO(S)");
+        jpnlHuella.mostrarEstudiante(ficha.getEstudiante().getNombreCompleto(), ficha.getDatos(),
+                ficha.getTextoActivos(), estado, bloqueo.isEmpty());
+        actualizarResumen();
+    }
+
+    /** "Seleccionados: 2 de 3 permitidos · Devolver hasta: 25/10/2026". */
+    private void actualizarResumen() {
+        if (lectura == null) {
+            return;                                    // todavía se está armando la ventana
+        }
+        servicio.FichaEstudiante ficha = lectura.getFicha();
+        String permitidos = ficha == null ? "" : " de " + ficha.getCupos() + " permitidos";
+        jlblResumen.setText("Seleccionados: " + tabla.getMarcados().size() + permitidos
+                + "   ·   Devolver hasta: " + devolverHasta);
+    }
+
+    private String comprobante(java.util.List<modelo.Prestamo> hechos) {
+        StringBuilder sb = new StringBuilder("Préstamo registrado para ")
+                .append(lectura.getFicha().getEstudiante().getNombreCompleto()).append(":\n\n");
+        for (modelo.Prestamo p : hechos) {
+            sb.append("• ").append(p.getEjemplar().getCodigoInventario()).append("  ")
+                    .append(p.getEjemplar().getLibro().getTitulo()).append("\n");
+        }
+        if (!hechos.isEmpty()) {
+            sb.append("\nDevolver hasta: ").append(util.Formatos.fecha(hechos.get(0).getFechaLimite()));
+        }
+        return sb.toString();
     }
 
     /**
@@ -69,11 +145,13 @@ public class Prestamos extends componentes.VentanaBase {
 
         jbtnCancelar.setText("Cancelar");
         jbtnCancelar.setPreferredSize(new java.awt.Dimension(110, 36));
+        jbtnCancelar.addActionListener(this::jbtnCancelarActionPerformed);
         jpnlAcciones.add(jbtnCancelar);
 
         jbtnConfirmar.setText("Confirmar préstamo");
         jbtnConfirmar.setPrimario(true);
         jbtnConfirmar.setPreferredSize(new java.awt.Dimension(180, 36));
+        jbtnConfirmar.addActionListener(this::jbtnConfirmarActionPerformed);
         jpnlAcciones.add(jbtnConfirmar);
 
         jpnlPie.add(jpnlAcciones, java.awt.BorderLayout.EAST);
@@ -87,6 +165,14 @@ public class Prestamos extends componentes.VentanaBase {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
+    private void jbtnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnConfirmarActionPerformed
+        confirmarPrestamo();
+    }//GEN-LAST:event_jbtnConfirmarActionPerformed
+
+    private void jbtnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCancelarActionPerformed
+        nuevoPrestamo();
+    }//GEN-LAST:event_jbtnCancelarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private componentes.BarraBusqueda barraBuscar;

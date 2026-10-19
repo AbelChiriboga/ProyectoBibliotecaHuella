@@ -7,7 +7,7 @@ package modelo;
  */
 public enum Rol implements ValorBD {
 
-    ADMINISTRADOR("ADMINISTRADOR", "Administrador") {
+    ADMINISTRADOR("ADMIN", "Administrador") {
         @Override
         public Usuario crearUsuario() {
             return new Administrador();

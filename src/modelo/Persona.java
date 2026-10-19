@@ -56,7 +56,7 @@ public abstract class Persona {
     }
 
     public final void setNombres(String nombres) {
-        this.nombres = Validaciones.maximo(Validaciones.obligatorio(nombres, "nombres"), 100, "nombres");
+        this.nombres = Validaciones.maximo(Validaciones.obligatorio(nombres, "nombres"), 60, "nombres");
     }
 
     public String getApellidos() {
@@ -64,15 +64,17 @@ public abstract class Persona {
     }
 
     public final void setApellidos(String apellidos) {
-        this.apellidos = Validaciones.maximo(Validaciones.obligatorio(apellidos, "apellidos"), 100, "apellidos");
+        this.apellidos = Validaciones.maximo(Validaciones.obligatorio(apellidos, "apellidos"), 60, "apellidos");
     }
 
     public String getCorreo() {
         return correo;
     }
 
+    /** Obligatorio y único en la BD (usuarios y estudiantes). */
     public void setCorreo(String correo) {
-        this.correo = Validaciones.correo(correo);
+        Validaciones.obligatorio(correo, "correo");
+        this.correo = Validaciones.maximo(Validaciones.correo(correo), 100, "correo");
     }
 
     public String getTelefono() {

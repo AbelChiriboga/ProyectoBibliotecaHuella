@@ -3,6 +3,7 @@ package modelo;
 /** Operación en la que se usó la huella (bitácora). */
 public enum OperacionAutenticacion implements ValorBD {
 
+    LOGIN("LOGIN", "Inicio de sesión"),
     REGISTRO_HUELLA("REGISTRO_HUELLA", "Registro de huella"),
     PRESTAMO("PRESTAMO", "Préstamo"),
     DEVOLUCION("DEVOLUCION", "Devolución");

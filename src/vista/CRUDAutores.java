@@ -8,10 +8,96 @@ package vista;
  */
 public class CRUDAutores extends componentes.VentanaBase {
 
+    private final servicio.AutorService servicio = new servicio.AutorService();
+    private final componentes.TablaObjetos<modelo.Autor> tabla;
+    private final componentes.ControlCrud control;
+    /** Autor que se está viendo o editando (uno nuevo al presionar Nuevo). */
+    private modelo.Autor actual;
+
     public CRUDAutores() {
         initComponents();
         montar("GESTIÓN DE AUTORES", jpnlContenido);
         componentes.Tablas.soloLectura(jtblAutores, jScrollPane1, "Nombres", "Apellidos", "Nacionalidad");
+        tabla = new componentes.TablaObjetos<>(jtblAutores,
+                a -> new Object[]{a.getNombres(), a.getApellidos(), a.getNacionalidad()});
+        control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtNombres, jtxtApellidos, jtxtNacionalidad},
+                jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
+        tabla.alSeleccionar(this::mostrar);
+        tabla.usarBarra(barraBuscar);   // búsqueda al escribir + filtro por columnas
+        cancelar();
+    }
+
+    // ---------- Acciones de los botones ----------
+
+    private void nuevo() {
+        actual = new modelo.Autor();
+        limpiar();
+        tabla.limpiarSeleccion();
+        control.nuevo();
+        jtxtNombres.requestFocus();
+    }
+
+    private void editar() {
+        ejecutar(() -> {
+            actual = tabla.exigirSeleccionado("un autor");
+            control.edicion();
+            jtxtNombres.requestFocus();
+        });
+    }
+
+    private void guardar() {
+        ejecutar(() -> {
+            actual.setNombres(jtxtNombres.getText());
+            actual.setApellidos(jtxtApellidos.getText());
+            actual.setNacionalidad(jtxtNacionalidad.getText());
+            servicio.guardar(actual);
+            util.Mensajes.info(this, "Autor guardado.");
+            recargarYSeleccionar(actual);
+        });
+    }
+
+    private void eliminar() {
+        ejecutar(() -> {
+            modelo.Autor a = tabla.exigirSeleccionado("un autor");
+            if (util.Mensajes.confirmar(this, "¿Eliminar al autor " + a.getNombreCompleto() + "?")) {
+                servicio.eliminar(a);
+                cancelar();
+            }
+        });
+    }
+
+    /** Vuelve al estado inicial y recarga la tabla (descarta cambios sin guardar). */
+    private void cancelar() {
+        actual = null;
+        limpiar();
+        cargar();
+        control.consulta(false);
+    }
+
+    // ---------- Métodos de apoyo ----------
+
+    private void cargar() {
+        ejecutar(() -> tabla.mostrar(servicio.listar()));
+    }
+
+    private void recargarYSeleccionar(modelo.Autor a) {
+        cargar();
+        control.consulta(false);
+        tabla.seleccionar(a);
+    }
+
+    private void mostrar(modelo.Autor a) {
+        actual = a;
+        jtxtNombres.setText(a.getNombres());
+        jtxtApellidos.setText(a.getApellidos());
+        jtxtNacionalidad.setText(a.getNacionalidad());
+        control.consulta(true);
+    }
+
+    private void limpiar() {
+        jtxtNombres.setText("");
+        jtxtApellidos.setText("");
+        jtxtNacionalidad.setText("");
     }
 
     /**
@@ -125,19 +211,23 @@ public class CRUDAutores extends componentes.VentanaBase {
 
         jbtnNuevo.setText("Nuevo");
         jbtnNuevo.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnNuevo.addActionListener(this::jbtnNuevoActionPerformed);
         jpnlBotones.add(jbtnNuevo);
 
         jbtnGuardar.setText("Guardar");
         jbtnGuardar.setPrimario(true);
         jbtnGuardar.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnGuardar.addActionListener(this::jbtnGuardarActionPerformed);
         jpnlBotones.add(jbtnGuardar);
 
         jbtnEditar.setText("Editar");
         jbtnEditar.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnEditar.addActionListener(this::jbtnEditarActionPerformed);
         jpnlBotones.add(jbtnEditar);
 
         jbtnEliminar.setText("Eliminar");
         jbtnEliminar.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnEliminar.addActionListener(this::jbtnEliminarActionPerformed);
         jpnlBotones.add(jbtnEliminar);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -151,6 +241,7 @@ public class CRUDAutores extends componentes.VentanaBase {
 
         jbtnCancelar.setText("Cancelar");
         jbtnCancelar.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnCancelar.addActionListener(this::jbtnCancelarActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 7;
@@ -181,6 +272,26 @@ public class CRUDAutores extends componentes.VentanaBase {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
+    private void jbtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnNuevoActionPerformed
+        nuevo();
+    }//GEN-LAST:event_jbtnNuevoActionPerformed
+
+    private void jbtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGuardarActionPerformed
+        guardar();
+    }//GEN-LAST:event_jbtnGuardarActionPerformed
+
+    private void jbtnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnEditarActionPerformed
+        editar();
+    }//GEN-LAST:event_jbtnEditarActionPerformed
+
+    private void jbtnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnEliminarActionPerformed
+        eliminar();
+    }//GEN-LAST:event_jbtnEliminarActionPerformed
+
+    private void jbtnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCancelarActionPerformed
+        cancelar();
+    }//GEN-LAST:event_jbtnCancelarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private componentes.BarraBusqueda barraBuscar;

@@ -10,8 +10,7 @@ public class MenuAdmin extends componentes.VentanaBase {
 
     public MenuAdmin() {
         initComponents();
-        montarMenu("MENÚ PRINCIPAL ADMINISTRADOR", jpnlContenido);
-        encabezado.getBotonCerrarSesion().addActionListener(e -> util.Navegacion.abrir(this, new Login()));
+        montarMenu("MENÚ PRINCIPAL ADMINISTRADOR", jpnlContenido, Login::new);   // Cerrar sesión vuelve al Login
     }
 
     /**
@@ -222,7 +221,7 @@ public class MenuAdmin extends componentes.VentanaBase {
     }//GEN-LAST:event_jbtnBitacoraActionPerformed
 
     private void jbtnEstudiantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnEstudiantesActionPerformed
-        util.Navegacion.abrir(this, new CRUDLibros());
+        util.Navegacion.abrir(this, new CRUDEstudiantes());
     }//GEN-LAST:event_jbtnEstudiantesActionPerformed
 
     private void jbtnParametrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnParametrosActionPerformed

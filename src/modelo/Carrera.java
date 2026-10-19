@@ -6,6 +6,7 @@ import util.Validaciones;
 public class Carrera extends Entidad {
 
     private String nombre;
+    private String facultad;
 
     public Carrera() {
     }
@@ -21,6 +22,14 @@ public class Carrera extends Entidad {
 
     public final void setNombre(String nombre) {
         this.nombre = Validaciones.obligatorio(nombre, "nombre de la carrera");
+    }
+
+    public String getFacultad() {
+        return facultad;
+    }
+
+    public void setFacultad(String facultad) {
+        this.facultad = facultad;
     }
 
     @Override

@@ -11,7 +11,9 @@ import javax.swing.JPanel;
 public class PiePagina extends JPanel {
 
     private final JLabel lblSistema = new JLabel("Sistema de Préstamos biométrico · FISEI");
-    private final JLabel lblLector = new JLabel("Lector: —");
+    private final JLabel lblLector = new JLabel("Lector: verificando...");
+    /** Se guarda la referencia para poder quitarla del monitor cuando la ventana se cierra. */
+    private final java.util.function.Consumer<biometria.EstadoLector> oyente = this::mostrarEstado;
 
     public PiePagina() {
         super(new BorderLayout());
@@ -25,8 +27,28 @@ public class PiePagina extends JPanel {
         add(lblLector, BorderLayout.EAST);
     }
 
-    /** Texto del estado del lector (por ahora solo visual). */
+    /** Texto libre del lector (normalmente lo pone el monitor). */
     public void setTextoLector(String texto) {
         lblLector.setText("Lector: " + texto);
+    }
+
+    /** Estado en vivo: el punto es verde claro si se puede capturar y naranja si no. */
+    private void mostrarEstado(biometria.EstadoLector estado) {
+        String color = estado.permiteCapturar() ? "#B9F6CA" : "#FFCC80";
+        lblLector.setText("<html><span style='color:" + color + "'>&#9679;</span> Lector: <b>"
+                + estado.getDescripcion() + "</b></html>");
+    }
+
+    // El pie escucha al monitor solo mientras está en pantalla
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        biometria.MonitorLector.getInstancia().agregarOyente(oyente);
+    }
+
+    @Override
+    public void removeNotify() {
+        biometria.MonitorLector.getInstancia().quitarOyente(oyente);
+        super.removeNotify();
     }
 }

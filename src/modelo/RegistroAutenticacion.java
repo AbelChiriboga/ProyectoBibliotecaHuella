@@ -9,7 +9,8 @@ import util.Validaciones;
  */
 public class RegistroAutenticacion extends Entidad {
 
-    private String cedulaEstudiante;
+    private Integer idEstudiante;      // nulo si la huella no se reconoció
+    private String cedulaEstudiante;   // solo para mostrar en la tabla
     private String nombreEstudiante;   // solo para mostrar en la tabla
     private OperacionAutenticacion operacion;
     private ResultadoAutenticacion resultado;
@@ -20,9 +21,9 @@ public class RegistroAutenticacion extends Entidad {
     public RegistroAutenticacion() {
     }
 
-    public RegistroAutenticacion(String cedulaEstudiante, OperacionAutenticacion operacion,
+    public RegistroAutenticacion(Integer idEstudiante, OperacionAutenticacion operacion,
                                  ResultadoAutenticacion resultado, Integer puntaje, String detalle) {
-        this.cedulaEstudiante = cedulaEstudiante;
+        this.idEstudiante = idEstudiante;
         setOperacion(operacion);
         setResultado(resultado);
         setPuntaje(puntaje);
@@ -31,6 +32,14 @@ public class RegistroAutenticacion extends Entidad {
 
     public boolean fueExitoso() {
         return resultado == ResultadoAutenticacion.EXITO;
+    }
+
+    public Integer getIdEstudiante() {
+        return idEstudiante;
+    }
+
+    public void setIdEstudiante(Integer idEstudiante) {
+        this.idEstudiante = idEstudiante;
     }
 
     public String getCedulaEstudiante() {
@@ -69,10 +78,13 @@ public class RegistroAutenticacion extends Entidad {
         return puntaje;
     }
 
-    /** Puntaje del SDK (0 a 100); nulo cuando no aplica (por ejemplo, registro de huella). */
+    /**
+     * Puntaje que devuelve el SDK del lector (no negativo; el ZKTeco puede dar valores mayores a 100).
+     * Nulo cuando no aplica (por ejemplo, un registro de huella exitoso).
+     */
     public final void setPuntaje(Integer puntaje) {
         if (puntaje != null) {
-            Validaciones.rango(puntaje, "puntaje", 0, 100);
+            Validaciones.rango(puntaje, "puntaje", 0, Integer.MAX_VALUE);
         }
         this.puntaje = puntaje;
     }
@@ -82,7 +94,7 @@ public class RegistroAutenticacion extends Entidad {
     }
 
     public final void setDetalle(String detalle) {
-        this.detalle = Validaciones.maximo(Validaciones.opcional(detalle), 200, "detalle");
+        this.detalle = Validaciones.maximo(Validaciones.opcional(detalle), 255, "detalle");
     }
 
     public LocalDateTime getFechaHora() {

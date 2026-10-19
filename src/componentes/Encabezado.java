@@ -34,6 +34,7 @@ public class Encabezado extends JPanel {
 
     private final Timer reloj;
     private boolean modoMenu = false;
+    private String rol = "USUARIO";
 
     public Encabezado() {
         super(new BorderLayout(20, 0));
@@ -119,13 +120,15 @@ public class Encabezado extends JPanel {
         botonRegresar.setVisible(!modoMenu);
         botonCerrarSesion.setVisible(modoMenu);
         botonSalir.setVisible(modoMenu);
-        lblRol.setText(modoMenu ? "BIENVENIDO" : "USUARIO");
+        lblRol.setText(modoMenu ? "BIENVENIDO" : rol);
     }
 
-    /** Datos del usuario logueado (se llenará cuando exista la sesión). */
-    public void setUsuario(String nombre, String cedula) {
+    /** Datos del usuario que inició sesión. En ventanas normales el rol reemplaza a "USUARIO". */
+    public void setUsuario(String nombre, String cedula, String rol) {
         lblNombre.setText(nombre);
         lblCedula.setText("C.I: " + cedula);
+        this.rol = rol.toUpperCase();
+        lblRol.setText(modoMenu ? "BIENVENIDO" : this.rol);
     }
 
     public BotonSistema getBotonRegresar() { return botonRegresar; }

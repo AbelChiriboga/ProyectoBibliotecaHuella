@@ -1,10 +1,11 @@
 package modelo;
 
-/** Estado de la cuenta del estudiante (lo cambia el bibliotecario). */
+/** Estado del estudiante. Solo ACTIVO puede pedir préstamos (el trigger de la BD también lo exige). */
 public enum EstadoEstudiante implements ValorBD {
 
     ACTIVO("ACTIVO", "Activo"),
-    INACTIVO("INACTIVO", "Inactivo");
+    INACTIVO("INACTIVO", "Inactivo"),
+    SANCIONADO("SANCIONADO", "Sancionado");
 
     private final String valorBD;
     private final String descripcion;

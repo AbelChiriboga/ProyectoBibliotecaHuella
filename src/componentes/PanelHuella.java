@@ -28,8 +28,8 @@ public class PanelHuella extends PanelGrupo {
 
     // Comunes
     private final JLabel lblHuella = new JLabel("Coloque el dedo");
-    private final JLabel lblEstado = new JLabel("Esperando lectura del lector...");
-    private final BotonSistema botonCapturar = new BotonSistema("Capturar de nuevo");
+    private final JLabel lblEstado = new JLabel(" ");
+    private final BotonSistema botonCapturar = new BotonSistema("Leer huella");
 
     // Modo verificación (préstamo / devolución)
     private final JPanel pnlEstudiante = new JPanel(new GridLayout(4, 1, 0, 4));
@@ -40,7 +40,7 @@ public class PanelHuella extends PanelGrupo {
 
     // Modo registro (estudiantes)
     private final JLabel lblDedo = new JLabel("Dedo");
-    private final JComboBox<String> cbxDedo = new JComboBox<>();
+    private final JComboBox<modelo.Dedo> cbxDedo = new JComboBox<>(modelo.Dedo.values());
     private final JProgressBar barMuestras = new JProgressBar(0, 3);
     private final JTextArea txtInfo = new JTextArea(3, 20);
     private final JScrollPane scrInfo = new JScrollPane(txtInfo);
@@ -93,12 +93,7 @@ public class PanelHuella extends PanelGrupo {
         lblDedo.setFont(util.Estilos.FUENTE);
         cbxDedo.setFont(util.Estilos.FUENTE);
         cbxDedo.setPreferredSize(new Dimension(100, 32));
-        // Valores fijos (no vienen de una tabla)
-        for (String dedo : new String[]{"Índice derecho", "Medio derecho", "Pulgar derecho", "Anular derecho",
-                "Meñique derecho", "Índice izquierdo", "Medio izquierdo", "Pulgar izquierdo",
-                "Anular izquierdo", "Meñique izquierdo"}) {
-            cbxDedo.addItem(dedo);
-        }
+        cbxDedo.setSelectedItem(modelo.Dedo.INDICE_DERECHO);   // valores fijos: el enum Dedo
         barMuestras.setStringPainted(true);
         barMuestras.setString("0 de 3 muestras");
         barMuestras.setForeground(util.Estilos.VERDE);
@@ -151,13 +146,109 @@ public class PanelHuella extends PanelGrupo {
         scrInfo.setVisible(modoRegistro);
         pnlEstudiante.setVisible(!modoRegistro);
         lblEstado.setVisible(!modoRegistro);
-        botonCapturar.setText(modoRegistro ? "Capturar huella" : "Capturar de nuevo");
-        botonCapturar.setPrimario(modoRegistro);
+        botonCapturar.setText(modoRegistro ? "Capturar huella" : "Leer huella");
+        botonCapturar.setPrimario(true);
         revalidate();
         repaint();
     }
 
-    // ---- Acceso para la lógica (se usará después) ----
+    // ---- Estados de la captura (los usan Préstamos, Devoluciones y CRUDEstudiantes) ----
+
+    private static final Color FONDO_NORMAL = new Color(242, 249, 248);
+    private static final Color FONDO_EXITO = new Color(212, 238, 235);
+    private static final Color FONDO_FALLO = new Color(253, 241, 232);
+
+    /** Vuelve al estado inicial: "Coloque el dedo", sin muestras. */
+    public void reiniciar() {
+        pintarHuella("Coloque el dedo", FONDO_NORMAL, new Color(90, 110, 115));
+        mostrarAvance(0, modoRegistro
+                ? "Seleccione el dedo y presione Capturar huella. Se necesitan 3 muestras del mismo dedo."
+                : "Presione Leer huella y pida al estudiante que coloque el dedo.");
+    }
+
+    /** Durante la captura: bloquea el botón y avisa que se está leyendo. */
+    public void iniciarCaptura() {
+        botonCapturar.setEnabled(false);
+        cbxDedo.setEnabled(false);
+        pintarHuella("Leyendo...", FONDO_NORMAL, util.Estilos.VERDE_TITULO);
+    }
+
+    /** Al terminar la captura (bien o mal) se vuelve a habilitar el botón. */
+    public void terminarCaptura() {
+        botonCapturar.setEnabled(true);
+        cbxDedo.setEnabled(true);
+    }
+
+    /** Avance del registro: cuántas muestras van y la instrucción para el usuario. */
+    public void mostrarAvance(int muestras, String mensaje) {
+        barMuestras.setValue(muestras);
+        barMuestras.setString(muestras + " de 3 muestras");
+        txtInfo.setText(mensaje);
+        lblEstado.setText(envolver(mensaje));
+    }
+
+    /** Resultado final: verde si salió bien, naranja si no. */
+    public void mostrarResultado(String texto, boolean exito) {
+        pintarHuella(texto, exito ? FONDO_EXITO : FONDO_FALLO,
+                exito ? util.Estilos.VERDE_TITULO : new Color(138, 58, 18));
+    }
+
+    /** Muestra en el recuadro si el lector está listo o no (no borra el texto informativo). */
+    public void mostrarLector(biometria.EstadoLector estado) {
+        if (estado.permiteCapturar()) {
+            pintarHuella("Coloque el dedo", FONDO_NORMAL, new Color(90, 110, 115));
+        } else {
+            pintarHuella("Lector " + estado.getDescripcion().toLowerCase(), FONDO_FALLO, new Color(138, 58, 18));
+        }
+    }
+
+    // ---- Tarjeta del estudiante identificado (préstamo / devolución) ----
+
+    private static final Color FONDO_OK = new Color(212, 238, 235);
+    private static final Color FONDO_NO = new Color(253, 241, 232);
+
+    /**
+     * Muestra al estudiante que se identificó con la huella.
+     * @param estado texto de la franja inferior ("PUEDE LLEVAR 2 LIBROS", "INACTIVO"...)
+     * @param ok     verde si puede continuar, naranja si hay algún impedimento
+     */
+    public void mostrarEstudiante(String nombre, String datos, String activos, String estado, boolean ok) {
+        lblNombre.setText(nombre);
+        lblDatos.setText(datos);
+        lblActivos.setText(activos);
+        lblEstadoEstudiante.setText("<html><div style='text-align:center'>" + estado + "</div></html>");
+        lblEstadoEstudiante.setBackground(ok ? FONDO_OK : FONDO_NO);
+        lblEstadoEstudiante.setForeground(ok ? util.Estilos.VERDE_TITULO : new Color(138, 58, 18));
+    }
+
+    /** Vuelve la tarjeta a "sin identificar". */
+    public void limpiarEstudiante() {
+        lblNombre.setText("—");
+        lblDatos.setText("Cédula: —   ·   Carrera: —");
+        lblActivos.setText("Préstamos activos: —");
+        lblEstadoEstudiante.setText("SIN IDENTIFICAR");
+        lblEstadoEstudiante.setBackground(new Color(225, 230, 233));
+        lblEstadoEstudiante.setForeground(GRIS);
+    }
+
+    /** Texto informativo debajo del lector (por ejemplo, las huellas ya registradas). */
+    public void setInfo(String texto) {
+        txtInfo.setText(texto);
+        lblEstado.setText(envolver(texto));
+    }
+
+    /** Texto en varias líneas para que quepa en el ancho del panel. */
+    private static String envolver(String texto) {
+        return "<html><div style='text-align:center;width:150px'>" + texto + "</div></html>";
+    }
+
+    private void pintarHuella(String texto, Color fondo, Color letra) {
+        lblHuella.setText("<html><div style='text-align:center'>" + texto + "</div></html>");
+        lblHuella.setBackground(fondo);
+        lblHuella.setForeground(letra);
+    }
+
+    // ---- Acceso para la lógica ----
     public JLabel getLblHuella() { return lblHuella; }
     public JLabel getLblEstado() { return lblEstado; }
     public BotonSistema getBotonCapturar() { return botonCapturar; }
@@ -165,7 +256,7 @@ public class PanelHuella extends PanelGrupo {
     public JLabel getLblDatos() { return lblDatos; }
     public JLabel getLblActivos() { return lblActivos; }
     public JLabel getLblEstadoEstudiante() { return lblEstadoEstudiante; }
-    public JComboBox<String> getCbxDedo() { return cbxDedo; }
+    public JComboBox<modelo.Dedo> getCbxDedo() { return cbxDedo; }
     public JProgressBar getBarMuestras() { return barMuestras; }
     public JTextArea getTxtInfo() { return txtInfo; }
 }

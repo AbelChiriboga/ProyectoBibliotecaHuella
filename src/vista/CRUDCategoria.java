@@ -8,10 +8,91 @@ package vista;
  */
 public class CRUDCategoria extends componentes.VentanaBase {
 
+    private final servicio.CategoriaService servicio = new servicio.CategoriaService();
+    private final componentes.TablaObjetos<modelo.Categoria> tabla;
+    private final componentes.ControlCrud control;
+    /** Categoría que se está viendo o editando (una nueva al presionar Nuevo). */
+    private modelo.Categoria actual;
+
     public CRUDCategoria() {
         initComponents();
         montar("GESTIÓN DE CATEGORÍAS", jpnlContenido);
         componentes.Tablas.soloLectura(jtblCategorias, jScrollPane1, "Categoría", "Libros", "Ejemplares");
+        tabla = new componentes.TablaObjetos<>(jtblCategorias,
+                c -> new Object[]{c.getNombre(), c.getCantidadLibros(), c.getCantidadEjemplares()});
+        control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtNombre},
+                jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
+        tabla.alSeleccionar(this::mostrar);
+        tabla.usarBarra(barraBuscar);   // búsqueda al escribir + filtro por columnas
+        cancelar();
+    }
+
+    // ---------- Acciones de los botones ----------
+
+    private void nuevo() {
+        actual = new modelo.Categoria();
+        limpiar();
+        tabla.limpiarSeleccion();
+        control.nuevo();
+        jtxtNombre.requestFocus();
+    }
+
+    private void editar() {
+        ejecutar(() -> {
+            actual = tabla.exigirSeleccionado("una categoría");
+            control.edicion();
+            jtxtNombre.requestFocus();
+        });
+    }
+
+    private void guardar() {
+        ejecutar(() -> {
+            actual.setNombre(jtxtNombre.getText());
+            servicio.guardar(actual);
+            util.Mensajes.info(this, "Categoría guardada.");
+            recargarYSeleccionar(actual);
+        });
+    }
+
+    private void eliminar() {
+        ejecutar(() -> {
+            modelo.Categoria c = tabla.exigirSeleccionado("una categoría");
+            if (util.Mensajes.confirmar(this, "¿Eliminar la categoría \"" + c.getNombre() + "\"?")) {
+                servicio.eliminar(c);
+                cancelar();
+            }
+        });
+    }
+
+    /** Vuelve al estado inicial y recarga la tabla (descarta cambios sin guardar). */
+    private void cancelar() {
+        actual = null;
+        limpiar();
+        cargar();
+        control.consulta(false);
+    }
+
+    // ---------- Métodos de apoyo ----------
+
+    private void cargar() {
+        ejecutar(() -> tabla.mostrar(servicio.listarConTotales()));
+    }
+
+    private void recargarYSeleccionar(modelo.Categoria c) {
+        cargar();
+        control.consulta(false);
+        tabla.seleccionar(c);
+    }
+
+    /** Muestra en el formulario la categoría seleccionada en la tabla. */
+    private void mostrar(modelo.Categoria c) {
+        actual = c;
+        jtxtNombre.setText(c.getNombre());
+        control.consulta(true);
+    }
+
+    private void limpiar() {
+        jtxtNombre.setText("");
     }
 
     /**
@@ -77,19 +158,23 @@ public class CRUDCategoria extends componentes.VentanaBase {
 
         jbtnNuevo.setText("Nuevo");
         jbtnNuevo.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnNuevo.addActionListener(this::jbtnNuevoActionPerformed);
         jpnlBotones.add(jbtnNuevo);
 
         jbtnGuardar.setText("Guardar");
         jbtnGuardar.setPrimario(true);
         jbtnGuardar.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnGuardar.addActionListener(this::jbtnGuardarActionPerformed);
         jpnlBotones.add(jbtnGuardar);
 
         jbtnEditar.setText("Editar");
         jbtnEditar.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnEditar.addActionListener(this::jbtnEditarActionPerformed);
         jpnlBotones.add(jbtnEditar);
 
         jbtnEliminar.setText("Eliminar");
         jbtnEliminar.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnEliminar.addActionListener(this::jbtnEliminarActionPerformed);
         jpnlBotones.add(jbtnEliminar);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -103,6 +188,7 @@ public class CRUDCategoria extends componentes.VentanaBase {
 
         jbtnCancelar.setText("Cancelar");
         jbtnCancelar.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnCancelar.addActionListener(this::jbtnCancelarActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -133,6 +219,26 @@ public class CRUDCategoria extends componentes.VentanaBase {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
+    private void jbtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnNuevoActionPerformed
+        nuevo();
+    }//GEN-LAST:event_jbtnNuevoActionPerformed
+
+    private void jbtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGuardarActionPerformed
+        guardar();
+    }//GEN-LAST:event_jbtnGuardarActionPerformed
+
+    private void jbtnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnEditarActionPerformed
+        editar();
+    }//GEN-LAST:event_jbtnEditarActionPerformed
+
+    private void jbtnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnEliminarActionPerformed
+        eliminar();
+    }//GEN-LAST:event_jbtnEliminarActionPerformed
+
+    private void jbtnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCancelarActionPerformed
+        cancelar();
+    }//GEN-LAST:event_jbtnCancelarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private componentes.BarraBusqueda barraBuscar;

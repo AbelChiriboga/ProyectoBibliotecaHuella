@@ -7,8 +7,9 @@ import util.Validaciones;
 
 /**
  * Préstamo de UN ejemplar a un estudiante, registrado por un usuario del personal.
- * Asociaciones: tiene un Ejemplar, un Estudiante y un Usuario (el que atendió).
- * Las reglas fuertes (huella, máximo de préstamos, ejemplar disponible) también las valida la BD.
+ * Asociaciones: tiene un Ejemplar, un Estudiante, el Usuario que atendió y, si devolvió tarde, una Multa.
+ * Las reglas fuertes (huella, estudiante activo, ejemplar disponible, máximo de préstamos,
+ * fecha límite y multa) las aplican los triggers de la BD; aquí solo se modelan.
  */
 public class Prestamo extends Entidad {
 
@@ -16,18 +17,21 @@ public class Prestamo extends Entidad {
     private Estudiante estudiante;
     private Usuario usuario;
     private LocalDateTime fechaPrestamo;
-    private LocalDate fechaLimite;
+    private LocalDateTime fechaLimite;        // si va nula al insertar, la calcula el trigger
     private LocalDateTime fechaDevolucion;
     private EstadoPrestamo estado = EstadoPrestamo.ACTIVO;
+    private boolean huellaPrestamo;           // 1 = huella verificada al prestar
+    private boolean huellaDevolucion;         // 1 = huella verificada al devolver
+    private String observaciones;
+    private Multa multa;                      // nula si no hubo retraso
 
     public Prestamo() {
     }
 
-    public Prestamo(Ejemplar ejemplar, Estudiante estudiante, Usuario usuario, LocalDate fechaLimite) {
+    public Prestamo(Ejemplar ejemplar, Estudiante estudiante, Usuario usuario) {
         setEjemplar(ejemplar);
         setEstudiante(estudiante);
         setUsuario(usuario);
-        setFechaLimite(fechaLimite);
     }
 
     // ---------- Comportamiento ----------
@@ -36,21 +40,25 @@ public class Prestamo extends Entidad {
         return estado == EstadoPrestamo.ACTIVO;
     }
 
-    /** Días de atraso a la fecha indicada (0 si no está atrasado). */
+    /** Días de atraso a la fecha indicada (0 si no está atrasado). Igual que DATEDIFF de la BD. */
     public int diasAtraso(LocalDate aLaFecha) {
-        if (fechaLimite == null || !aLaFecha.isAfter(fechaLimite)) {
+        if (fechaLimite == null || !aLaFecha.isAfter(fechaLimite.toLocalDate())) {
             return 0;
         }
-        return (int) ChronoUnit.DAYS.between(fechaLimite, aLaFecha);
+        return (int) ChronoUnit.DAYS.between(fechaLimite.toLocalDate(), aLaFecha);
     }
 
-    /** Días de atraso a hoy. */
+    /** Días de atraso a hoy (o a la fecha de devolución si ya se devolvió). */
     public int diasAtraso() {
-        return diasAtraso(LocalDate.now());
+        return diasAtraso(fechaDevolucion != null ? fechaDevolucion.toLocalDate() : LocalDate.now());
     }
 
     public boolean estaAtrasado() {
         return estaActivo() && diasAtraso() > 0;
+    }
+
+    public boolean tieneMulta() {
+        return multa != null;
     }
 
     // ---------- Getters y setters ----------
@@ -75,7 +83,7 @@ public class Prestamo extends Entidad {
         return usuario;
     }
 
-    /** Usuario que registró el préstamo (columna cedula_usuario). */
+    /** Usuario que registró el préstamo (columna cedula_usuario; puede ser nulo). */
     public final void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
@@ -88,12 +96,12 @@ public class Prestamo extends Entidad {
         this.fechaPrestamo = fechaPrestamo;
     }
 
-    public LocalDate getFechaLimite() {
+    public LocalDateTime getFechaLimite() {
         return fechaLimite;
     }
 
-    public final void setFechaLimite(LocalDate fechaLimite) {
-        this.fechaLimite = Validaciones.requerido(fechaLimite, "la fecha límite");
+    public void setFechaLimite(LocalDateTime fechaLimite) {
+        this.fechaLimite = fechaLimite;
     }
 
     public LocalDateTime getFechaDevolucion() {
@@ -110,5 +118,37 @@ public class Prestamo extends Entidad {
 
     public void setEstado(EstadoPrestamo estado) {
         this.estado = Validaciones.requerido(estado, "el estado");
+    }
+
+    public boolean isHuellaPrestamo() {
+        return huellaPrestamo;
+    }
+
+    public void setHuellaPrestamo(boolean huellaPrestamo) {
+        this.huellaPrestamo = huellaPrestamo;
+    }
+
+    public boolean isHuellaDevolucion() {
+        return huellaDevolucion;
+    }
+
+    public void setHuellaDevolucion(boolean huellaDevolucion) {
+        this.huellaDevolucion = huellaDevolucion;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = Validaciones.maximo(Validaciones.opcional(observaciones), 255, "observaciones");
+    }
+
+    public Multa getMulta() {
+        return multa;
+    }
+
+    public void setMulta(Multa multa) {
+        this.multa = multa;
     }
 }

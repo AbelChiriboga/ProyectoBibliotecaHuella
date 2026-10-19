@@ -22,6 +22,20 @@ public class Navegacion {
     }
 
     /**
+     * Igual que abrir(), pero además ejecuta alVolver cuando el destino se cierra
+     * (por ejemplo, recargar los combos después de agregar un autor con el botón +).
+     */
+    public static void abrir(JFrame origen, JFrame destino, Runnable alVolver) {
+        destino.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                alVolver.run();
+            }
+        });
+        abrir(origen, destino);
+    }
+
+    /**
      * Cambia de ventana sin volver atrás (por ejemplo, login -> menú o cerrar sesión).
      * El origen se destruye.
      */

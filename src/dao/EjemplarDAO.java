@@ -1,0 +1,77 @@
+package dao;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import modelo.Ejemplar;
+import modelo.EstadoEjemplar;
+import modelo.ValorBD;
+
+/**
+ * CRUD de ejemplares (copias físicas). El estado PRESTADO/DISPONIBLE lo cambian los triggers
+ * de préstamo y devolución; desde la ventana solo se editan código, ubicación y Dañado/Perdido.
+ */
+public class EjemplarDAO extends BaseDAO<Ejemplar, Integer> implements CrudDAO<Ejemplar, Integer> {
+
+    static final String COLUMNAS = "ej.id_ejemplar AS eje_id, ej.codigo_inventario AS eje_codigo, "
+            + "ej.estado AS eje_estado, ej.ubicacion AS eje_ubicacion, " + LibroDAO.COLUMNAS;
+
+    static final String TABLAS = "ejemplares ej JOIN libros l ON l.id_libro = ej.id_libro " + LibroDAO.JOINS;
+
+    private final LibroDAO libroDAO = new LibroDAO();
+
+    @Override
+    protected String sqlSelect() {
+        return "SELECT " + COLUMNAS + " FROM " + TABLAS;
+    }
+
+    @Override
+    protected String columnaId() {
+        return "ej.id_ejemplar";
+    }
+
+    @Override
+    protected String orden() {
+        return "ej.codigo_inventario";
+    }
+
+    @Override
+    protected Ejemplar mapear(ResultSet rs) throws SQLException {
+        Ejemplar e = new Ejemplar(libroDAO.mapear(rs), rs.getString("eje_codigo"), rs.getString("eje_ubicacion"));
+        e.setId(rs.getInt("eje_id"));
+        e.setEstado(ValorBD.desde(EstadoEjemplar.class, rs.getString("eje_estado")));
+        return e;
+    }
+
+    @Override
+    public Ejemplar insertar(Ejemplar e) {
+        e.setId(insertarConId("INSERT INTO ejemplares (id_libro, codigo_inventario, estado, ubicacion) VALUES (?,?,?,?)",
+                e.getLibro().getId(), e.getCodigoInventario(), bd(e.getEstado()), e.getUbicacion()));
+        return e;
+    }
+
+    @Override
+    public void actualizar(Ejemplar e) {
+        ejecutar("UPDATE ejemplares SET codigo_inventario = ?, estado = ?, ubicacion = ? WHERE id_ejemplar = ?",
+                e.getCodigoInventario(), bd(e.getEstado()), e.getUbicacion(), e.getId());
+    }
+
+    /** Si ya tuvo préstamos, la BD no deja eliminarlo (se marca como Perdido o Dañado). */
+    @Override
+    public void eliminar(Integer id) {
+        ejecutar("DELETE FROM ejemplares WHERE id_ejemplar = ?", id);
+    }
+
+    /** Ejemplares de un libro (CRUDEjemplares). */
+    public List<Ejemplar> listarPorLibro(int idLibro) {
+        return consultarLista(sqlSelect() + " WHERE ej.id_libro = ? ORDER BY " + orden(), idLibro);
+    }
+
+    /** Ejemplares disponibles que coinciden con el texto (tabla de Préstamos). */
+    public List<Ejemplar> buscarDisponibles(String texto) {
+        String t = like(texto);
+        return consultarLista(sqlSelect() + " WHERE ej.estado = ? AND (ej.codigo_inventario LIKE ? "
+                + "OR l.titulo LIKE ? OR CONCAT(a.nombres, ' ', a.apellidos) LIKE ?) ORDER BY l.titulo, " + orden(),
+                bd(EstadoEjemplar.DISPONIBLE), t, t, t);
+    }
+}

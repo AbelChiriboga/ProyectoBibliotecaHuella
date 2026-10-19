@@ -55,7 +55,7 @@ public class Libro extends Entidad {
     }
 
     public final void setTitulo(String titulo) {
-        this.titulo = Validaciones.maximo(Validaciones.obligatorio(titulo, "título"), 200, "título");
+        this.titulo = Validaciones.maximo(Validaciones.obligatorio(titulo, "título"), 150, "título");
     }
 
     public Autor getAutor() {

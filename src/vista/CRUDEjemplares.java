@@ -8,17 +8,118 @@ package vista;
  */
 public class CRUDEjemplares extends componentes.VentanaBase {
 
-    public CRUDEjemplares() {
+    private final servicio.EjemplarService servicio = new servicio.EjemplarService();
+    private final componentes.TablaObjetos<modelo.Ejemplar> tabla;
+    private final componentes.ControlCrud control;
+    /** Libro dueño de los ejemplares: llega desde CRUDLibros y no cambia. */
+    private final modelo.Libro libro;
+    /** Ejemplar que se está viendo o editando (uno nuevo al presionar Nuevo). */
+    private modelo.Ejemplar actual;
+
+    /**
+     * Solo existe este constructor: la ventana NO se puede abrir sin un libro,
+     * así se cumple la regla de que los ejemplares se gestionan desde CRUDLibros.
+     */
+    public CRUDEjemplares(modelo.Libro libro) {
+        this.libro = util.Validaciones.requerido(libro, "un libro");
         initComponents();
         montar("EJEMPLARES DEL LIBRO", jpnlContenido);
         componentes.Tablas.soloLectura(jtblEjemplares, jScrollPane1, "Código de inventario", "Ubicación", "Estado");
+        tabla = new componentes.TablaObjetos<>(jtblEjemplares,
+                e -> new Object[]{e.getCodigoInventario(), e.getUbicacion(), e.getEstado()});
+        control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtCodInv, jtxtUbicacion, jcbxEstado},
+                jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
+        componentes.Combos.llenar(jcbxEstado, modelo.EstadoEjemplar.class);
+        tabla.alSeleccionar(this::mostrar);
+        mostrarLibro();
+        cancelar();
     }
 
-    /** Muestra en la franja superior los datos del libro. Se usará cuando se abra desde CRUDLibros. */
-    public void mostrarLibro(String titulo, String autor, String isbn) {
-        jlblTitulo.setText(titulo);
-        jlblAutor.setText(autor);
-        jlblIsbn.setText(isbn == null || isbn.isEmpty() ? "—" : isbn);
+    // ---------- Acciones de los botones ----------
+
+    private void nuevo() {
+        actual = new modelo.Ejemplar();
+        actual.setLibro(libro);
+        limpiar();
+        tabla.limpiarSeleccion();
+        control.nuevo();
+        jtxtCodInv.requestFocus();
+    }
+
+    private void editar() {
+        ejecutar(() -> {
+            actual = tabla.exigirSeleccionado("un ejemplar");
+            control.edicion();
+            jtxtUbicacion.requestFocus();
+        });
+    }
+
+    private void guardar() {
+        ejecutar(() -> {
+            actual.setCodigoInventario(jtxtCodInv.getText());
+            actual.setUbicacion(jtxtUbicacion.getText());
+            actual.setEstado(componentes.Combos.seleccionado(jcbxEstado));
+            servicio.guardar(actual);
+            util.Mensajes.info(this, "Ejemplar guardado.");
+            recargarYSeleccionar(actual);
+        });
+    }
+
+    private void eliminar() {
+        ejecutar(() -> {
+            modelo.Ejemplar e = tabla.exigirSeleccionado("un ejemplar");
+            if (util.Mensajes.confirmar(this, "¿Eliminar el ejemplar " + e.getCodigoInventario() + "?")) {
+                servicio.eliminar(e);
+                cancelar();
+            }
+        });
+    }
+
+    /** Vuelve al estado inicial y recarga la tabla (descarta cambios sin guardar). */
+    private void cancelar() {
+        actual = null;
+        limpiar();
+        cargar();
+        control.consulta(false);
+    }
+
+    // ---------- Métodos de apoyo ----------
+
+    private void cargar() {
+        ejecutar(() -> {
+            java.util.List<modelo.Ejemplar> ejemplares = servicio.listarPorLibro(libro);
+            tabla.mostrar(ejemplares);
+            long disponibles = ejemplares.stream().filter(modelo.Ejemplar::estaDisponible).count();
+            jlblResumen.setText(ejemplares.size() + " ejemplar(es), " + disponibles
+                    + " disponible(s). Un ejemplar prestado no se puede editar hasta que se devuelva.");
+        });
+    }
+
+    private void recargarYSeleccionar(modelo.Ejemplar e) {
+        cargar();
+        control.consulta(false);
+        tabla.seleccionar(e);
+    }
+
+    /** Franja superior con los datos del libro. */
+    private void mostrarLibro() {
+        jlblTitulo.setText(libro.getTitulo());
+        jlblAutor.setText(libro.getAutor().getNombreCompleto());
+        jlblIsbn.setText(libro.getIsbn() == null ? "—" : libro.getIsbn());
+    }
+
+    private void mostrar(modelo.Ejemplar e) {
+        actual = e;
+        jtxtCodInv.setText(e.getCodigoInventario());
+        jtxtUbicacion.setText(e.getUbicacion());
+        componentes.Combos.seleccionar(jcbxEstado, e.getEstado());
+        control.consulta(true);
+    }
+
+    private void limpiar() {
+        jtxtCodInv.setText("");
+        jtxtUbicacion.setText("");
+        componentes.Combos.seleccionar(jcbxEstado, modelo.EstadoEjemplar.DISPONIBLE);
     }
 
     /**
@@ -166,7 +267,6 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         jpnlDatosEjemplar.add(jlblEstado, gridBagConstraints);
 
         jcbxEstado.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jcbxEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Disponible", "Prestado", "Dañado", "Perdido" }));
         jcbxEstado.setPreferredSize(new java.awt.Dimension(120, 32));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -182,19 +282,23 @@ public class CRUDEjemplares extends componentes.VentanaBase {
 
         jbtnNuevo.setText("Nuevo");
         jbtnNuevo.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnNuevo.addActionListener(this::jbtnNuevoActionPerformed);
         jpnlBotones.add(jbtnNuevo);
 
         jbtnGuardar.setText("Guardar");
         jbtnGuardar.setPrimario(true);
         jbtnGuardar.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnGuardar.addActionListener(this::jbtnGuardarActionPerformed);
         jpnlBotones.add(jbtnGuardar);
 
         jbtnEditar.setText("Editar");
         jbtnEditar.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnEditar.addActionListener(this::jbtnEditarActionPerformed);
         jpnlBotones.add(jbtnEditar);
 
         jbtnEliminar.setText("Eliminar");
         jbtnEliminar.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnEliminar.addActionListener(this::jbtnEliminarActionPerformed);
         jpnlBotones.add(jbtnEliminar);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -208,6 +312,7 @@ public class CRUDEjemplares extends componentes.VentanaBase {
 
         jbtnCancelar.setText("Cancelar");
         jbtnCancelar.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnCancelar.addActionListener(this::jbtnCancelarActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 7;
@@ -241,6 +346,26 @@ public class CRUDEjemplares extends componentes.VentanaBase {
     }// </editor-fold>//GEN-END:initComponents
 
 
+    private void jbtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnNuevoActionPerformed
+        nuevo();
+    }//GEN-LAST:event_jbtnNuevoActionPerformed
+
+    private void jbtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGuardarActionPerformed
+        guardar();
+    }//GEN-LAST:event_jbtnGuardarActionPerformed
+
+    private void jbtnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnEditarActionPerformed
+        editar();
+    }//GEN-LAST:event_jbtnEditarActionPerformed
+
+    private void jbtnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnEliminarActionPerformed
+        eliminar();
+    }//GEN-LAST:event_jbtnEliminarActionPerformed
+
+    private void jbtnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCancelarActionPerformed
+        cancelar();
+    }//GEN-LAST:event_jbtnCancelarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private componentes.BotonSistema jbtnCancelar;
@@ -248,7 +373,7 @@ public class CRUDEjemplares extends componentes.VentanaBase {
     private componentes.BotonSistema jbtnEliminar;
     private componentes.BotonSistema jbtnGuardar;
     private componentes.BotonSistema jbtnNuevo;
-    private javax.swing.JComboBox<String> jcbxEstado;
+    private javax.swing.JComboBox<modelo.EstadoEjemplar> jcbxEstado;
     private javax.swing.JLabel jlblAutor;
     private javax.swing.JLabel jlblAutorTit;
     private javax.swing.JLabel jlblCodigo;

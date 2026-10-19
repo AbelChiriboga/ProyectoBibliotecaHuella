@@ -55,7 +55,11 @@ public class Estilos {
         ButtonModel m = b.getModel();
         boolean primario = Boolean.TRUE.equals(b.getClientProperty("primario"));
         Color fondo, texto, borde;
-        if (m.isPressed()) {
+        if (!m.isEnabled()) {                 // deshabilitado: gris, para que se note que no se puede usar
+            fondo = new Color(241, 244, 246);
+            texto = new Color(150, 160, 168);
+            borde = new Color(214, 221, 225);
+        } else if (m.isPressed()) {
             fondo = primario ? VERDE_OSCURO : VERDE;
             texto = Color.WHITE;
             borde = fondo;

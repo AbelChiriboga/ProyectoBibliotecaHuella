@@ -2,7 +2,6 @@ package pruebas;
 
 import excepciones.BibliotecaException;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import modelo.*;
 
@@ -15,7 +14,7 @@ public class PruebaModelo {
     public static void main(String[] args) {
         titulo("1. Fábrica sin if: cada Rol crea su subclase");
         Usuario a = Rol.ADMINISTRADOR.crearUsuario();
-        Usuario b = ValorBD.desde(Rol.class, "bibliotecario").crearUsuario();   // como lo hará el DAO
+        Usuario b = ValorBD.desde(Rol.class, "BIBLIOTECARIO").crearUsuario();   // como lo hace el DAO
         a.setCedula("1804567897"); a.setNombres("Ana"); a.setApellidos("Torres"); a.setUsuario("admin");
         b.setCedula("1712345675"); b.setNombres("Luis"); b.setApellidos("Mena"); b.setUsuario("biblio");
         System.out.println(a.getClass().getSimpleName() + " / " + b.getClass().getSimpleName());
@@ -31,6 +30,7 @@ public class PruebaModelo {
         titulo("3. Abstracción: Persona agrupa personal y estudiantes");
         Carrera software = new Carrera(1, "Software");
         Estudiante e = new Estudiante("1804567897", "Diego", "Paredes", software, 6);
+        e.setCorreo("dparedes@uta.edu.ec");
         List<Persona> personas = List.of(a, b, e);
         for (Persona p : personas) {
             System.out.println(p.getNombreCompleto() + " → " + p.getTipo()
@@ -55,7 +55,8 @@ public class PruebaModelo {
         titulo("6. Enums y reglas simples");
         System.out.println("Estados de ejemplar: " + List.of(EstadoEjemplar.values()));
         Prestamo p = new Prestamo(new Ejemplar(new Libro(null, "Clean Code", new Autor("Robert", "Martin"),
-                new Categoria("Software")), "lib-0001", "Estante A1"), e, b, LocalDate.now().minusDays(4));
+                new Categoria("Software")), "lib-0001", "Estante A1"), e, b);
+        p.setFechaLimite(java.time.LocalDateTime.now().minusDays(4));
         System.out.println("Ejemplar " + p.getEjemplar().getCodigoInventario() + " atrasado " + p.diasAtraso()
                 + " días → multa: $" + Multa.calcularMonto(p.diasAtraso(), new BigDecimal("0.50")));
     }

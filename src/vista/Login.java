@@ -12,6 +12,9 @@ public class Login extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Login.class.getName());
 
+    /** Reglas del ingreso (la ventana no sabe de SQL ni de contraseñas cifradas). */
+    private final servicio.AutenticacionService autenticacion = new servicio.AutenticacionService();
+
     /**
      * Creates new form Login
      */
@@ -44,7 +47,7 @@ public class Login extends javax.swing.JFrame {
         jbtnIngresar.setText("Ingresar");
         jbtnConsultar.setText("Consultar");
 
-        javax.swing.JComponent[] cajas = {jtxtCedula, jtxtClave, jtxtCedulaE};
+        javax.swing.JComponent[] cajas = {jtxtUsuario, jpswClave, jtxtCedulaE};
         for (javax.swing.JComponent c : cajas) {
             c.setPreferredSize(campo);
             c.setMinimumSize(campo);
@@ -59,7 +62,7 @@ public class Login extends javax.swing.JFrame {
         }
 
         // ---- Tarjeta Personal: Usuario, Contraseña, Ingresar ----
-        apilar(jpnlPersonal, jLabel1, jtxtCedula, jLabel6, jtxtClave, jbtnIngresar);
+        apilar(jpnlPersonal, jLabel1, jtxtUsuario, jLabel6, jpswClave, jbtnIngresar);
 
         // ---- Tarjeta Estudiante: Cédula, Consultar ----
         apilar(jpnlEstudiante, jLabel8, jtxtCedulaE, jbtnConsultar);
@@ -179,6 +182,40 @@ public class Login extends javax.swing.JFrame {
         t.setBorder(javax.swing.BorderFactory.createLineBorder(verde, 1));
     }
     
+    // ---------- Acciones de los botones ----------
+
+    /** Ingreso del personal: valida usuario y contraseña y abre el menú según el rol (sin if). */
+    private void iniciarSesion() {
+        boolean ingreso = util.Mensajes.ejecutar(this, () -> {
+            modelo.Usuario usuario = autenticacion.iniciarSesion(jtxtUsuario.getText(), new String(jpswClave.getPassword()));
+            util.Navegacion.cambiar(this, MenuPorRol.crearPara(usuario));
+        });
+        if (!ingreso) {
+            limpiarClave();
+        }
+    }
+
+    /** Consulta del estudiante por cédula. */
+    private void consultarEstudiante() {
+        util.Mensajes.ejecutar(this, () -> mostrarEstudiante(autenticacion.consultarEstudiante(jtxtCedulaE.getText())));
+    }
+
+    /** TODO Fase 7: abrir el panel del estudiante (historial, multas y estado) en vez del mensaje. */
+    private void mostrarEstudiante(modelo.Estudiante estudiante) {
+        util.Mensajes.info(this, estudiante.getNombreCompleto() + "\n"
+                + "Carrera: " + estudiante.getCarrera() + " · Semestre " + estudiante.getSemestre() + "\n"
+                + "Estado: " + estudiante.getEstado());
+    }
+
+    private void limpiarClave() {
+        jpswClave.setText("");
+        jpswClave.requestFocus();
+    }
+
+    private void salir() {
+        System.exit(0);
+    }
+
    public void InicializarElementos() {
         javax.swing.ImageIcon original = new javax.swing.ImageIcon(getClass().getResource("/imagenes/logo.png"));
         java.awt.Image escalada = original.getImage().getScaledInstance(213, 183, java.awt.Image.SCALE_SMOOTH);
@@ -208,10 +245,10 @@ public class Login extends javax.swing.JFrame {
         jpnlFormularios = new javax.swing.JPanel();
         jpnlPersonal = new javax.swing.JPanel();
         jbtnIngresar = new javax.swing.JButton();
-        jtxtClave = new javax.swing.JTextField();
+        jpswClave = new javax.swing.JPasswordField();
         jLabel6 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jtxtCedula = new javax.swing.JTextField();
+        jtxtUsuario = new javax.swing.JTextField();
         jpnlEstudiante = new javax.swing.JPanel();
         jbtnConsultar = new javax.swing.JButton();
         jtxtCedulaE = new javax.swing.JTextField();
@@ -278,8 +315,8 @@ public class Login extends javax.swing.JFrame {
                 .addGroup(jpnlPersonalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jbtnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jtxtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jtxtClave, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jtxtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jpswClave, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -289,11 +326,11 @@ public class Login extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(3, 3, 3)
-                .addComponent(jtxtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jtxtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jtxtClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jpswClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jbtnIngresar)
                 .addContainerGap())
@@ -304,6 +341,7 @@ public class Login extends javax.swing.JFrame {
         jpnlEstudiante.setBackground(new java.awt.Color(255, 255, 255));
 
         jbtnConsultar.setText("Consultar");
+        jbtnConsultar.addActionListener(this::jbtnConsultarActionPerformed);
 
         jLabel8.setText("Cédula:");
 
@@ -455,25 +493,23 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbtnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnIngresarActionPerformed
-        // TODO add your handling code here:
-        MenuBibliotecario mb = new MenuBibliotecario();
-        mb.setVisible(true);
-        this.setVisible(false);
+        iniciarSesion();
     }//GEN-LAST:event_jbtnIngresarActionPerformed
 
+    private void jbtnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnConsultarActionPerformed
+        consultarEstudiante();
+    }//GEN-LAST:event_jbtnConsultarActionPerformed
+
     private void jtglEstudianteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtglEstudianteActionPerformed
-        // TODO add your handling code here:
         mostrarTarjeta("estudiante");
     }//GEN-LAST:event_jtglEstudianteActionPerformed
 
     private void jtglPersonalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtglPersonalActionPerformed
-        // TODO add your handling code here:
-         mostrarTarjeta("personal");
+        mostrarTarjeta("personal");
     }//GEN-LAST:event_jtglPersonalActionPerformed
 
     private void jbtnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSalirActionPerformed
-        // TODO add your handling code here:
-        System.exit(0);
+        salir();
     }//GEN-LAST:event_jbtnSalirActionPerformed
 
     /**
@@ -523,8 +559,8 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JSplitPane jsplSelector;
     private javax.swing.JToggleButton jtglEstudiante;
     private javax.swing.JToggleButton jtglPersonal;
-    private javax.swing.JTextField jtxtCedula;
+    private javax.swing.JTextField jtxtUsuario;
     private javax.swing.JTextField jtxtCedulaE;
-    private javax.swing.JTextField jtxtClave;
+    private javax.swing.JPasswordField jpswClave;
     // End of variables declaration//GEN-END:variables
 }

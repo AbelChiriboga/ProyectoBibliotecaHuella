@@ -18,4 +18,9 @@ public abstract class BibliotecaException extends RuntimeException {
 
     /** Título para el cuadro de diálogo (cada hijo lo redefine). */
     public abstract String getTitulo();
+
+    /** true = falla técnica (se muestra como error); false = aviso para el usuario. */
+    public boolean esErrorTecnico() {
+        return false;
+    }
 }

@@ -95,6 +95,11 @@ public final class Validaciones {
         }
     }
 
+    /** Entero opcional: vacío → null; si tiene algo, debe ser número dentro del rango. */
+    public static Integer enteroOpcional(String valor, String campo, int min, int max) {
+        return opcional(valor) == null ? null : entero(valor, campo, min, max);
+    }
+
     /** Verifica que un entero esté dentro del rango. */
     public static int rango(int valor, String campo, int min, int max) {
         if (valor < min || valor > max) {

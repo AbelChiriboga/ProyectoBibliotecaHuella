@@ -8,10 +8,79 @@ package vista;
  */
 public class Devoluciones extends componentes.VentanaBase {
 
+    private final servicio.DevolucionService servicio = new servicio.DevolucionService();
+    private final componentes.TablaObjetos<modelo.Prestamo> tabla;
+    private final LecturaHuella lectura;
+    /** Parámetro MULTA_POR_DIA (se lee una vez al abrir, no en cada casilla). */
+    private java.math.BigDecimal multaPorDia = java.math.BigDecimal.ZERO;
+
     public Devoluciones() {
         initComponents();
         montar("DEVOLUCIÓN DE LIBROS", jpnlContenido);
         componentes.Tablas.conSeleccion(jtblPrestamos, jScrollPane1, "Código", "Título", "Prestado", "Fecha límite", "Estado");
+        componentes.Tablas.anchos(jtblPrestamos, 40, 100, 240, 90, 90, 130);
+        tabla = new componentes.TablaObjetos<>(jtblPrestamos, p -> new Object[]{Boolean.FALSE,
+            p.getEjemplar().getCodigoInventario(), p.getEjemplar().getLibro().getTitulo(),
+            util.Formatos.fecha(p.getFechaPrestamo()), util.Formatos.fecha(p.getFechaLimite()), estadoTexto(p)});
+        tabla.alMarcar(this::actualizarResumen);
+        lectura = new LecturaHuella(this, jpnlHuella, servicio::identificar, this::estudianteIdentificado);
+        jpnlHuella.getBotonCapturar().addActionListener(e -> lectura.leer());
+        alCambiarLector(lectura::lectorCambio);
+        ejecutar(() -> multaPorDia = servicio.multaPorDia());
+        actualizarResumen();
+    }
+
+    // ---------- Acciones de los botones ----------
+
+    /** Registra la devolución de los libros marcados; la BD genera la multa si hay atraso. */
+    private void confirmarDevolucion() {
+        ejecutar(() -> {
+            String nombre = lectura.getFicha() == null ? "" : lectura.getFicha().getEstudiante().getNombreCompleto();
+            java.util.List<modelo.Prestamo> marcados = tabla.getMarcados();
+            servicio.ResumenDevolucion r = servicio.devolver(lectura.getFicha(), marcados);
+            util.Mensajes.info(this, "Devolución registrada para " + nombre + ": " + marcados.size() + " libro(s).\n\n"
+                    + (r.hayMulta() ? "Se generó una multa de " + util.Formatos.dinero(r.getTotal())
+                            + " por " + r.getDiasRetraso() + " día(s) de atraso (pendiente de pago)."
+                            : "Entregado a tiempo: sin multa."));
+            nuevaDevolucion();
+        });
+    }
+
+    /** Deja la pantalla lista para el siguiente estudiante. */
+    private void nuevaDevolucion() {
+        lectura.limpiar();
+        tabla.mostrar(java.util.List.of());
+        actualizarResumen();
+    }
+
+    // ---------- Ayudantes ----------
+
+    /** Muestra los préstamos activos del estudiante identificado. */
+    private void estudianteIdentificado(servicio.FichaEstudiante ficha) {
+        int atrasados = (int) ficha.getPrestamosActivos().stream().filter(modelo.Prestamo::estaAtrasado).count();
+        String estado = ficha.getCantidadActivos() == 0 ? "NO TIENE LIBROS POR DEVOLVER"
+                : ficha.getCantidadActivos() + " LIBRO(S) POR DEVOLVER"
+                        + (atrasados > 0 ? "<br>" + atrasados + " con atraso" : "");
+        jpnlHuella.mostrarEstudiante(ficha.getEstudiante().getNombreCompleto(), ficha.getDatos(),
+                ficha.getTextoActivos(), estado, atrasados == 0 && ficha.getCantidadActivos() > 0);
+        tabla.mostrar(ficha.getPrestamosActivos());
+        actualizarResumen();
+    }
+
+    /** Tarjetas: días de retraso, multa por día y total a pagar de los libros marcados. */
+    private void actualizarResumen() {
+        if (lectura == null) {
+            return;                                    // todavía se está armando la ventana
+        }
+        servicio.ResumenDevolucion r = new servicio.ResumenDevolucion(tabla.getMarcados(), multaPorDia);
+        jpnlDiasRetraso.setValor(String.valueOf(r.getDiasRetraso()));
+        jpnlMultaDia.setValor(util.Formatos.dinero(r.getMultaPorDia()));
+        jpnlTotalPagar.setValor(util.Formatos.dinero(r.getTotal()));
+    }
+
+    private static String estadoTexto(modelo.Prestamo p) {
+        int dias = p.diasAtraso();
+        return dias > 0 ? "Atrasado " + dias + " día(s)" : "A tiempo";
     }
 
     /**
@@ -81,11 +150,13 @@ public class Devoluciones extends componentes.VentanaBase {
 
         jbtnCancelar.setText("Cancelar");
         jbtnCancelar.setPreferredSize(new java.awt.Dimension(110, 36));
+        jbtnCancelar.addActionListener(this::jbtnCancelarActionPerformed);
         jpnlAcciones.add(jbtnCancelar);
 
         jbtnConfirmar.setText("Confirmar devolución");
         jbtnConfirmar.setPrimario(true);
         jbtnConfirmar.setPreferredSize(new java.awt.Dimension(190, 36));
+        jbtnConfirmar.addActionListener(this::jbtnConfirmarActionPerformed);
         jpnlAcciones.add(jbtnConfirmar);
 
         jpnlPie.add(jpnlAcciones, java.awt.BorderLayout.SOUTH);
@@ -99,6 +170,14 @@ public class Devoluciones extends componentes.VentanaBase {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
+    private void jbtnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnConfirmarActionPerformed
+        confirmarDevolucion();
+    }//GEN-LAST:event_jbtnConfirmarActionPerformed
+
+    private void jbtnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCancelarActionPerformed
+        nuevaDevolucion();
+    }//GEN-LAST:event_jbtnCancelarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
