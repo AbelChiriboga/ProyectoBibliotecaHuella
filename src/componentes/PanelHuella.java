@@ -22,7 +22,7 @@ import javax.swing.SwingConstants;
  *  - modoRegistro = true : CRUDEstudiantes (elige dedo y captura 3 muestras).
  * Antes estaba copiado completo en Préstamos y Devoluciones, y otra variante en CRUDEstudiantes.
  */
-public class PanelHuella extends PanelGrupo {
+public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
 
     private static final Color GRIS = new Color(60, 75, 85);
 
@@ -62,6 +62,8 @@ public class PanelHuella extends PanelGrupo {
         lblHuella.setFont(util.Estilos.FUENTE);
         lblHuella.setForeground(new Color(90, 110, 115));
         lblHuella.setPreferredSize(new Dimension(190, 190));
+        lblHuella.setHorizontalTextPosition(SwingConstants.CENTER);   // con imagen: texto debajo
+        lblHuella.setVerticalTextPosition(SwingConstants.BOTTOM);
 
         lblEstado.setHorizontalAlignment(SwingConstants.CENTER);
         lblEstado.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -159,8 +161,33 @@ public class PanelHuella extends PanelGrupo {
     private static final Color FONDO_EXITO = new Color(212, 238, 235);
     private static final Color FONDO_FALLO = new Color(253, 241, 232);
 
+    // ---- Avisos del lector durante el registro (AvisoCaptura) ----
+    // El lector avisa desde otro hilo: se pasa al hilo de Swing con invokeLater.
+
+    @Override
+    public void avisar(int muestrasListas, String mensaje) {
+        javax.swing.SwingUtilities.invokeLater(() -> mostrarAvance(muestrasListas, mensaje));
+    }
+
+    @Override
+    public void imagen(java.awt.image.BufferedImage huella) {
+        javax.swing.SwingUtilities.invokeLater(() -> mostrarImagen(huella));
+    }
+
+    /** Dibuja la huella leída dentro del recuadro (escalada sin deformarla). */
+    public void mostrarImagen(java.awt.image.BufferedImage huella) {
+        int lado = 150;
+        double escala = Math.min((double) lado / huella.getWidth(), (double) lado / huella.getHeight());
+        java.awt.Image chica = huella.getScaledInstance((int) (huella.getWidth() * escala),
+                (int) (huella.getHeight() * escala), java.awt.Image.SCALE_SMOOTH);
+        lblHuella.setIcon(new javax.swing.ImageIcon(chica));
+        lblHuella.setText("");
+        lblHuella.setBackground(Color.WHITE);
+    }
+
     /** Vuelve al estado inicial: "Coloque el dedo", sin muestras. */
     public void reiniciar() {
+        lblHuella.setIcon(null);
         pintarHuella("Coloque el dedo", FONDO_NORMAL, new Color(90, 110, 115));
         mostrarAvance(0, modoRegistro
                 ? "Elija el dedo y presione Capturar huella."
@@ -169,6 +196,7 @@ public class PanelHuella extends PanelGrupo {
 
     /** Durante la captura: bloquea el botón y avisa que se está leyendo. */
     public void iniciarCaptura() {
+        lblHuella.setIcon(null);
         botonCapturar.setEnabled(false);
         cbxDedo.setEnabled(false);
         pintarHuella("Leyendo...", FONDO_NORMAL, util.Estilos.VERDE_TITULO);
@@ -196,6 +224,7 @@ public class PanelHuella extends PanelGrupo {
 
     /** Muestra en el recuadro si el lector está listo o no (no borra el texto informativo). */
     public void mostrarLector(biometria.EstadoLector estado) {
+        lblHuella.setIcon(null);
         if (estado.permiteCapturar()) {
             pintarHuella("Coloque el dedo", FONDO_NORMAL, new Color(90, 110, 115));
         } else {

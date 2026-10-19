@@ -26,6 +26,7 @@ public abstract class LectorBase implements LectorBiometrico {
         for (int i = 0; i < MUESTRAS_REGISTRO; i++) {
             aviso.avisar(i, "Coloque el dedo (" + (i + 1) + " de " + MUESTRAS_REGISTRO + ").");
             muestras[i] = capturar();
+            getUltimaImagen().ifPresent(aviso::imagen);          // se dibuja la huella en el recuadro
             if (i > 0 && !mismoDedo(muestras[i - 1], muestras[i])) {
                 aviso.avisar(i, "Las muestras no coinciden.");
                 throw new LectorException("Las muestras no son del mismo dedo. Intente de nuevo.");

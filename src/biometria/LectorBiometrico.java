@@ -44,6 +44,11 @@ public interface LectorBiometrico extends AutoCloseable {
     /** Identificación 1:N: ¿a cuál de las plantillas cargadas pertenece la muestra? */
     Optional<Coincidencia> identificar(byte[] muestra);
 
+    /** Imagen de la última huella capturada, si el lector la entrega (vacío si no). */
+    default Optional<java.awt.image.BufferedImage> getUltimaImagen() {
+        return Optional.empty();
+    }
+
     /** Detiene una captura que está esperando el dedo (por ejemplo, al cerrar la ventana). */
     default void cancelarCaptura() {
     }

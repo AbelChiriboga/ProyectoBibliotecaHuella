@@ -19,6 +19,37 @@ import javax.swing.SwingUtilities;
 public class LectorSimulado extends LectorBase {
 
     private volatile javax.swing.JDialog dialogo;
+    private volatile java.awt.image.BufferedImage ultimaImagen;
+
+    @Override
+    public Optional<java.awt.image.BufferedImage> getUltimaImagen() {
+        return Optional.ofNullable(ultimaImagen);
+    }
+
+    /**
+     * Dibuja una huella de mentira (crestas en espiral) para probar sin el lector real.
+     * El mismo código da siempre el mismo dibujo.
+     */
+    private static java.awt.image.BufferedImage dibujarHuella(String codigo) {
+        int w = 220, h = 260;
+        java.util.Random azar = new java.util.Random(codigo.hashCode());
+        double cx = w / 2.0 + azar.nextInt(30) - 15, cy = h / 2.0 + azar.nextInt(30) - 15;
+        double giro = 2 + azar.nextDouble() * 3, separacion = 0.55 + azar.nextDouble() * 0.2;
+        java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_BYTE_GRAY);
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                double dx = (x - w / 2.0) / (w / 2.2), dy = (y - h / 2.0) / (h / 2.1);
+                int gris = 255;
+                if (dx * dx + dy * dy <= 1) {                               // dentro de la yema del dedo
+                    double r = Math.hypot(x - cx, y - cy), ang = Math.atan2(y - cy, x - cx);
+                    double cresta = Math.sin(r * separacion + ang * giro);
+                    gris = cresta > 0.15 ? 40 : 235;
+                }
+                img.getRaster().setSample(x, y, 0, gris);
+            }
+        }
+        return img;
+    }
 
     private static final int PUNTAJE_COINCIDENCIA = 90;
 
@@ -71,6 +102,7 @@ public class LectorSimulado extends LectorBase {
             throw new LectorException("No se detectó el dedo.");
         }
         ultimoCodigo = respuesta[0].trim();
+        ultimaImagen = dibujarHuella(ultimoCodigo);
         return util.Seguridad.sha256("HUELLA:" + ultimoCodigo).getBytes(java.nio.charset.StandardCharsets.US_ASCII);
     }
 

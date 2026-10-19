@@ -68,6 +68,12 @@ public class EjemplarDAO extends BaseDAO<Ejemplar, Integer> implements CrudDAO<E
     }
 
     /** Ejemplares disponibles que coinciden con el texto (tabla de Préstamos). */
+    /** Mayor número usado en los códigos de inventario (LIB-0012 → 12); 0 si no hay ejemplares. */
+    public int ultimoNumeroCodigo() {
+        return consultarEntero("SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(codigo_inventario, '-', -1) AS UNSIGNED)), 0) "
+                + "FROM ejemplares");
+    }
+
     public List<Ejemplar> buscarDisponibles(String texto) {
         String t = like(texto);
         return consultarLista(sqlSelect() + " WHERE ej.estado = ? AND (ej.codigo_inventario LIKE ? "

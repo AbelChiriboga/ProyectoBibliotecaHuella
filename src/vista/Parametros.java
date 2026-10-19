@@ -8,9 +8,41 @@ package vista;
  */
 public class Parametros extends componentes.VentanaBase {
 
+    private final servicio.ParametroService parametros = new servicio.ParametroService();
+    /** Cada parámetro con su caja de texto (tabla en vez de 4 líneas repetidas de get/set). */
+    private final java.util.Map<servicio.ParametroEditable, javax.swing.JTextField> campos =
+            new java.util.EnumMap<>(servicio.ParametroEditable.class);
+
     public Parametros() {
         initComponents();
         montar("PARÁMETROS DEL SISTEMA", jpnlContenido);
+        javax.swing.JTextField[] cajas = {jtxtDias, jtxtMaxPrestamos, jtxtMultaDia, jtxtUmbralHuella};
+        servicio.ParametroEditable[] orden = servicio.ParametroEditable.values();
+        for (int i = 0; i < orden.length; i++) {
+            campos.put(orden[i], cajas[i]);
+        }
+        cargar();
+    }
+
+    // ---------- Acciones ----------
+
+    /** Muestra los valores guardados en la BD (también deshace lo escrito: Cancelar). */
+    private void cargar() {
+        ejecutar(() -> {
+            java.util.Map<servicio.ParametroEditable, String> valores = parametros.obtenerTodos();
+            campos.forEach((p, caja) -> caja.setText(valores.get(p)));
+        });
+    }
+
+    /** Valida y guarda los 4 parámetros juntos. */
+    private void guardar() {
+        ejecutar(() -> {
+            java.util.Map<servicio.ParametroEditable, String> escritos = new java.util.EnumMap<>(servicio.ParametroEditable.class);
+            campos.forEach((p, caja) -> escritos.put(p, caja.getText()));
+            parametros.guardar(escritos);
+            util.Mensajes.info(this, "Parámetros guardados.");
+            cargar();
+        });
     }
 
     /**
@@ -229,11 +261,13 @@ public class Parametros extends componentes.VentanaBase {
 
         jbtnCancelar.setText("Cancelar");
         jbtnCancelar.setPreferredSize(new java.awt.Dimension(110, 36));
+        jbtnCancelar.addActionListener(this::jbtnCancelarActionPerformed);
         jpnlBotones.add(jbtnCancelar);
 
         jbtnGuardar.setText("Guardar cambios");
         jbtnGuardar.setPrimario(true);
         jbtnGuardar.setPreferredSize(new java.awt.Dimension(160, 36));
+        jbtnGuardar.addActionListener(this::jbtnGuardarActionPerformed);
         jpnlBotones.add(jbtnGuardar);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -260,6 +294,14 @@ public class Parametros extends componentes.VentanaBase {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
+    private void jbtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGuardarActionPerformed
+        guardar();
+    }//GEN-LAST:event_jbtnGuardarActionPerformed
+
+    private void jbtnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCancelarActionPerformed
+        cargar();
+    }//GEN-LAST:event_jbtnCancelarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private componentes.BotonSistema jbtnCancelar;

@@ -37,6 +37,11 @@ public class EjemplarService extends ServicioCrud<Ejemplar> {
         return "gestionar el catálogo";
     }
 
+    /** Código sugerido para un ejemplar nuevo: el siguiente al último registrado (LIB-0007). */
+    public String siguienteCodigo() {
+        return Ejemplar.codigoNumero(ejemplarDAO.ultimoNumeroCodigo() + 1);
+    }
+
     public List<Ejemplar> listarPorLibro(Libro libro) {
         return ejemplarDAO.listarPorLibro(libro.getId());
     }
@@ -51,6 +56,11 @@ public class EjemplarService extends ServicioCrud<Ejemplar> {
 
     @Override
     protected void antesDeEliminar(Ejemplar e) {
+        exigirQueNoEstePrestado(e);
+    }
+
+    /** Antes de pasar a Editar: un ejemplar prestado no se toca hasta que se devuelva. */
+    public void verificarEditable(Ejemplar e) {
         exigirQueNoEstePrestado(e);
     }
 

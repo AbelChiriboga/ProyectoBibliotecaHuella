@@ -1,4 +1,4 @@
-package biometria;
+  package biometria;
 
 /**
  * Entrega el lector que usa todo el sistema (una sola instancia: el dispositivo se abre una vez).

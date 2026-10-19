@@ -135,6 +135,16 @@ public class PrestamoDAO extends BaseDAO<Prestamo, Integer> {
         return consultarLista(sqlSelect() + " WHERE p.id_estudiante = ? ORDER BY " + orden(), idEstudiante);
     }
 
+    /** Préstamos ya devueltos con multa SIN PAGAR (pantalla Atrasos → Multas pendientes). */
+    public List<Prestamo> listarConMultaPendiente() {
+        return consultarLista(sqlSelect() + " WHERE m.id_multa IS NOT NULL AND m.pagada = 0 ORDER BY m.fecha_generacion");
+    }
+
+    /** Todos los préstamos activos (para contar por estudiante en la consulta de estudiantes). */
+    public List<Prestamo> listarActivos() {
+        return consultarLista(sqlSelect() + " WHERE p.estado = ? ORDER BY p.fecha_limite", bd(EstadoPrestamo.ACTIVO));
+    }
+
     /**
      * Préstamos atrasados (pantalla Atrasos). Usa la vista v_prestamos_activos de la BD,
      * que ya calcula dias_restantes (negativo = atrasado).

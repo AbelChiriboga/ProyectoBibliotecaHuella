@@ -104,7 +104,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
                 modelo.Estudiante estudiante = actual;
                 jpnlHuella.iniciarCaptura();
                 util.Tareas.enSegundoPlano(this,
-                        () -> biometria.capturarHuella(estudiante, this::avisarCaptura),
+                        () -> biometria.capturarHuella(estudiante, jpnlHuella),   // el panel muestra avance e imagen
                         plantilla -> huellaCapturada(dedo, plantilla),
                         jpnlHuella::terminarCaptura);
             }
@@ -136,9 +136,6 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
     }
 
     /** El lector avisa desde segundo plano; la pantalla se actualiza en el hilo de Swing. */
-    private void avisarCaptura(int muestras, String mensaje) {
-        javax.swing.SwingUtilities.invokeLater(() -> jpnlHuella.mostrarAvance(muestras, mensaje));
-    }
 
     private void huellaCapturada(modelo.Dedo dedo, byte[] plantilla) {
         huellasCapturadas.put(dedo, plantilla);

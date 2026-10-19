@@ -31,6 +31,8 @@ public class EstudianteService {
     private final CarreraDAO carreraDAO = new CarreraDAO();
     private final PrestamoDAO prestamoDAO = new PrestamoDAO();
     private final dao.RegistroAutenticacionDAO bitacora = new dao.RegistroAutenticacionDAO();
+    private final dao.MultaDAO multaDAO = new dao.MultaDAO();
+    private final dao.ParametroDAO parametroDAO = new dao.ParametroDAO();
 
     /** Estudiantes con sus huellas ya cargadas (2 consultas en total, no una por estudiante). */
     public List<Estudiante> listarConHuellas() {
@@ -41,6 +43,26 @@ public class EstudianteService {
             huellas.getOrDefault(e.getIdEstudiante(), List.of()).forEach(e::agregarHuella);
         }
         return estudiantes;
+    }
+
+    /**
+     * Consulta de estudiantes (bibliotecario): cada estudiante con sus préstamos activos.
+     * 3 consultas en total (estudiantes, préstamos activos y parámetro), no una por estudiante.
+     */
+    public List<SituacionEstudiante> listarSituaciones() {
+        Map<Integer, List<modelo.Prestamo>> activos = prestamoDAO.listarActivos().stream()
+                .collect(Collectors.groupingBy(p -> p.getEstudiante().getIdEstudiante()));
+        int maximo = parametroDAO.obtenerEntero(modelo.Parametro.MAX_PRESTAMOS);
+        return dao.listar().stream()
+                .map(e -> new SituacionEstudiante(e, activos.getOrDefault(e.getIdEstudiante(), List.of()), maximo,
+                        multaDAO.totalPendiente(e.getIdEstudiante())))
+                .collect(Collectors.toList());
+    }
+
+    /** Panel del estudiante: todo su historial de préstamos, atrasos y multas (solo lectura). */
+    public SituacionEstudiante situacion(Estudiante e) {
+        return new SituacionEstudiante(e, prestamoDAO.listarPorEstudiante(e.getIdEstudiante()),
+                parametroDAO.obtenerEntero(modelo.Parametro.MAX_PRESTAMOS), multaDAO.totalPendiente(e.getIdEstudiante()));
     }
 
     /** Las 5 carreras fijas (para el combo). */

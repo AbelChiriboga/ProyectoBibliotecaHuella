@@ -8,9 +8,30 @@ package vista;
  */
 public class MenuBibliotecario extends componentes.VentanaBase {
 
+    private final servicio.IndicadorService indicadores = new servicio.IndicadorService();
+    /** Qué número muestra cada tarjeta. */
+    private final java.util.Map<componentes.TarjetaIndicador, modelo.Indicador> tarjetas = new java.util.LinkedHashMap<>();
+
     public MenuBibliotecario() {
         initComponents();
         montarMenu("MENÚ PRINCIPAL BIBLIOTECARIO", jpnlContenido, Login::new);   // Cerrar sesión vuelve al Login
+        tarjetas.put(jpnlDevolucionesHoy, modelo.Indicador.DEVOLUCIONES_HOY);
+        tarjetas.put(jpnlDisponibles, modelo.Indicador.EJEMPLARES_DISPONIBLES);
+        tarjetas.put(jpnlAtrasados, modelo.Indicador.PRESTAMOS_ATRASADOS);
+        tarjetas.put(jpnlActivos, modelo.Indicador.PRESTAMOS_ACTIVOS);
+        // Cada vez que el menú vuelve a mostrarse (al regresar de otra ventana) se actualizan los números
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent e) {
+                actualizarIndicadores();
+            }
+        });
+        actualizarIndicadores();
+    }
+
+    /** Lee de la BD el número de cada tarjeta. */
+    private void actualizarIndicadores() {
+        ejecutar(() -> tarjetas.forEach((tarjeta, indicador) -> tarjeta.setValor(String.valueOf(indicadores.valor(indicador)))));
     }
 
     /**

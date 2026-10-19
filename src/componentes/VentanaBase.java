@@ -29,6 +29,9 @@ public class VentanaBase extends JFrame {
     protected final PiePagina pie = new PiePagina();
 
     public VentanaBase() {
+        // Sin la barra de título de Windows; la ventana se mueve arrastrando el encabezado.
+        setUndecorated(true);
+        util.Arrastre.permitir(this, encabezado);
         // Comportamiento por defecto: Regresar cierra esta ventana
         // (util.Navegacion se encarga de mostrar la anterior).
         encabezado.getBotonRegresar().addActionListener(e -> dispose());

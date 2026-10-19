@@ -303,6 +303,9 @@
                       <Dimension value="[110, 36]"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnCancelarActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="componentes.BotonSistema" name="jbtnGuardar">
                   <Properties>
@@ -312,6 +315,9 @@
                       <Dimension value="[160, 36]"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnGuardarActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>

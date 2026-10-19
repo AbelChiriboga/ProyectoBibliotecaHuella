@@ -19,7 +19,9 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Login
      */
     public Login() {
+        setUndecorated(true);               // sin la barra de título de Windows
         initComponents();
+        util.Arrastre.permitir(this, getContentPane());
         InicializarElementos();
         armarLogin();
         estiloSalir();
@@ -200,11 +202,10 @@ public class Login extends javax.swing.JFrame {
         util.Mensajes.ejecutar(this, () -> mostrarEstudiante(autenticacion.consultarEstudiante(jtxtCedulaE.getText())));
     }
 
-    /** TODO Fase 7: abrir el panel del estudiante (historial, multas y estado) en vez del mensaje. */
+    /** Abre el panel del estudiante; al cerrarlo vuelve al login con la cédula borrada. */
     private void mostrarEstudiante(modelo.Estudiante estudiante) {
-        util.Mensajes.info(this, estudiante.getNombreCompleto() + "\n"
-                + "Carrera: " + estudiante.getCarrera() + " · Semestre " + estudiante.getSemestre() + "\n"
-                + "Estado: " + estudiante.getEstado());
+        jtxtCedulaE.setText("");
+        util.Navegacion.abrir(this, new PanelEstudiante(estudiante));
     }
 
     private void limpiarClave() {

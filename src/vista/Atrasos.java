@@ -1,20 +1,79 @@
 package vista;
 
 /**
- * Lista de préstamos vencidos con su multa.
+ * Préstamos atrasados y multas pendientes. Aquí se registra el pago de las multas.
  * Hereda de VentanaBase: encabezado, pie, tamaño y botón Regresar ya vienen listos.
  *
  * @author User
  */
 public class Atrasos extends componentes.VentanaBase {
 
+    private final servicio.AtrasoService servicio = new servicio.AtrasoService();
+    private final componentes.TablaObjetos<modelo.Prestamo> tabla;
+    /** Parámetro MULTA_POR_DIA (para estimar la multa de los préstamos que siguen atrasados). */
+    private java.math.BigDecimal multaPorDia = java.math.BigDecimal.ZERO;
+
     public Atrasos() {
         initComponents();
-        montar("PRÉSTAMOS ATRASADOS", jpnlContenido);
+        montar("PRÉSTAMOS ATRASADOS Y MULTAS", jpnlContenido);
         componentes.Tablas.soloLectura(jtblAtrasos, jScrollPane1,
-                "Cédula", "Estudiante", "Correo", "Teléfono", "Libro", "Ejemplar",
-                "Fecha límite", "Días", "Multa");
-        componentes.Tablas.anchos(jtblAtrasos, 0, 150, 170, 0, 200, 0, 0, 50, 0);
+                "Cédula", "Estudiante", "Correo", "Teléfono", "Libro", "Ejemplar", "Fecha límite", "Días", "Multa");
+        componentes.Tablas.anchos(jtblAtrasos, 95, 150, 170, 90, 200, 80, 90, 50, 70);
+        tabla = new componentes.TablaObjetos<>(jtblAtrasos, this::fila);
+        tabla.usarBarra(barraBuscar);
+        tabla.alSeleccionar(p -> actualizarBotones());
+        componentes.Combos.llenar(jcbxVer, servicio.TipoAtraso.class);
+        jcbxVer.setSelectedIndex(0);
+        ejecutar(() -> multaPorDia = servicio.multaPorDia());
+        cargar();
+    }
+
+    // ---------- Acciones ----------
+
+    /** Vuelve a leer la lista según lo elegido en "Ver" (atrasados o multas pendientes). */
+    private void cargar() {
+        ejecutar(() -> tabla.mostrar(tipo().listar(servicio)));
+        mostrarTotal();
+        actualizarBotones();
+    }
+
+    /** Marca como pagada la multa seleccionada. */
+    private void registrarPago() {
+        ejecutar(() -> {
+            modelo.Prestamo p = tabla.exigirSeleccionado("una multa");
+            if (util.Mensajes.confirmar(this, "¿Registrar el pago de " + p.getMulta().getMontoTexto()
+                    + " de " + p.getEstudiante().getNombreCompleto() + "?")) {
+                servicio.registrarPago(p);
+                util.Mensajes.info(this, "Pago registrado.");
+                cargar();
+            }
+        });
+    }
+
+    // ---------- Ayudantes ----------
+
+    private servicio.TipoAtraso tipo() {
+        servicio.TipoAtraso tipo = componentes.Combos.seleccionado(jcbxVer);
+        return tipo != null ? tipo : jcbxVer.getItemAt(0);
+    }
+
+    private Object[] fila(modelo.Prestamo p) {
+        return new Object[]{p.getEstudiante().getCedula(), p.getEstudiante().getNombreCompleto(),
+            p.getEstudiante().getCorreo(), p.getEstudiante().getTelefono(), p.getEjemplar().getLibro().getTitulo(),
+            p.getEjemplar().getCodigoInventario(), util.Formatos.fecha(p.getFechaLimite()), tipo().dias(p),
+            util.Formatos.dinero(tipo().multa(p, multaPorDia))};
+    }
+
+    /** "Registros: 3   ·   Total: $4.50". */
+    private void mostrarTotal() {
+        java.math.BigDecimal total = tabla.getDatos().stream().map(p -> tipo().multa(p, multaPorDia))
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+        jlblTotal.setText("Registros: " + tabla.getDatos().size() + "   ·   Total: " + util.Formatos.dinero(total));
+    }
+
+    /** Registrar pago solo se puede en "Multas pendientes" y con una fila seleccionada. */
+    private void actualizarBotones() {
+        jbtnPagar.setEnabled(tipo().permitePago() && tabla.getSeleccionado().isPresent());
     }
 
     /**
@@ -29,12 +88,17 @@ public class Atrasos extends componentes.VentanaBase {
         jpnlContenido = new javax.swing.JPanel();
         jpnlAtrasos = new componentes.PanelGrupo();
         jpnlBarra = new javax.swing.JPanel();
+        jpnlVer = new javax.swing.JPanel();
+        jlblVer = new javax.swing.JLabel();
+        jcbxVer = new javax.swing.JComboBox<>();
         barraBuscar = new componentes.BarraBusqueda();
         jpnlAcciones = new javax.swing.JPanel();
         jbtnActualizar = new componentes.BotonSistema();
+        jbtnPagar = new componentes.BotonSistema();
         jbtnGenReporte = new componentes.BotonSistema();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtblAtrasos = new javax.swing.JTable();
+        jlblTotal = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -42,11 +106,25 @@ public class Atrasos extends componentes.VentanaBase {
         jpnlContenido.setPreferredSize(new java.awt.Dimension(1098, 520));
         jpnlContenido.setLayout(new java.awt.BorderLayout(0, 0));
 
-        jpnlAtrasos.setTitulo("Préstamos atrasados");
+        jpnlAtrasos.setTitulo("Préstamos atrasados y multas");
         jpnlAtrasos.setLayout(new java.awt.BorderLayout(0, 10));
 
         jpnlBarra.setOpaque(false);
         jpnlBarra.setLayout(new java.awt.BorderLayout(8, 0));
+
+        jpnlVer.setOpaque(false);
+        jpnlVer.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 8, 0));
+
+        jlblVer.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jlblVer.setText("Ver");
+        jpnlVer.add(jlblVer);
+
+        jcbxVer.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jcbxVer.setPreferredSize(new java.awt.Dimension(200, 32));
+        jcbxVer.addActionListener(this::jcbxVerActionPerformed);
+        jpnlVer.add(jcbxVer);
+
+        jpnlBarra.add(jpnlVer, java.awt.BorderLayout.WEST);
 
         barraBuscar.setAyuda("Buscar por cédula, estudiante o libro");
         jpnlBarra.add(barraBuscar, java.awt.BorderLayout.CENTER);
@@ -56,7 +134,14 @@ public class Atrasos extends componentes.VentanaBase {
 
         jbtnActualizar.setText("Actualizar");
         jbtnActualizar.setPreferredSize(new java.awt.Dimension(110, 36));
+        jbtnActualizar.addActionListener(this::jbtnActualizarActionPerformed);
         jpnlAcciones.add(jbtnActualizar);
+
+        jbtnPagar.setText("Registrar pago");
+        jbtnPagar.setPrimario(true);
+        jbtnPagar.setPreferredSize(new java.awt.Dimension(150, 36));
+        jbtnPagar.addActionListener(this::jbtnPagarActionPerformed);
+        jpnlAcciones.add(jbtnPagar);
 
         jbtnGenReporte.setText("Generar reporte");
         jbtnGenReporte.setPreferredSize(new java.awt.Dimension(150, 36));
@@ -71,6 +156,11 @@ public class Atrasos extends componentes.VentanaBase {
 
         jpnlAtrasos.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
+        jlblTotal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jlblTotal.setText("Registros: 0");
+        jlblTotal.setForeground(new java.awt.Color(31, 43, 51));
+        jpnlAtrasos.add(jlblTotal, java.awt.BorderLayout.SOUTH);
+
         jpnlContenido.add(jpnlAtrasos, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(jpnlContenido, java.awt.BorderLayout.CENTER);
@@ -79,15 +169,32 @@ public class Atrasos extends componentes.VentanaBase {
     }// </editor-fold>//GEN-END:initComponents
 
 
+    private void jcbxVerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbxVerActionPerformed
+        cargar();
+    }//GEN-LAST:event_jcbxVerActionPerformed
+
+    private void jbtnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnActualizarActionPerformed
+        cargar();
+    }//GEN-LAST:event_jbtnActualizarActionPerformed
+
+    private void jbtnPagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnPagarActionPerformed
+        registrarPago();
+    }//GEN-LAST:event_jbtnPagarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private componentes.BarraBusqueda barraBuscar;
     private javax.swing.JScrollPane jScrollPane1;
     private componentes.BotonSistema jbtnActualizar;
     private componentes.BotonSistema jbtnGenReporte;
+    private componentes.BotonSistema jbtnPagar;
+    private javax.swing.JComboBox<servicio.TipoAtraso> jcbxVer;
+    private javax.swing.JLabel jlblTotal;
+    private javax.swing.JLabel jlblVer;
     private javax.swing.JPanel jpnlAcciones;
     private componentes.PanelGrupo jpnlAtrasos;
     private javax.swing.JPanel jpnlBarra;
     private javax.swing.JPanel jpnlContenido;
+    private javax.swing.JPanel jpnlVer;
     private javax.swing.JTable jtblAtrasos;
     // End of variables declaration//GEN-END:variables
 }

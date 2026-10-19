@@ -36,6 +36,14 @@ public class Estilos {
     /** Verde más oscuro para el botón principal al pasar el mouse. */
     public static final Color VERDE_OSCURO = new Color(0, 98, 98);
 
+    /** Franja de estado (ACTIVO / INACTIVO...): verde si está bien, naranja si no. */
+    public static void franjaEstado(javax.swing.JLabel etiqueta, String texto, boolean bien) {
+        etiqueta.setOpaque(true);
+        etiqueta.setText(texto.toUpperCase());
+        etiqueta.setBackground(bien ? new Color(212, 238, 235) : new Color(253, 241, 232));
+        etiqueta.setForeground(bien ? VERDE_TITULO : new Color(138, 58, 18));
+    }
+
     /**
      * Botón blanco; verde suave al pasar el mouse y verde completo al hacer clic.
      * Si el botón tiene la marca "primario" (BotonSistema.setPrimario) va verde desde el inicio.

@@ -8,6 +8,11 @@ package vista;
  */
 public class Bitacora extends componentes.VentanaBase {
 
+    private static final int DIAS_POR_DEFECTO = 7;
+
+    private final servicio.BitacoraService bitacora = new servicio.BitacoraService();
+    private final componentes.TablaObjetos<modelo.RegistroAutenticacion> tabla;
+
     public Bitacora() {
         initComponents();
         montar("BITÁCORA DE AUTENTICACIÓN", jScrollPane1);
@@ -17,6 +22,62 @@ public class Bitacora extends componentes.VentanaBase {
         util.Estilos.barra(jpgrPrestamos);
         util.Estilos.barra(jpgrDevoluciones);
         util.Estilos.barra(jpgrRegistros);
+        tabla = new componentes.TablaObjetos<>(jtblIntentos, r -> new Object[]{util.Formatos.fechaHora(r.getFechaHora()),
+            texto(r.getCedulaEstudiante()), texto(r.getNombreEstudiante()), r.getOperacion(), r.getResultado(),
+            texto(r.getPuntaje()), texto(r.getDetalle())});
+        componentes.Combos.llenar(jcbxOperacion, componentes.Opcion.conTodas("Todas", java.util.List.of(
+                modelo.OperacionAutenticacion.REGISTRO_HUELLA, modelo.OperacionAutenticacion.PRESTAMO,
+                modelo.OperacionAutenticacion.DEVOLUCION)));
+        componentes.Combos.llenar(jcbxResultado, componentes.Opcion.conTodas("Todos",
+                java.util.List.of(modelo.ResultadoAutenticacion.values())));
+        jdcDesde.setDate(util.Formatos.aDate(java.time.LocalDate.now().minusDays(DIAS_POR_DEFECTO - 1)));
+        jdcHasta.setDate(util.Formatos.aDate(java.time.LocalDate.now()));
+        aplicar();
+    }
+
+    // ---------- Acciones ----------
+
+    /** Consulta con los filtros y actualiza tarjetas, gráfico, barras por operación y tabla. */
+    private void aplicar() {
+        ejecutar(() -> mostrar(bitacora.consultar(util.Formatos.aLocalDate(jdcDesde.getDate()),
+                util.Formatos.aLocalDate(jdcHasta.getDate()),
+                componentes.Combos.seleccionado(jcbxOperacion).getValor(),
+                componentes.Combos.seleccionado(jcbxResultado).getValor())));
+    }
+
+    // ---------- Ayudantes ----------
+
+    private void mostrar(servicio.ResumenBitacora r) {
+        jpnlIntentosHoy.setValor(String.valueOf(r.getIntentosHoy()));
+        jpnlIntentosHoy.setDetalle(r.getTotal() + " en el periodo");
+        jpnlTasaExito.setValor(r.getTasaExito() + "%");
+        jpnlTasaExito.setDetalle(r.getExitos() + " de " + r.getTotal() + " en el periodo");
+        jpnlFallidosHoy.setValor(String.valueOf(r.getFallosHoy()));
+        jpnlFallidosHoy.setDetalle(r.getFallos() + " en el periodo");
+        jpnlPuntaje.setValor(promedio(r.getPuntajeAceptados()));
+        jpnlPuntaje.setDetalle("Rechazados: " + promedio(r.getPuntajeRechazados())
+                + "   ·   Umbral: " + bitacora.umbralHuella());
+        graficoIntentos.setDatos(r.getEtiquetasGrafico(), r.getExitosPorDia(), r.getFallosPorDia());
+        mostrarOperacion(r, modelo.OperacionAutenticacion.PRESTAMO, jlblCantPrestamos, jpgrPrestamos);
+        mostrarOperacion(r, modelo.OperacionAutenticacion.DEVOLUCION, jlblCantDevoluciones, jpgrDevoluciones);
+        mostrarOperacion(r, modelo.OperacionAutenticacion.REGISTRO_HUELLA, jlblCantRegistros, jpgrRegistros);
+        jlblNotaUmbral.setText("Puntaje promedio de los rechazados: " + promedio(r.getPuntajeRechazados()));
+        tabla.mostrar(r.getRegistros());
+    }
+
+    /** Cantidad de intentos de la operación; la barra llena = porcentaje de éxito. */
+    private static void mostrarOperacion(servicio.ResumenBitacora r, modelo.OperacionAutenticacion op,
+                                         javax.swing.JLabel cantidad, javax.swing.JProgressBar barra) {
+        cantidad.setText(r.getTotal(op) + "  (" + r.getTasaExito(op) + "% éxito)");
+        barra.setValue(r.getTasaExito(op));
+    }
+
+    private static String promedio(java.util.OptionalDouble valor) {
+        return valor.isPresent() ? String.valueOf(Math.round(valor.getAsDouble())) : "—";
+    }
+
+    private static String texto(Object valor) {
+        return valor == null ? "—" : valor.toString();
     }
 
     /**
@@ -132,7 +193,6 @@ public class Bitacora extends componentes.VentanaBase {
         jpnlFiltros.add(jlblOperacion, gridBagConstraints);
 
         jcbxOperacion.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jcbxOperacion.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todas", "Registro de huella", "Préstamo", "Devolución" }));
         jcbxOperacion.setPreferredSize(new java.awt.Dimension(120, 32));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -155,7 +215,6 @@ public class Bitacora extends componentes.VentanaBase {
         jpnlFiltros.add(jlblResultado, gridBagConstraints);
 
         jcbxResultado.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jcbxResultado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Éxito", "Fallo" }));
         jcbxResultado.setPreferredSize(new java.awt.Dimension(120, 32));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
@@ -169,6 +228,7 @@ public class Bitacora extends componentes.VentanaBase {
         jbtnAplicar.setText("Aplicar");
         jbtnAplicar.setPrimario(true);
         jbtnAplicar.setPreferredSize(new java.awt.Dimension(110, 36));
+        jbtnAplicar.addActionListener(this::jbtnAplicarActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 1;
@@ -384,13 +444,17 @@ public class Bitacora extends componentes.VentanaBase {
     }// </editor-fold>//GEN-END:initComponents
 
 
+    private void jbtnAplicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnAplicarActionPerformed
+        aplicar();
+    }//GEN-LAST:event_jbtnAplicarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private componentes.GraficoBarras graficoIntentos;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private componentes.BotonSistema jbtnAplicar;
-    private javax.swing.JComboBox<String> jcbxOperacion;
-    private javax.swing.JComboBox<String> jcbxResultado;
+    private javax.swing.JComboBox<componentes.Opcion<modelo.OperacionAutenticacion>> jcbxOperacion;
+    private javax.swing.JComboBox<componentes.Opcion<modelo.ResultadoAutenticacion>> jcbxResultado;
     private com.toedter.calendar.JDateChooser jdcDesde;
     private com.toedter.calendar.JDateChooser jdcHasta;
     private javax.swing.JLabel jlblCantDevoluciones;

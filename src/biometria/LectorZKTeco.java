@@ -45,6 +45,9 @@ public class LectorZKTeco extends LectorBase {
     private long dispositivo;
     private long baseMemoria;
     private byte[] imagen;
+    private int ancho;
+    private int alto;
+    private volatile java.awt.image.BufferedImage ultimaImagen;
     private boolean driverInstalado = true;
     private volatile EstadoLector ultimoEstado = EstadoLector.DESCONECTADO;
     private long proximaRevisionCompleta;
@@ -120,6 +123,7 @@ public class LectorZKTeco extends LectorBase {
                 }
                 byte[] plantilla = intentarCaptura();
                 if (plantilla != null) {
+                    ultimaImagen = copiarImagen();     // antes de que la siguiente lectura la sobrescriba
                     esperarQueLevante();
                     return plantilla;
                 }
@@ -130,6 +134,22 @@ public class LectorZKTeco extends LectorBase {
         } finally {
             candado.unlock();
         }
+    }
+
+    @Override
+    public Optional<java.awt.image.BufferedImage> getUltimaImagen() {
+        return Optional.ofNullable(ultimaImagen);
+    }
+
+    /** El SDK entrega la imagen como bytes en escala de grises (ancho x alto, fila por fila). */
+    private java.awt.image.BufferedImage copiarImagen() {
+        if (ancho <= 0 || alto <= 0) {
+            return null;
+        }
+        java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(ancho, alto,
+                java.awt.image.BufferedImage.TYPE_BYTE_GRAY);
+        img.getRaster().setDataElements(0, 0, ancho, alto, Arrays.copyOf(imagen, ancho * alto));
+        return img;
     }
 
     @Override
@@ -215,7 +235,9 @@ public class LectorZKTeco extends LectorBase {
                 liberarDispositivo();
                 throw new LectorException("No se pudo iniciar el lector.", null);
             }
-            imagen = new byte[leerParametro(PARAM_ANCHO) * leerParametro(PARAM_ALTO)];
+            ancho = leerParametro(PARAM_ANCHO);
+            alto = leerParametro(PARAM_ALTO);
+            imagen = new byte[ancho * alto];
             ultimoCodigo = 0;
             proximaRevisionCompleta = System.currentTimeMillis() + REVISION_COMPLETA_MS;
         } catch (LinkageError e) {

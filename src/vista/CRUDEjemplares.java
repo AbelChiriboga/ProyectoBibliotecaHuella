@@ -27,9 +27,12 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         componentes.Tablas.soloLectura(jtblEjemplares, jScrollPane1, "Código de inventario", "Ubicación", "Estado");
         tabla = new componentes.TablaObjetos<>(jtblEjemplares,
                 e -> new Object[]{e.getCodigoInventario(), e.getUbicacion(), e.getEstado()});
-        control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtCodInv, jtxtUbicacion, jcbxEstado},
+        // El código lo asigna el sistema (siguiente número libre): nunca se escribe a mano
+        jtxtCodInv.setEditable(false);
+        jtxtCodInv.setFocusable(false);
+        control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtUbicacion, jcbxEstado},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
-        componentes.Combos.llenar(jcbxEstado, modelo.EstadoEjemplar.class);
+        llenarEstados(false);
         tabla.alSeleccionar(this::mostrar);
         mostrarLibro();
         cancelar();
@@ -42,13 +45,18 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         actual.setLibro(libro);
         limpiar();
         tabla.limpiarSeleccion();
+        llenarEstados(true);
         control.nuevo();
-        jtxtCodInv.requestFocus();
+        ejecutar(() -> jtxtCodInv.setText(servicio.siguienteCodigo()));   // código automático
+        jtxtUbicacion.requestFocus();
     }
 
     private void editar() {
         ejecutar(() -> {
             actual = tabla.exigirSeleccionado("un ejemplar");
+            servicio.verificarEditable(actual);          // prestado: no se puede editar
+            llenarEstados(true);
+            componentes.Combos.seleccionar(jcbxEstado, actual.getEstado());
             control.edicion();
             jtxtUbicacion.requestFocus();
         });
@@ -78,6 +86,7 @@ public class CRUDEjemplares extends componentes.VentanaBase {
     /** Vuelve al estado inicial y recarga la tabla (descarta cambios sin guardar). */
     private void cancelar() {
         actual = null;
+        llenarEstados(false);
         limpiar();
         cargar();
         control.consulta(false);
@@ -96,6 +105,7 @@ public class CRUDEjemplares extends componentes.VentanaBase {
     }
 
     private void recargarYSeleccionar(modelo.Ejemplar e) {
+        llenarEstados(false);
         cargar();
         control.consulta(false);
         tabla.seleccionar(e);
@@ -114,6 +124,17 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         jtxtUbicacion.setText(e.getUbicacion());
         componentes.Combos.seleccionar(jcbxEstado, e.getEstado());
         control.consulta(true);
+    }
+
+    /**
+     * Al ver un ejemplar se muestran todos los estados (también "Prestado").
+     * Al crear o editar solo se ofrecen los que el bibliotecario puede poner a mano:
+     * Disponible, Dañado y Perdido. "Prestado" lo pone y lo quita el sistema.
+     */
+    private void llenarEstados(boolean soloEditables) {
+        componentes.Combos.llenar(jcbxEstado, java.util.Arrays.stream(modelo.EstadoEjemplar.values())
+                .filter(estado -> !soloEditables || estado.esEditableManualmente())
+                .collect(java.util.stream.Collectors.toList()));
     }
 
     private void limpiar() {

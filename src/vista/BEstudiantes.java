@@ -8,12 +8,94 @@ package vista;
  */
 public class BEstudiantes extends componentes.VentanaBase {
 
+    private final servicio.EstudianteService servicio = new servicio.EstudianteService();
+    private final componentes.TablaObjetos<servicio.SituacionEstudiante> tabla;
+    /** Todos los estudiantes leídos de la BD; el combo Estado filtra sobre esta lista. */
+    private java.util.List<servicio.SituacionEstudiante> todos = java.util.List.of();
+
     public BEstudiantes() {
         initComponents();
         montar("CONSULTA DE ESTUDIANTES", jpnlContenido);
         componentes.Tablas.soloLectura(jtblEstudiantes, jScrollPane1,
-                "Cédula", "Estudiante", "Carrera", "Semestre", "Préstamos activos", "Estado");
-        componentes.Tablas.anchos(jtblEstudiantes, 0, 170, 170);
+                "Cédula", "Estudiante", "Carrera", "Semestre", "Prestados", "Estado");
+        componentes.Tablas.anchos(jtblEstudiantes, 95, 170, 190, 65, 75, 80);
+        tabla = new componentes.TablaObjetos<>(jtblEstudiantes, s -> new Object[]{s.getEstudiante().getCedula(),
+            s.getEstudiante().getNombreCompleto(), s.getEstudiante().getCarrera(), s.getEstudiante().getSemestre(),
+            s.getCantidadActivos(), s.getEstudiante().getEstado().getDescripcion()});
+        tabla.usarBarra(barraBuscar);
+        tabla.alSeleccionar(this::mostrar);
+        componentes.Combos.llenar(jcbxEstado, servicio.FiltroEstudiante.class);
+        jcbxEstado.setSelectedIndex(0);
+        cargar();
+    }
+
+    // ---------- Acciones ----------
+
+    private void cargar() {
+        ejecutar(() -> todos = servicio.listarSituaciones());
+        filtrar();
+    }
+
+    /** Aplica el filtro del combo Estado (Todos, Activos, Inactivos, Con atrasos, Con multas). */
+    private void filtrar() {
+        servicio.FiltroEstudiante elegido = componentes.Combos.seleccionado(jcbxEstado);
+        servicio.FiltroEstudiante filtro = elegido != null ? elegido : jcbxEstado.getItemAt(0);
+        tabla.mostrar(todos.stream().filter(filtro::cumple).collect(java.util.stream.Collectors.toList()));
+        limpiarSeleccionado();
+    }
+
+    private void activar() {
+        cambiarEstado(modelo.EstadoEstudiante.ACTIVO, "activar");
+    }
+
+    private void desactivar() {
+        cambiarEstado(modelo.EstadoEstudiante.INACTIVO, "desactivar");
+    }
+
+    // ---------- Ayudantes ----------
+
+    private void cambiarEstado(modelo.EstadoEstudiante nuevo, String verbo) {
+        ejecutar(() -> {
+            modelo.Estudiante e = tabla.exigirSeleccionado("un estudiante").getEstudiante();
+            if (util.Mensajes.confirmar(this, "¿Desea " + verbo + " a " + e.getNombreCompleto() + "?")) {
+                servicio.cambiarEstado(e, nuevo);
+                cargar();
+                seleccionar(e);
+            }
+        });
+    }
+
+    /** Datos del estudiante seleccionado, a la derecha. */
+    private void mostrar(servicio.SituacionEstudiante s) {
+        modelo.Estudiante e = s.getEstudiante();
+        jlblNombres.setText(e.getNombreCompleto());
+        jlblCedula.setText("C.I: " + e.getCedula());
+        jlblCarrera.setText("Carrera: " + e.getCarrera() + "   ·   Semestre: " + e.getSemestre());
+        jlblCorreo.setText("Correo: " + e.getCorreo());
+        jpnlPrestamosActivos.setValor(s.getCantidadActivos() + " de " + s.getMaximoPrestamos());
+        jpnlAtrasados.setValor(String.valueOf(s.getCantidadAtrasados()));
+        util.Estilos.franjaEstado(jlblEstado, e.getEstado().getDescripcion(), e.puedePrestar());
+        jbtnActivar.setEnabled(!e.puedePrestar());
+        jbtnDesactivar.setEnabled(e.puedePrestar());
+    }
+
+    private void limpiarSeleccionado() {
+        jlblNombres.setText("Seleccione un estudiante");
+        jlblCedula.setText("C.I: —");
+        jlblCarrera.setText("Carrera: —   ·   Semestre: —");
+        jlblCorreo.setText("Correo: —");
+        jpnlPrestamosActivos.setValor("—");
+        jpnlAtrasados.setValor("—");
+        jlblEstado.setText("SIN SELECCIÓN");
+        jlblEstado.setBackground(new java.awt.Color(225, 230, 233));
+        jlblEstado.setForeground(new java.awt.Color(60, 75, 85));
+        jbtnActivar.setEnabled(false);
+        jbtnDesactivar.setEnabled(false);
+    }
+
+    /** Después de recargar, vuelve a seleccionar al mismo estudiante (si sigue en la lista filtrada). */
+    private void seleccionar(modelo.Estudiante e) {
+        tabla.getDatos().stream().filter(s -> s.getEstudiante().equals(e)).findFirst().ifPresent(tabla::seleccionar);
     }
 
     /**
@@ -73,8 +155,8 @@ public class BEstudiantes extends componentes.VentanaBase {
         jpnlFiltro.add(jlblFiltro);
 
         jcbxEstado.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jcbxEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Activos", "Bloqueados" }));
         jcbxEstado.setPreferredSize(new java.awt.Dimension(130, 32));
+        jcbxEstado.addActionListener(this::jcbxEstadoActionPerformed);
         jpnlFiltro.add(jcbxEstado);
 
         jpnlBarra.add(jpnlFiltro, java.awt.BorderLayout.EAST);
@@ -183,10 +265,12 @@ public class BEstudiantes extends componentes.VentanaBase {
         jbtnActivar.setText("Activar");
         jbtnActivar.setPrimario(true);
         jbtnActivar.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnActivar.addActionListener(this::jbtnActivarActionPerformed);
         jpnlBotones.add(jbtnActivar);
 
         jbtnDesactivar.setText("Desactivar");
         jbtnDesactivar.setPreferredSize(new java.awt.Dimension(100, 36));
+        jbtnDesactivar.addActionListener(this::jbtnDesactivarActionPerformed);
         jpnlBotones.add(jbtnDesactivar);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -207,12 +291,24 @@ public class BEstudiantes extends componentes.VentanaBase {
     }// </editor-fold>//GEN-END:initComponents
 
 
+    private void jcbxEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbxEstadoActionPerformed
+        filtrar();
+    }//GEN-LAST:event_jcbxEstadoActionPerformed
+
+    private void jbtnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnActivarActionPerformed
+        activar();
+    }//GEN-LAST:event_jbtnActivarActionPerformed
+
+    private void jbtnDesactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnDesactivarActionPerformed
+        desactivar();
+    }//GEN-LAST:event_jbtnDesactivarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private componentes.BarraBusqueda barraBuscar;
     private javax.swing.JScrollPane jScrollPane1;
     private componentes.BotonSistema jbtnActivar;
     private componentes.BotonSistema jbtnDesactivar;
-    private javax.swing.JComboBox<String> jcbxEstado;
+    private javax.swing.JComboBox<servicio.FiltroEstudiante> jcbxEstado;
     private javax.swing.JLabel jlblCarrera;
     private javax.swing.JLabel jlblCedula;
     private javax.swing.JLabel jlblCorreo;

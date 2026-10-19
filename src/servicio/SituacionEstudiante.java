@@ -1,0 +1,81 @@
+package servicio;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import modelo.Estudiante;
+import modelo.Prestamo;
+
+/**
+ * Situación de un estudiante en la biblioteca: sus préstamos, cuántos puede tener y cuánto debe.
+ * La usan la consulta de estudiantes (bibliotecario) y el panel del estudiante.
+ *
+ * Objeto INMUTABLE. FichaEstudiante HEREDA de esta clase y le agrega el puntaje de la huella
+ * (préstamo y devolución): así los cálculos de cupos y atrasos están en un solo lugar.
+ */
+public class SituacionEstudiante {
+
+    private final Estudiante estudiante;
+    private final List<Prestamo> prestamos;
+    private final int maximoPrestamos;
+    private final BigDecimal multasPendientes;
+
+    /** @param prestamos préstamos del estudiante (solo los activos, o todo su historial) */
+    public SituacionEstudiante(Estudiante estudiante, List<Prestamo> prestamos, int maximoPrestamos,
+                               BigDecimal multasPendientes) {
+        this.estudiante = estudiante;
+        this.prestamos = Collections.unmodifiableList(new ArrayList<>(prestamos));
+        this.maximoPrestamos = maximoPrestamos;
+        this.multasPendientes = multasPendientes == null ? BigDecimal.ZERO : multasPendientes;
+    }
+
+    public Estudiante getEstudiante() {
+        return estudiante;
+    }
+
+    /** Todos los préstamos recibidos (historial completo o solo activos, según se armó). */
+    public List<Prestamo> getPrestamos() {
+        return prestamos;
+    }
+
+    public List<Prestamo> getPrestamosActivos() {
+        return prestamos.stream().filter(Prestamo::estaActivo).collect(Collectors.toList());
+    }
+
+    public int getCantidadActivos() {
+        return getPrestamosActivos().size();
+    }
+
+    public int getCantidadAtrasados() {
+        return (int) prestamos.stream().filter(Prestamo::estaAtrasado).count();
+    }
+
+    public int getMaximoPrestamos() {
+        return maximoPrestamos;
+    }
+
+    /** Cuántos libros más puede llevar (nunca negativo). */
+    public int getCupos() {
+        return Math.max(0, maximoPrestamos - getCantidadActivos());
+    }
+
+    public BigDecimal getMultasPendientes() {
+        return multasPendientes;
+    }
+
+    public boolean tieneMultasPendientes() {
+        return multasPendientes.signum() > 0;
+    }
+
+    /** "Cédula: 1805...   ·   Carrera: Software". */
+    public String getDatos() {
+        return "Cédula: " + estudiante.getCedula() + "   ·   Carrera: " + estudiante.getCarrera();
+    }
+
+    /** "Préstamos activos: 1 de 3". */
+    public String getTextoActivos() {
+        return "Préstamos activos: " + getCantidadActivos() + " de " + maximoPrestamos;
+    }
+}
