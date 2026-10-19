@@ -90,10 +90,24 @@ public class EstudianteService {
 
     public void eliminar(Estudiante e) {
         exigir(Usuario::puedeRegistrarEstudiantes, "eliminar estudiantes");
-        if (!prestamoDAO.listarPorEstudiante(e.getIdEstudiante()).isEmpty()) {
-            throw new NegocioException("No se puede eliminar: el estudiante tiene préstamos. Puede desactivarlo.");
+        List<modelo.Prestamo> prestamos = prestamoDAO.listarPorEstudiante(e.getIdEstudiante());
+        long sinDevolver = prestamos.stream().filter(modelo.Prestamo::estaActivo).count();
+        if (sinDevolver > 0) {
+            throw new NegocioException("No se puede eliminar: tiene " + sinDevolver + " libro(s) sin devolver.");
+        }
+        if (!prestamos.isEmpty()) {
+            throw new NegocioException("No se puede eliminar: ya tiene historial de préstamos (se conserva para "
+                    + "reportes y multas). Puede desactivarlo.");
         }
         dao.eliminar(e.getIdEstudiante());
+    }
+
+    /** Sin préstamos se puede eliminar; con historial solo se desactiva (o se activa si ya está inactivo). */
+    public AccionRetiro accionRetiro(Estudiante e) {
+        if (prestamoDAO.listarPorEstudiante(e.getIdEstudiante()).isEmpty()) {
+            return AccionRetiro.ELIMINAR;
+        }
+        return e.puedePrestar() ? AccionRetiro.DESACTIVAR : AccionRetiro.ACTIVAR;
     }
 
     public void cambiarEstado(Estudiante e, EstadoEstudiante nuevo) {

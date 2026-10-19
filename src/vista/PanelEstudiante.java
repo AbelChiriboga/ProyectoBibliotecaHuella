@@ -23,8 +23,9 @@ public class PanelEstudiante extends componentes.VentanaBase {
     private void mostrar(servicio.SituacionEstudiante s) {
         modelo.Estudiante e = s.getEstudiante();
         jlblNombre.setText(e.getNombreCompleto());
-        jlblCedula.setText("C.I: " + e.getCedula());
-        jlblCarrera.setText("Carrera: " + e.getCarrera() + "   ·   Semestre: " + e.getSemestre());
+        jlblCedula.setText("C.I: " + e.getCedula() + "   ·   Semestre: " + e.getSemestre());
+        jlblCarrera.setText("Carrera: " + e.getCarrera());
+        jlblCarrera.setToolTipText(jlblCarrera.getText());
         jlblCorreo.setText("Correo: " + e.getCorreo());
         jpnlActivos.setValor(s.getCantidadActivos() + " de " + s.getMaximoPrestamos());
         jpnlAtrasados.setValor(String.valueOf(s.getCantidadAtrasados()));

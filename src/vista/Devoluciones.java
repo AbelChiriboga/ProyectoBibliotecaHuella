@@ -49,7 +49,6 @@ public class Devoluciones extends componentes.VentanaBase {
         jpnlHuella.mostrarEstudiante(ficha.getEstudiante().getNombreCompleto(), ficha.getDatos(),
                 ficha.getTextoActivos(), estado, atrasados == 0 && ficha.getCantidadActivos() > 0);
         tabla.mostrar(ficha.getPrestamosActivos());
-        tabla.marcarTodos(true);
         actualizarResumen();
     }
 

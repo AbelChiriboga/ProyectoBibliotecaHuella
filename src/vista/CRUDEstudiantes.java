@@ -64,6 +64,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         ejecutar(() -> {
             actual = tabla.exigirSeleccionado("un estudiante");
             control.edicion();
+            componentes.ControlCrud.permitirEscribir(jtxtCedula, false);
             registro.activar(actual);
             jtxtNombres.requestFocus();
         });
@@ -87,11 +88,13 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         });
     }
 
+    /** Elimina, o desactiva/activa si el estudiante ya tiene historial de préstamos. */
     private void eliminar() {
         ejecutar(() -> {
             modelo.Estudiante e = tabla.exigirSeleccionado("un estudiante");
-            if (util.Mensajes.confirmar(this, "¿Eliminar a " + e.getNombreCompleto() + "?")) {
-                servicio.eliminar(e);
+            servicio.AccionRetiro accion = servicio.accionRetiro(e);
+            if (util.Mensajes.confirmar(this, accion.pregunta(e))) {
+                accion.ejecutar(servicio, e);
                 cancelar();
             }
         });
@@ -99,6 +102,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
 
     private void cancelar() {
         actual = null;
+        jbtnEliminar.setText("Eliminar");
         limpiar();
         cargar();
         control.consulta(false);
@@ -126,6 +130,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         jcbxSemestre.setSelectedItem(String.valueOf(e.getSemestre()));
         registro.mostrar(e);
         control.consulta(true);
+        ejecutar(() -> jbtnEliminar.setText(servicio.accionRetiro(e).getTexto()));
     }
 
     private void limpiar() {

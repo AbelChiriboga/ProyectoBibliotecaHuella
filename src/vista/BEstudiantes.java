@@ -5,6 +5,7 @@ public class BEstudiantes extends componentes.VentanaBase {
 
     private final servicio.EstudianteService servicio = new servicio.EstudianteService();
     private final componentes.TablaObjetos<servicio.SituacionEstudiante> tabla;
+    private final componentes.TablaObjetos<modelo.Prestamo> prestamos;
     private java.util.List<servicio.SituacionEstudiante> todos = java.util.List.of();
 
     public BEstudiantes() {
@@ -18,6 +19,11 @@ public class BEstudiantes extends componentes.VentanaBase {
             s.getCantidadActivos(), s.getEstudiante().getEstado().getDescripcion()});
         tabla.usarBarra(barraBuscar);
         tabla.alSeleccionar(this::mostrar);
+        componentes.Tablas.soloLectura(jtblPrestamos, jScrollPane2, "Libro", "Plazo", "Prestó");
+        componentes.Tablas.anchos(jtblPrestamos, 130, 110, 100);
+        prestamos = new componentes.TablaObjetos<>(jtblPrestamos, p -> new Object[]{
+            p.getEjemplar().getLibro().getTitulo(), p.getTextoPlazo(),
+            p.getUsuario() == null ? "—" : p.getUsuario().getNombreCompleto()});
         componentes.Combos.llenar(jcbxEstado, servicio.FiltroEstudiante.class);
         jcbxEstado.setSelectedIndex(0);
         cargar();
@@ -57,23 +63,27 @@ public class BEstudiantes extends componentes.VentanaBase {
     private void mostrar(servicio.SituacionEstudiante s) {
         modelo.Estudiante e = s.getEstudiante();
         jlblNombres.setText(e.getNombreCompleto());
-        jlblCedula.setText("C.I: " + e.getCedula());
-        jlblCarrera.setText("Carrera: " + e.getCarrera() + "   ·   Semestre: " + e.getSemestre());
+        jlblCedula.setText("C.I: " + e.getCedula() + "   ·   Semestre: " + e.getSemestre());
+        jlblCarrera.setText("Carrera: " + e.getCarrera());
+        jlblCarrera.setToolTipText(jlblCarrera.getText());
         jlblCorreo.setText("Correo: " + e.getCorreo());
         jpnlPrestamosActivos.setValor(s.getCantidadActivos() + " de " + s.getMaximoPrestamos());
         jpnlAtrasados.setValor(String.valueOf(s.getCantidadAtrasados()));
         util.Estilos.franjaEstado(jlblEstado, e.getEstado().getDescripcion(), e.puedePrestar());
+        prestamos.mostrar(s.getPrestamosActivos());
         jbtnActivar.setEnabled(!e.puedePrestar());
         jbtnDesactivar.setEnabled(e.puedePrestar());
     }
 
     private void limpiarSeleccionado() {
         jlblNombres.setText("Seleccione un estudiante");
-        jlblCedula.setText("C.I: —");
-        jlblCarrera.setText("Carrera: —   ·   Semestre: —");
+        jlblCedula.setText("C.I: —   ·   Semestre: —");
+        jlblCarrera.setText("Carrera: —");
+        jlblCarrera.setToolTipText(null);
         jlblCorreo.setText("Correo: —");
         jpnlPrestamosActivos.setValor("—");
         jpnlAtrasados.setValor("—");
+        prestamos.mostrar(java.util.List.of());
         jlblEstado.setText("SIN SELECCIÓN");
         jlblEstado.setBackground(new java.awt.Color(225, 230, 233));
         jlblEstado.setForeground(new java.awt.Color(60, 75, 85));
@@ -117,6 +127,9 @@ public class BEstudiantes extends componentes.VentanaBase {
         jpnlBotones = new javax.swing.JPanel();
         jbtnActivar = new componentes.BotonSistema();
         jbtnDesactivar = new componentes.BotonSistema();
+        jlblPrestamos = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jtblPrestamos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -157,7 +170,7 @@ public class BEstudiantes extends componentes.VentanaBase {
         jpnlContenido.add(jpnlEstudiantes, java.awt.BorderLayout.CENTER);
 
         jpnlSeleccionado.setTitulo("Estudiante seleccionado");
-        jpnlSeleccionado.setPreferredSize(new java.awt.Dimension(300, 400));
+        jpnlSeleccionado.setPreferredSize(new java.awt.Dimension(380, 400));
         jpnlSeleccionado.setLayout(new java.awt.GridBagLayout());
 
         jlblNombres.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
@@ -265,9 +278,31 @@ public class BEstudiantes extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 6);
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 14, 6);
         jpnlSeleccionado.add(jpnlBotones, gridBagConstraints);
+
+        jlblPrestamos.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        jlblPrestamos.setForeground(new java.awt.Color(0, 128, 128));
+        jlblPrestamos.setText("Libros prestados");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 4, 6);
+        jpnlSeleccionado.add(jlblPrestamos, gridBagConstraints);
+
+        jScrollPane2.setViewportView(jtblPrestamos);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 6);
+        jpnlSeleccionado.add(jScrollPane2, gridBagConstraints);
 
         jpnlContenido.add(jpnlSeleccionado, java.awt.BorderLayout.EAST);
 
@@ -291,6 +326,7 @@ public class BEstudiantes extends componentes.VentanaBase {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private componentes.BarraBusqueda barraBuscar;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private componentes.BotonSistema jbtnActivar;
     private componentes.BotonSistema jbtnDesactivar;
     private javax.swing.JComboBox<servicio.FiltroEstudiante> jcbxEstado;
@@ -300,6 +336,7 @@ public class BEstudiantes extends componentes.VentanaBase {
     private javax.swing.JLabel jlblEstado;
     private javax.swing.JLabel jlblFiltro;
     private javax.swing.JLabel jlblNombres;
+    private javax.swing.JLabel jlblPrestamos;
     private componentes.TarjetaIndicador jpnlAtrasados;
     private javax.swing.JPanel jpnlBarra;
     private javax.swing.JPanel jpnlBotones;
@@ -310,5 +347,6 @@ public class BEstudiantes extends componentes.VentanaBase {
     private componentes.TarjetaIndicador jpnlPrestamosActivos;
     private componentes.PanelGrupo jpnlSeleccionado;
     private javax.swing.JTable jtblEstudiantes;
+    private javax.swing.JTable jtblPrestamos;
     // End of variables declaration//GEN-END:variables
 }

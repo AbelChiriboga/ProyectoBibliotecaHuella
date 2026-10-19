@@ -61,6 +61,7 @@ public class CRUDLibros extends componentes.VentanaBase {
             actual = tabla.exigirSeleccionado("un libro");
             ejemplares = new servicio.EjemplaresGuardados(actual);
             control.edicion();
+            componentes.ControlCrud.permitirEscribir(jtxtISBN, false);
             jtxtTitulo.requestFocus();
         });
     }

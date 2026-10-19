@@ -44,6 +44,23 @@ public class Prestamo extends Entidad {
         return diasAtraso(fechaDevolucion != null ? fechaDevolucion.toLocalDate() : LocalDate.now());
     }
 
+    /** Días que faltan para la fecha límite (negativo si ya pasó). */
+    public int diasRestantes(LocalDate hoy) {
+        return (int) ChronoUnit.DAYS.between(hoy, fechaLimite.toLocalDate());
+    }
+
+    /** "Faltan 3 días", "Falta 1 día", "Vence hoy" o "Atrasado 2 días". */
+    public String getTextoPlazo() {
+        int dias = diasRestantes(LocalDate.now());
+        if (dias > 0) {
+            return dias == 1 ? "Falta 1 día" : "Faltan " + dias + " días";
+        }
+        if (dias == 0) {
+            return "Vence hoy";
+        }
+        return "Atrasado " + (-dias) + (dias == -1 ? " día" : " días");
+    }
+
     public boolean estaAtrasado() {
         return estaActivo() && diasAtraso() > 0;
     }
