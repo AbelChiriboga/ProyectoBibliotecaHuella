@@ -46,7 +46,7 @@ public class DevolucionService extends AtencionConHuella {
         exigirPermiso();
         exigirIdentificado(ficha);
         if (marcados.isEmpty()) {
-            throw new ValidacionException("Marque en la tabla los libros que está devolviendo el estudiante.");
+            throw new ValidacionException("Seleccione al menos un libro.");
         }
         exigirQueSeanSuyos(ficha, marcados);
         List<Integer> ids = marcados.stream().map(Prestamo::getId).collect(Collectors.toList());
@@ -60,8 +60,8 @@ public class DevolucionService extends AtencionConHuella {
     private static void exigirQueSeanSuyos(FichaEstudiante ficha, List<Prestamo> marcados) {
         Set<Integer> suyos = ficha.getPrestamosActivos().stream().map(Prestamo::getId).collect(Collectors.toSet());
         marcados.stream().filter(p -> !suyos.contains(p.getId())).findFirst().ifPresent(p -> {
-            throw new NegocioException("El préstamo de " + p.getEjemplar().getCodigoInventario()
-                    + " no es del estudiante identificado o ya fue devuelto.");
+            throw new NegocioException("El libro " + p.getEjemplar().getCodigoInventario()
+                    + " no está prestado a este estudiante.");
         });
     }
 

@@ -10,7 +10,6 @@ public class EstudianteActivo implements ReglaPrestamo {
     public Optional<String> incumplimiento(FichaEstudiante ficha, int cantidad) {
         return ficha.getEstudiante().puedePrestar()
                 ? Optional.empty()
-                : Optional.of("El estudiante está " + ficha.getEstudiante().getEstado().getDescripcion().toLowerCase()
-                        + " y no puede llevar libros.");
+                : Optional.of("El estudiante está " + ficha.getEstudiante().getEstado().getDescripcion().toLowerCase() + ".");
     }
 }

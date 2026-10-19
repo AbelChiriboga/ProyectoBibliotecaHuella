@@ -24,22 +24,21 @@ public abstract class LectorBase implements LectorBiometrico {
         exigirAbierto();
         byte[][] muestras = new byte[MUESTRAS_REGISTRO][];
         for (int i = 0; i < MUESTRAS_REGISTRO; i++) {
-            aviso.avisar(i, "Coloque el dedo en el lector (muestra " + (i + 1) + " de " + MUESTRAS_REGISTRO + ").");
+            aviso.avisar(i, "Coloque el dedo (" + (i + 1) + " de " + MUESTRAS_REGISTRO + ").");
             muestras[i] = capturar();
             if (i > 0 && !mismoDedo(muestras[i - 1], muestras[i])) {
                 aviso.avisar(i, "Las muestras no coinciden.");
-                throw new LectorException("Las muestras no son del mismo dedo. Vuelva a capturar las "
-                        + MUESTRAS_REGISTRO + " muestras con el mismo dedo.");
+                throw new LectorException("Las muestras no son del mismo dedo. Intente de nuevo.");
             }
-            aviso.avisar(i + 1, i + 1 < MUESTRAS_REGISTRO ? "Muestra lista. Levante y vuelva a colocar el dedo."
-                    : "Muestras completas. Generando la plantilla...");
+            aviso.avisar(i + 1, i + 1 < MUESTRAS_REGISTRO ? "Levante el dedo y colóquelo otra vez."
+                    : "Procesando huella...");
         }
         return fusionar(muestras);
     }
 
     protected void exigirAbierto() {
         if (!estaAbierto()) {
-            throw new LectorException("Lector de huella desconectado. Conéctelo e intente de nuevo.");
+            throw new LectorException("Lector desconectado.");
         }
     }
 }

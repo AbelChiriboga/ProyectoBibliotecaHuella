@@ -45,8 +45,7 @@ public class LibroService extends ServicioCrud<Libro> {
     @Override
     protected void antesDeEliminar(Libro l) {
         if (l.getEjemplaresTotales() > 0) {
-            throw new excepciones.NegocioException("No se puede eliminar \"" + l.getTitulo() + "\" porque tiene "
-                    + l.getEjemplaresTotales() + " ejemplar(es). Elimine o dé de baja sus ejemplares primero.");
+            throw new excepciones.NegocioException("No se puede eliminar: el libro tiene ejemplares.");
         }
     }
 }

@@ -23,8 +23,9 @@ public class Devoluciones extends componentes.VentanaBase {
             p.getEjemplar().getCodigoInventario(), p.getEjemplar().getLibro().getTitulo(),
             util.Formatos.fecha(p.getFechaPrestamo()), util.Formatos.fecha(p.getFechaLimite()), estadoTexto(p)});
         tabla.alMarcar(this::actualizarResumen);
-        lectura = new LecturaHuella(this, jpnlHuella, servicio::identificar, this::estudianteIdentificado);
-        jpnlHuella.getBotonCapturar().addActionListener(e -> lectura.leer());
+        // La huella se lee sola: no hay botón (ver LecturaHuella)
+        lectura = new LecturaHuella(this, jpnlHuella, servicio::identificar, this::estudianteIdentificado,
+                servicio::cancelarLectura);
         alCambiarLector(lectura::lectorCambio);
         ejecutar(() -> multaPorDia = servicio.multaPorDia());
         actualizarResumen();
@@ -35,13 +36,11 @@ public class Devoluciones extends componentes.VentanaBase {
     /** Registra la devolución de los libros marcados; la BD genera la multa si hay atraso. */
     private void confirmarDevolucion() {
         ejecutar(() -> {
-            String nombre = lectura.getFicha() == null ? "" : lectura.getFicha().getEstudiante().getNombreCompleto();
             java.util.List<modelo.Prestamo> marcados = tabla.getMarcados();
             servicio.ResumenDevolucion r = servicio.devolver(lectura.getFicha(), marcados);
-            util.Mensajes.info(this, "Devolución registrada para " + nombre + ": " + marcados.size() + " libro(s).\n\n"
-                    + (r.hayMulta() ? "Se generó una multa de " + util.Formatos.dinero(r.getTotal())
-                            + " por " + r.getDiasRetraso() + " día(s) de atraso (pendiente de pago)."
-                            : "Entregado a tiempo: sin multa."));
+            util.Mensajes.info(this, "Devolución registrada.\n\n" + (r.hayMulta()
+                    ? "Multa: " + util.Formatos.dinero(r.getTotal()) + " (" + r.getDiasRetraso() + " día(s) de atraso)."
+                    : "Sin multa."));
             nuevaDevolucion();
         });
     }

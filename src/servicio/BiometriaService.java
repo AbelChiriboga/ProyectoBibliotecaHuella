@@ -87,9 +87,13 @@ public class BiometriaService {
         byte[] muestra = lector.capturar();
         return identificar(muestra).orElseThrow(() -> {
             anotar(null, operacion, ResultadoAutenticacion.FALLO, null, "Huella no reconocida");
-            return new NegocioException("Huella no reconocida. Pida al estudiante que limpie el dedo "
-                    + "y lo coloque de nuevo (si no está registrado, debe acudir al administrador).");
+            return new excepciones.HuellaNoReconocidaException();
         });
+    }
+
+    /** Deja de esperar el dedo (por ejemplo, al cerrar la ventana de préstamos). */
+    public void cancelarCaptura() {
+        lector.cancelarCaptura();
     }
 
     /** Anota un intento en la bitácora (préstamo, devolución o registro de huella). */
@@ -104,8 +108,7 @@ public class BiometriaService {
     private void exigirLectorListo() {
         biometria.EstadoLector estado = lector.verificarEstado();
         if (!estado.permiteCapturar()) {
-            throw new excepciones.LectorException("Lector de huella " + estado.getDescripcion().toLowerCase()
-                    + ". Conéctelo para leer huellas.");
+            throw new excepciones.LectorException("Lector " + estado.getDescripcion().toLowerCase() + ".");
         }
     }
 
@@ -125,8 +128,7 @@ public class BiometriaService {
                 .ifPresent(id -> {
                     anotar(idParaBitacora(e), OperacionAutenticacion.REGISTRO_HUELLA, ResultadoAutenticacion.FALLO,
                             id.getPuntaje(), "La huella ya pertenece a " + id.getEstudiante().getCedula());
-                    throw new NegocioException("Esa huella ya está registrada para "
-                            + id.getEstudiante().getNombreCompleto() + " (" + id.getEstudiante().getCedula() + ").");
+                    throw new NegocioException("Esta huella ya pertenece a " + id.getEstudiante().getNombreCompleto() + ".");
                 });
     }
 

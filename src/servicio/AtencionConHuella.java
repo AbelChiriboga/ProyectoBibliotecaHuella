@@ -45,6 +45,11 @@ public abstract class AtencionConHuella {
         return armarFicha(id.getEstudiante(), id.getPuntaje());
     }
 
+    /** Deja de esperar el dedo (al cerrar la ventana). */
+    public void cancelarLectura() {
+        biometria.cancelarCaptura();
+    }
+
     /** Ficha con los datos actuales de la BD (préstamos activos, máximo y multas). */
     protected FichaEstudiante armarFicha(modelo.Estudiante e, int puntaje) {
         return new FichaEstudiante(e, puntaje, prestamoDAO.listarActivosPorEstudiante(e.getIdEstudiante()),
@@ -58,8 +63,7 @@ public abstract class AtencionConHuella {
     /** Sin estudiante identificado con huella no hay préstamo ni devolución. */
     protected static void exigirIdentificado(FichaEstudiante ficha) {
         if (ficha == null) {
-            throw new excepciones.ValidacionException("Primero identifique al estudiante con su huella "
-                    + "(presione Leer huella y pida que coloque el dedo).");
+            throw new excepciones.ValidacionException("Ingrese la huella del estudiante.");
         }
     }
 

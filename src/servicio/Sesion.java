@@ -40,7 +40,7 @@ public final class Sesion {
 
     /** Usuario actual; si no hay sesión, lanza NegocioException. */
     public Usuario getUsuario() {
-        return getUsuarioActual().orElseThrow(() -> new NegocioException("No hay una sesión iniciada."));
+        return getUsuarioActual().orElseThrow(() -> new NegocioException("Inicie sesión primero."));
     }
 
     /**
@@ -50,7 +50,7 @@ public final class Sesion {
      */
     public void exigir(Predicate<Usuario> permiso, String accion) {
         if (!permiso.test(getUsuario())) {
-            throw new NegocioException("Su rol (" + usuario.getTipo() + ") no tiene permiso para " + accion + ".");
+            throw new NegocioException("No tiene permiso para " + accion + ".");
         }
     }
 }

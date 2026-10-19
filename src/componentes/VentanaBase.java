@@ -132,6 +132,7 @@ public class VentanaBase extends JFrame {
      */
     protected void alCambiarLector(java.util.function.Consumer<biometria.EstadoLector> accion) {
         biometria.MonitorLector monitor = biometria.MonitorLector.getInstancia();
+        monitor.iniciar();                       // por si la ventana se abre sin pasar por Main
         monitor.agregarOyente(accion);
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override

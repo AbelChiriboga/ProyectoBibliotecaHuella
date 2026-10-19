@@ -23,8 +23,9 @@ public class Prestamos extends componentes.VentanaBase {
             e.getCodigoInventario(), e.getLibro().getTitulo(), e.getLibro().getAutor(), e.getUbicacion()});
         tabla.usarBarra(barraBuscar);
         tabla.alMarcar(this::actualizarResumen);
-        lectura = new LecturaHuella(this, jpnlHuella, servicio::identificar, this::estudianteIdentificado);
-        jpnlHuella.getBotonCapturar().addActionListener(e -> lectura.leer());
+        // La huella se lee sola: no hay botón (ver LecturaHuella)
+        lectura = new LecturaHuella(this, jpnlHuella, servicio::identificar, this::estudianteIdentificado,
+                servicio::cancelarLectura);
         alCambiarLector(lectura::lectorCambio);
         cargarEjemplares();
     }
@@ -78,8 +79,7 @@ public class Prestamos extends componentes.VentanaBase {
     }
 
     private String comprobante(java.util.List<modelo.Prestamo> hechos) {
-        StringBuilder sb = new StringBuilder("Préstamo registrado para ")
-                .append(lectura.getFicha().getEstudiante().getNombreCompleto()).append(":\n\n");
+        StringBuilder sb = new StringBuilder("Préstamo registrado.\n\n");
         for (modelo.Prestamo p : hechos) {
             sb.append("• ").append(p.getEjemplar().getCodigoInventario()).append("  ")
                     .append(p.getEjemplar().getLibro().getTitulo()).append("\n");

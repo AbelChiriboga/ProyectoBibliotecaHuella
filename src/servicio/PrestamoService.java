@@ -71,7 +71,7 @@ public class PrestamoService extends AtencionConHuella {
         exigirPermiso();
         exigirIdentificado(ficha);
         if (ejemplares.isEmpty()) {
-            throw new ValidacionException("Marque en la tabla los libros que se va a llevar el estudiante.");
+            throw new ValidacionException("Seleccione al menos un libro.");
         }
         primerIncumplimiento(ficha, ejemplares.size()).ifPresent(motivo -> {
             throw new NegocioException(motivo);
@@ -96,7 +96,7 @@ public class PrestamoService extends AtencionConHuella {
 
     private static Prestamo nuevoPrestamo(FichaEstudiante ficha, Ejemplar ej) {
         if (!ej.getEstado().esPrestable()) {
-            throw new NegocioException("El ejemplar " + ej.getCodigoInventario() + " no está disponible.");
+            throw new NegocioException("El libro " + ej.getCodigoInventario() + " ya no está disponible.");
         }
         Prestamo p = new Prestamo(ej, ficha.getEstudiante(), Sesion.getInstancia().getUsuario());
         p.setHuellaPrestamo(true);                 // la huella ya se verificó al identificar

@@ -35,7 +35,7 @@ public class UsuarioService {
         exigirPermiso();
         Validaciones.cedulaEcuatoriana(u.getCedula());
         if (dao.buscarPorId(u.getCedula()).isPresent()) {
-            throw new ValidacionException("Ya existe un usuario con la cédula " + u.getCedula() + ".");
+            throw new ValidacionException("Ya existe un usuario con esa cédula.");
         }
         u.setPasswordHash(Seguridad.sha256(Seguridad.validarNueva(clave, repetida)));
         u.setActivo(true);

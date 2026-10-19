@@ -29,7 +29,7 @@ public class PanelHuella extends PanelGrupo {
     // Comunes
     private final JLabel lblHuella = new JLabel("Coloque el dedo");
     private final JLabel lblEstado = new JLabel(" ");
-    private final BotonSistema botonCapturar = new BotonSistema("Leer huella");
+    private final BotonSistema botonCapturar = new BotonSistema("Capturar huella");
 
     // Modo verificación (préstamo / devolución)
     private final JPanel pnlEstudiante = new JPanel(new GridLayout(4, 1, 0, 4));
@@ -100,7 +100,7 @@ public class PanelHuella extends PanelGrupo {
         barMuestras.setPreferredSize(new Dimension(100, 20));
         util.Estilos.barra(barMuestras);
         barMuestras.setStringPainted(true);
-        txtInfo.setText("Seleccione el dedo y presione Capturar huella. Se necesitan 3 muestras del mismo dedo.");
+        txtInfo.setText("Elija el dedo y presione Capturar huella.");
         txtInfo.setEditable(false);
         txtInfo.setLineWrap(true);
         txtInfo.setWrapStyleWord(true);
@@ -146,7 +146,8 @@ public class PanelHuella extends PanelGrupo {
         scrInfo.setVisible(modoRegistro);
         pnlEstudiante.setVisible(!modoRegistro);
         lblEstado.setVisible(!modoRegistro);
-        botonCapturar.setText(modoRegistro ? "Capturar huella" : "Leer huella");
+        botonCapturar.setText("Capturar huella");
+        botonCapturar.setVisible(modoRegistro);     // en préstamo/devolución la huella se lee sola
         botonCapturar.setPrimario(true);
         revalidate();
         repaint();
@@ -162,8 +163,8 @@ public class PanelHuella extends PanelGrupo {
     public void reiniciar() {
         pintarHuella("Coloque el dedo", FONDO_NORMAL, new Color(90, 110, 115));
         mostrarAvance(0, modoRegistro
-                ? "Seleccione el dedo y presione Capturar huella. Se necesitan 3 muestras del mismo dedo."
-                : "Presione Leer huella y pida al estudiante que coloque el dedo.");
+                ? "Elija el dedo y presione Capturar huella."
+                : "Coloque el dedo en el lector.");
     }
 
     /** Durante la captura: bloquea el botón y avisa que se está leyendo. */

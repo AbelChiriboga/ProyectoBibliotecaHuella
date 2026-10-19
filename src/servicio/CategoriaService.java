@@ -39,8 +39,7 @@ public class CategoriaService extends ServicioCrud<Categoria> {
     @Override
     protected void antesDeEliminar(Categoria c) {
         if (c.getCantidadLibros() > 0) {
-            throw new excepciones.NegocioException("No se puede eliminar la categoría \"" + c.getNombre()
-                    + "\" porque tiene " + c.getCantidadLibros() + " libro(s).");
+            throw new excepciones.NegocioException("No se puede eliminar: la categoría tiene libros.");
         }
     }
 }

@@ -15,9 +15,14 @@ public final class Validaciones {
     /** Campo obligatorio: no nulo ni vacío. Devuelve el texto sin espacios a los lados. */
     public static String obligatorio(String valor, String campo) {
         if (valor == null || valor.trim().isEmpty()) {
-            throw new ValidacionException("El campo " + campo + " es obligatorio.");
+            throw new ValidacionException(nombre(campo) + " es obligatorio.");
         }
         return valor.trim();
+    }
+
+    /** "nombres" → "Nombres" (los mensajes empiezan con el nombre del dato: "Nombres es obligatorio."). */
+    private static String nombre(String campo) {
+        return campo == null || campo.isEmpty() ? "El dato" : Character.toUpperCase(campo.charAt(0)) + campo.substring(1);
     }
 
     /** Opcional: devuelve null si viene vacío, o el texto sin espacios. */
@@ -28,7 +33,7 @@ public final class Validaciones {
     /** Longitud máxima (las columnas VARCHAR tienen límite). */
     public static String maximo(String valor, int max, String campo) {
         if (valor != null && valor.length() > max) {
-            throw new ValidacionException("El campo " + campo + " admite máximo " + max + " caracteres.");
+            throw new ValidacionException(nombre(campo) + " admite máximo " + max + " caracteres.");
         }
         return valor;
     }
@@ -50,10 +55,10 @@ public final class Validaciones {
         String c = formatoCedula(cedula);
         int provincia = Integer.parseInt(c.substring(0, 2));
         if ((provincia < 1 || provincia > 24) && provincia != 30) {
-            throw new ValidacionException("La cédula tiene un código de provincia no válido.");
+            throw new ValidacionException("La cédula no es válida.");
         }
         if (c.charAt(2) - '0' >= 6) {
-            throw new ValidacionException("La cédula no corresponde a una persona natural.");
+            throw new ValidacionException("La cédula no es válida.");
         }
         int suma = 0;
         for (int i = 0; i < 9; i++) {
@@ -62,7 +67,7 @@ public final class Validaciones {
         }
         int verificador = (10 - suma % 10) % 10;
         if (verificador != c.charAt(9) - '0') {
-            throw new ValidacionException("La cédula ingresada no es válida.");
+            throw new ValidacionException("La cédula no es válida.");
         }
         return c;
     }
@@ -91,7 +96,7 @@ public final class Validaciones {
         try {
             return rango(Integer.parseInt(v), campo, min, max);
         } catch (NumberFormatException e) {
-            throw new ValidacionException("El campo " + campo + " debe ser un número entero.");
+            throw new ValidacionException(nombre(campo) + " debe ser un número entero.");
         }
     }
 
@@ -103,7 +108,7 @@ public final class Validaciones {
     /** Verifica que un entero esté dentro del rango. */
     public static int rango(int valor, String campo, int min, int max) {
         if (valor < min || valor > max) {
-            throw new ValidacionException("El campo " + campo + " debe estar entre " + min + " y " + max + ".");
+            throw new ValidacionException(nombre(campo) + " debe estar entre " + min + " y " + max + ".");
         }
         return valor;
     }
@@ -114,14 +119,14 @@ public final class Validaciones {
         try {
             return noNegativo(new BigDecimal(v), campo);
         } catch (NumberFormatException e) {
-            throw new ValidacionException("El campo " + campo + " debe ser un número.");
+            throw new ValidacionException(nombre(campo) + " debe ser un número.");
         }
     }
 
     /** Un decimal no puede ser nulo ni negativo. */
     public static BigDecimal noNegativo(BigDecimal valor, String campo) {
         if (valor == null || valor.signum() < 0) {
-            throw new ValidacionException("El campo " + campo + " no puede ser negativo.");
+            throw new ValidacionException(nombre(campo) + " no puede ser negativo.");
         }
         return valor;
     }

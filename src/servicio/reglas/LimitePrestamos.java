@@ -9,12 +9,11 @@ public class LimitePrestamos implements ReglaPrestamo {
     @Override
     public Optional<String> incumplimiento(FichaEstudiante ficha, int cantidad) {
         if (ficha.getCupos() == 0) {
-            return Optional.of("El estudiante ya tiene " + ficha.getCantidadActivos() + " préstamos activos (máximo "
-                    + ficha.getMaximoPrestamos() + "). Debe devolver un libro antes de llevar otro.");
+            return Optional.of("El estudiante ya tiene " + ficha.getCantidadActivos() + " libros prestados (máximo "
+                    + ficha.getMaximoPrestamos() + ").");
         }
         return cantidad > ficha.getCupos()
-                ? Optional.of("Solo puede llevar " + ficha.getCupos() + " libro(s) más (máximo "
-                        + ficha.getMaximoPrestamos() + " a la vez). Desmarque " + (cantidad - ficha.getCupos()) + ".")
+                ? Optional.of("Solo puede llevar " + ficha.getCupos() + " libro(s) más.")
                 : Optional.empty();
     }
 }

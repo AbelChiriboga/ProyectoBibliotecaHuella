@@ -12,8 +12,7 @@ public class SinMultasPendientes implements ReglaPrestamo {
     @Override
     public Optional<String> incumplimiento(FichaEstudiante ficha, int cantidad) {
         return ficha.tieneMultasPendientes()
-                ? Optional.of("El estudiante tiene multas pendientes por $" + ficha.getMultasPendientes()
-                        .setScale(2, java.math.RoundingMode.HALF_UP).toPlainString() + ". Debe pagarlas antes de llevar libros.")
+                ? Optional.of("El estudiante tiene multas sin pagar (" + util.Formatos.dinero(ficha.getMultasPendientes()) + ").")
                 : Optional.empty();
     }
 }

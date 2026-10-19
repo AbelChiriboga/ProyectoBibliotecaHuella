@@ -22,6 +22,12 @@ public final class Tareas {
      * @param siempre    se ejecuta al final, haya error o no (por ejemplo, volver a habilitar el botón)
      */
     public static <T> void enSegundoPlano(Component padre, Supplier<T> trabajo, Consumer<T> alTerminar, Runnable siempre) {
+        enSegundoPlano(padre, trabajo, alTerminar, e -> Mensajes.error(padre, e), siempre);
+    }
+
+    /** Igual, pero la ventana decide qué hacer si el trabajo falla (en vez de mostrar el mensaje). */
+    public static <T> void enSegundoPlano(Component padre, Supplier<T> trabajo, Consumer<T> alTerminar,
+                                          Consumer<BibliotecaException> alFallar, Runnable siempre) {
         new SwingWorker<T, Void>() {
             private BibliotecaException error;
 
@@ -42,7 +48,7 @@ public final class Tareas {
                     if (error == null) {
                         Mensajes.ejecutar(padre, () -> alTerminar.accept(getResultado()));
                     } else {
-                        Mensajes.error(padre, error);
+                        alFallar.accept(error);
                     }
                 } catch (InterruptedException | java.util.concurrent.ExecutionException e) {
                     Mensajes.error(padre, new excepciones.DatosException("Error inesperado: " + e.getMessage(), e));

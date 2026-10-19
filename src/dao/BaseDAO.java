@@ -28,6 +28,15 @@ public abstract class BaseDAO<T, ID> implements ConsultaDAO<T, ID> {
 
     /** Código de error que lanzan los triggers con SIGNAL SQLSTATE '45000'. */
     private static final String ESTADO_TRIGGER = "45000";
+
+    /** Los mensajes de los triggers vienen sin tildes: se muestran con un texto simple. */
+    private static final java.util.Map<String, String> MENSAJES_TRIGGER = java.util.Map.of(
+            "El prestamo requiere verificacion de huella", "Ingrese la huella del estudiante.",
+            "La devolucion requiere verificacion de huella", "Ingrese la huella del estudiante.",
+            "El estudiante no esta activo", "El estudiante está inactivo.",
+            "El ejemplar no esta disponible", "El libro no está disponible.",
+            "El estudiante alcanzo el maximo de prestamos activos", "El estudiante llegó al máximo de préstamos.",
+            "Un prestamo devuelto no se puede reactivar", "Ese préstamo ya fue devuelto.");
     private static final int ERROR_DUPLICADO = 1062;
     private static final int ERROR_LLAVE_FORANEA = 1451;
     private static final int ERROR_REFERENCIA_INEXISTENTE = 1452;
@@ -64,7 +73,7 @@ public abstract class BaseDAO<T, ID> implements ConsultaDAO<T, ID> {
     protected Connection obtenerConexion() {
         Connection cn = new Conexion().conectar();
         if (cn == null) {
-            throw new DatosException("No se pudo conectar a la base de datos. Verifique que MySQL (XAMPP) esté encendido.");
+            throw new DatosException("No hay conexión con la base de datos. Encienda MySQL (XAMPP).");
         }
         return cn;
     }
@@ -180,16 +189,16 @@ public abstract class BaseDAO<T, ID> implements ConsultaDAO<T, ID> {
      */
     protected BibliotecaException traducir(SQLException e) {
         if (ESTADO_TRIGGER.equals(e.getSQLState())) {
-            return new NegocioException(e.getMessage(), e);
+            return new NegocioException(MENSAJES_TRIGGER.getOrDefault(e.getMessage(), e.getMessage()), e);
         }
         if (e.getErrorCode() == ERROR_DUPLICADO) {
-            return new ValidacionException("Ya existe un registro con ese dato: " + valorDuplicado(e.getMessage()));
+            return new ValidacionException("Ya existe un registro con " + valorDuplicado(e.getMessage()) + ".");
         }
         if (e.getErrorCode() == ERROR_LLAVE_FORANEA) {
-            return new NegocioException("No se puede eliminar porque tiene registros relacionados.", e);
+            return new NegocioException("No se puede eliminar porque está en uso.", e);
         }
         if (e.getErrorCode() == ERROR_REFERENCIA_INEXISTENTE) {
-            return new ValidacionException("El registro relacionado (estudiante, libro, autor...) no existe.");
+            return new ValidacionException("El dato seleccionado ya no existe.");
         }
         return new DatosException("Error en la base de datos: " + e.getMessage(), e);
     }

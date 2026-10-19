@@ -56,8 +56,7 @@ public class EstudianteService {
     public Estudiante guardar(Estudiante e, Map<Dedo, byte[]> huellasCapturadas) {
         exigir(Usuario::puedeRegistrarEstudiantes, "registrar estudiantes");
         if (!e.tieneHuella() && huellasCapturadas.isEmpty()) {
-            throw new ValidacionException("Registre al menos una huella del estudiante antes de guardar "
-                    + "(elija el dedo y presione Capturar huella).");
+            throw new ValidacionException("Registre la huella del estudiante.");
         }
         if (e.esNuevo()) {
             Validaciones.cedulaEcuatoriana(e.getCedula());
@@ -73,8 +72,7 @@ public class EstudianteService {
     public void eliminar(Estudiante e) {
         exigir(Usuario::puedeRegistrarEstudiantes, "eliminar estudiantes");
         if (!prestamoDAO.listarPorEstudiante(e.getIdEstudiante()).isEmpty()) {
-            throw new NegocioException(e.getNombreCompleto() + " tiene préstamos registrados y no se puede eliminar. "
-                    + "Desactívelo en su lugar.");
+            throw new NegocioException("No se puede eliminar: el estudiante tiene préstamos. Puede desactivarlo.");
         }
         dao.eliminar(e.getIdEstudiante());
     }

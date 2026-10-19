@@ -18,6 +18,8 @@ import javax.swing.SwingUtilities;
  */
 public class LectorSimulado extends LectorBase {
 
+    private volatile javax.swing.JDialog dialogo;
+
     private static final int PUNTAJE_COINCIDENCIA = 90;
 
     private boolean abierto;
@@ -55,9 +57,7 @@ public class LectorSimulado extends LectorBase {
     public byte[] capturar() {
         exigirAbierto();
         String[] respuesta = new String[1];
-        Runnable pedir = () -> respuesta[0] = (String) JOptionPane.showInputDialog(null,
-                "LECTOR SIMULADO\nEscriba el código del dedo (por ejemplo, la cédula del estudiante):",
-                "Lector simulado", JOptionPane.QUESTION_MESSAGE, null, null, ultimoCodigo);
+        Runnable pedir = () -> respuesta[0] = pedirCodigo();
         try {
             if (SwingUtilities.isEventDispatchThread()) {
                 pedir.run();
@@ -68,10 +68,37 @@ public class LectorSimulado extends LectorBase {
             throw new LectorException("Captura cancelada.");
         }
         if (respuesta[0] == null || respuesta[0].isBlank()) {
-            throw new LectorException("No se detectó ningún dedo (captura cancelada).");
+            throw new LectorException("No se detectó el dedo.");
         }
         ultimoCodigo = respuesta[0].trim();
         return util.Seguridad.sha256("HUELLA:" + ultimoCodigo).getBytes(java.nio.charset.StandardCharsets.US_ASCII);
+    }
+
+    /** Ventana donde se "pone el dedo" (se escribe el código). Se cierra si se cancela la captura. */
+    private String pedirCodigo() {
+        JOptionPane panel = new JOptionPane(
+                "LECTOR SIMULADO\nEscriba el código del dedo (por ejemplo, la cédula del estudiante):",
+                JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+        panel.setWantsInput(true);
+        panel.setInitialSelectionValue(ultimoCodigo);
+        javax.swing.JDialog d = panel.createDialog(null, "Lector simulado");
+        dialogo = d;
+        d.setVisible(true);                       // espera hasta que se responda o se cancele
+        d.dispose();
+        dialogo = null;
+        Object valor = panel.getInputValue();
+        return valor == JOptionPane.UNINITIALIZED_VALUE || !Integer.valueOf(JOptionPane.OK_OPTION).equals(panel.getValue())
+                ? null : (String) valor;
+    }
+
+    /** Cierra la ventana del lector simulado si está esperando (por ejemplo, al cerrar Préstamos). */
+    @Override
+    public void cancelarCaptura() {
+        SwingUtilities.invokeLater(() -> {
+            if (dialogo != null) {
+                dialogo.dispose();
+            }
+        });
     }
 
     @Override

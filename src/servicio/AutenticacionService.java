@@ -45,7 +45,7 @@ public class AutenticacionService {
                 .orElseThrow(() -> new NegocioException(CREDENCIALES_INVALIDAS));
 
         if (!u.puedeIniciarSesion()) {          // polimórfico: Usuario lo resuelve con "activo"
-            throw new NegocioException("Su cuenta está desactivada. Comuníquese con el administrador.");
+            throw new NegocioException("Su cuenta está desactivada.");
         }
         Sesion.getInstancia().iniciar(u);
         return u;
@@ -59,6 +59,6 @@ public class AutenticacionService {
     public Estudiante consultarEstudiante(String cedula) {
         String c = Validaciones.formatoCedula(cedula);
         return estudianteDAO.buscarPorCedula(c)
-                .orElseThrow(() -> new NegocioException("No existe un estudiante registrado con la cédula " + c + "."));
+                .orElseThrow(() -> new NegocioException("No existe un estudiante con esa cédula."));
     }
 }

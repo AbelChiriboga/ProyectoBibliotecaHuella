@@ -25,10 +25,7 @@ public class Main {
     }
 
     private static void avisarCambioLector(biometria.EstadoLector estado) {
-        componentes.Aviso.mostrar(
-                estado.permiteCapturar() ? "Lector de huella conectado" : "Lector de huella desconectado",
-                estado.permiteCapturar() ? "Ya puede registrar y leer huellas."
-                        : "El sistema sigue funcionando; las operaciones con huella quedan en espera.",
+        componentes.Aviso.mostrar(estado.permiteCapturar() ? "Lector conectado" : "Lector desconectado",
                 estado.permiteCapturar());
     }
 

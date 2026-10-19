@@ -23,4 +23,9 @@ public abstract class BibliotecaException extends RuntimeException {
     public boolean esErrorTecnico() {
         return false;
     }
+
+    /** Qué hace la lectura automática de huella si ocurre este error (por defecto, mostrarlo). */
+    public Reaccion getReaccion() {
+        return Reaccion.MOSTRAR_ERROR;
+    }
 }

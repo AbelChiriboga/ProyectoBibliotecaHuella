@@ -69,7 +69,7 @@ public class TablaObjetos<T> {
 
     /** Objeto seleccionado; si no hay, avisa al usuario. Ejemplo: exigirSeleccionado("un libro"). */
     public T exigirSeleccionado(String que) {
-        return getSeleccionado().orElseThrow(() -> new ValidacionException("Seleccione " + que + " en la tabla."));
+        return getSeleccionado().orElseThrow(() -> new ValidacionException("Seleccione " + que + "."));
     }
 
     /** Ejecuta la acción cada vez que el usuario selecciona una fila. */

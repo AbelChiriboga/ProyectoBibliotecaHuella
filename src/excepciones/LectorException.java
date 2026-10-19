@@ -25,6 +25,12 @@ public class LectorException extends BibliotecaException {
         return "Lector de huella";
     }
 
+    /** Si el lector falla, la lectura automática se detiene hasta que el lector vuelva a estar listo. */
+    @Override
+    public Reaccion getReaccion() {
+        return Reaccion.DETENER_LECTURA;
+    }
+
     @Override
     public boolean esErrorTecnico() {
         return tecnico;

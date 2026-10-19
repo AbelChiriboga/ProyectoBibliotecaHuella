@@ -44,6 +44,10 @@ public interface LectorBiometrico extends AutoCloseable {
     /** Identificación 1:N: ¿a cuál de las plantillas cargadas pertenece la muestra? */
     Optional<Coincidencia> identificar(byte[] muestra);
 
+    /** Detiene una captura que está esperando el dedo (por ejemplo, al cerrar la ventana). */
+    default void cancelarCaptura() {
+    }
+
     /** Permite usar el lector en try-with-resources. */
     @Override
     default void close() {

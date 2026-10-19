@@ -67,9 +67,9 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
             actual.setTelefono(jtxtTelefono.getText());
             actual.setCorreo(jtxtCorreo.getText());
             actual.setCarrera(componentes.Combos.seleccionado(jcbxCarrera));
-            actual.setSemestre(Integer.parseInt((String) jcbxSemestre.getSelectedItem()));
+            actual.setSemestre(Integer.parseInt(util.Validaciones.requerido((String) jcbxSemestre.getSelectedItem(), "el semestre")));
             servicio.guardar(actual, huellasCapturadas);
-            util.Mensajes.info(this, "Estudiante " + actual.getNombreCompleto() + " guardado.");
+            util.Mensajes.info(this, "Estudiante guardado.");
             recargarYSeleccionar(actual);
         });
     }
@@ -77,8 +77,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
     private void eliminar() {
         ejecutar(() -> {
             modelo.Estudiante e = tabla.exigirSeleccionado("un estudiante");
-            if (util.Mensajes.confirmar(this, "¿Eliminar al estudiante " + e.getNombreCompleto()
-                    + "? También se borrarán sus huellas.")) {
+            if (util.Mensajes.confirmar(this, "¿Eliminar a " + e.getNombreCompleto() + "?")) {
                 servicio.eliminar(e);
                 cancelar();
             }
@@ -181,7 +180,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
             t.setText("");
         }
         jcbxCarrera.setSelectedIndex(-1);
-        jcbxSemestre.setSelectedIndex(0);
+        jcbxSemestre.setSelectedIndex(-1);          // sin semestre hasta que se elija
         jpnlHuella.reiniciar();
     }
 

@@ -19,11 +19,11 @@ public final class Aviso {
     }
 
     /** @param exito mensaje de información si es buena noticia; de advertencia si no */
-    public static void mostrar(String titulo, String detalle, boolean exito) {
+    public static void mostrar(String texto, boolean exito) {
         if (actual != null) {
             actual.dispose();
         }
-        JOptionPane mensaje = new JOptionPane(titulo + "\n" + detalle,
+        JOptionPane mensaje = new JOptionPane(texto,
                 exito ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.WARNING_MESSAGE);
         JDialog dialogo = mensaje.createDialog(ventanaActiva(), "Lector de huella");
         actual = dialogo;

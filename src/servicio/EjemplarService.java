@@ -44,7 +44,7 @@ public class EjemplarService extends ServicioCrud<Ejemplar> {
     @Override
     protected void validar(Ejemplar e) {
         if (!e.getEstado().esEditableManualmente()) {
-            throw new NegocioException("El estado " + e.getEstado() + " lo asigna el sistema al registrar un préstamo.");
+            throw new NegocioException("El estado " + e.getEstado().getDescripcion() + " no se puede elegir.");
         }
         exigirQueNoEstePrestado(e);
     }
@@ -62,8 +62,7 @@ public class EjemplarService extends ServicioCrud<Ejemplar> {
         ejemplarDAO.buscarPorId(e.getId())
                 .filter(guardado -> guardado.getEstado() == EstadoEjemplar.PRESTADO)
                 .ifPresent(guardado -> {
-                    throw new NegocioException("El ejemplar " + guardado.getCodigoInventario()
-                            + " está prestado: no se puede modificar hasta que se devuelva.");
+                    throw new NegocioException("El ejemplar está prestado. Espere a que lo devuelvan.");
                 });
     }
 }

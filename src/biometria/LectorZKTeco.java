@@ -49,6 +49,7 @@ public class LectorZKTeco extends LectorBase {
     private volatile EstadoLector ultimoEstado = EstadoLector.DESCONECTADO;
     private long proximaRevisionCompleta;
     private int ultimoCodigo = Integer.MIN_VALUE;
+    private volatile boolean cancelada;
 
     @Override
     public String getNombre() {
@@ -111,8 +112,12 @@ public class LectorZKTeco extends LectorBase {
         candado.lock();
         try {
             exigirAbierto();
+            cancelada = false;
             long limite = System.currentTimeMillis() + ESPERA_DEDO_MS;
             while (System.currentTimeMillis() < limite) {
+                if (cancelada) {
+                    throw new LectorException("Captura cancelada.");
+                }
                 byte[] plantilla = intentarCaptura();
                 if (plantilla != null) {
                     esperarQueLevante();
@@ -121,10 +126,15 @@ public class LectorZKTeco extends LectorBase {
                 exigirConectado();                     // si se desenchufó en plena captura, se avisa ya
                 pausa();
             }
-            throw new LectorException("No se detectó ningún dedo. Coloque el dedo en el lector e intente de nuevo.");
+            throw new excepciones.SinDedoException();
         } finally {
             candado.unlock();
         }
+    }
+
+    @Override
+    public void cancelarCaptura() {
+        cancelada = true;
     }
 
     @Override
@@ -146,7 +156,7 @@ public class LectorZKTeco extends LectorBase {
             byte[] plantilla = new byte[TAMANO_PLANTILLA];
             int[] largo = {TAMANO_PLANTILLA};
             if (FingerprintSensorEx.DBMerge(baseMemoria, m[0], m[1], m[2], plantilla, largo) != 0) {
-                throw new LectorException("No se pudo generar la plantilla. Repita el registro.");
+                throw new LectorException("No se pudo registrar la huella. Intente de nuevo.");
             }
             return Arrays.copyOf(plantilla, largo[0]);
         } finally {
@@ -189,21 +199,21 @@ public class LectorZKTeco extends LectorBase {
         try {
             FingerprintSensorEx.Terminate();           // así Init vuelve a buscar los lectores USB
             if (FingerprintSensorEx.Init() != FingerprintSensorErrorCode.ZKFP_ERR_OK) {
-                throw new LectorException("No se pudo inicializar el SDK de ZKTeco.", null);
+                throw new LectorException("No se pudo iniciar el lector.", null);
             }
             if (FingerprintSensorEx.GetDeviceCount() <= 0) {
                 FingerprintSensorEx.Terminate();
-                throw new LectorException("Lector de huella desconectado.");
+                throw new LectorException("Lector desconectado.");
             }
             dispositivo = FingerprintSensorEx.OpenDevice(0);
             if (dispositivo == 0) {
                 FingerprintSensorEx.Terminate();
-                throw new LectorException("No se pudo abrir el lector ZKTeco (¿lo está usando otro programa?).", null);
+                throw new LectorException("El lector está siendo usado por otro programa.", null);
             }
             baseMemoria = FingerprintSensorEx.DBInit();
             if (baseMemoria == 0) {
                 liberarDispositivo();
-                throw new LectorException("No se pudo iniciar la memoria del lector ZKTeco.", null);
+                throw new LectorException("No se pudo iniciar el lector.", null);
             }
             imagen = new byte[leerParametro(PARAM_ANCHO) * leerParametro(PARAM_ALTO)];
             ultimoCodigo = 0;
@@ -211,7 +221,7 @@ public class LectorZKTeco extends LectorBase {
         } catch (LinkageError e) {
             // Falta libzkfp.dll: el SDK/driver de ZKTeco no está instalado en este equipo
             driverInstalado = false;
-            throw new LectorException("No se encontró el driver del lector ZKTeco (libzkfp).", e);
+            throw new LectorException("Falta instalar el driver del lector.", e);
         }
     }
 
@@ -266,7 +276,7 @@ public class LectorZKTeco extends LectorBase {
         if (!LECTOR_RESPONDE.contains(ultimoCodigo)) {
             liberarDispositivo();
             ultimoEstado = EstadoLector.DESCONECTADO;
-            throw new LectorException("Lector de huella desconectado durante la captura.");
+            throw new LectorException("Lector desconectado.");
         }
     }
 
