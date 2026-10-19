@@ -55,6 +55,16 @@ public class BotonSistema extends JButton {
         util.Estilos.pintarBoton(this);
     }
 
+    /**
+     * El botón nunca se aplasta: si el formulario no entra en la pantalla (GridBagLayout usa
+     * entonces los tamaños mínimos), el botón conserva su alto y se achican los demás espacios.
+     */
+    @Override
+    public java.awt.Dimension getMinimumSize() {
+        java.awt.Dimension min = super.getMinimumSize();
+        return new java.awt.Dimension(min.width, Math.max(min.height, getPreferredSize().height));
+    }
+
     private void aplicarIcono() {
         if (!rutaIcono.isEmpty()) {
             util.Estilos.icono(this, rutaIcono, tamanoIcono, textoAbajo);

@@ -230,7 +230,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 6, 4, 6);
+        gridBagConstraints.insets = new java.awt.Insets(2, 6, 3, 6);
         jpnlDatosUsuario.add(jlblCedula, gridBagConstraints);
 
         jtxtCedula.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -241,7 +241,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 8, 6);
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 5, 6);
         jpnlDatosUsuario.add(jtxtCedula, gridBagConstraints);
 
         jlblNombres.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -252,7 +252,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 6, 4, 6);
+        gridBagConstraints.insets = new java.awt.Insets(2, 6, 3, 6);
         jpnlDatosUsuario.add(jlblNombres, gridBagConstraints);
 
         jtxtNombres.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -263,7 +263,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 8, 6);
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 5, 6);
         jpnlDatosUsuario.add(jtxtNombres, gridBagConstraints);
 
         jlblApellidos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -274,7 +274,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 6, 4, 6);
+        gridBagConstraints.insets = new java.awt.Insets(2, 6, 3, 6);
         jpnlDatosUsuario.add(jlblApellidos, gridBagConstraints);
 
         jtxtApellidos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -285,7 +285,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 8, 6);
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 5, 6);
         jpnlDatosUsuario.add(jtxtApellidos, gridBagConstraints);
 
         jlblCorreo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -296,7 +296,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 6, 4, 6);
+        gridBagConstraints.insets = new java.awt.Insets(2, 6, 3, 6);
         jpnlDatosUsuario.add(jlblCorreo, gridBagConstraints);
 
         jtxtCorreo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -307,7 +307,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 8, 6);
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 5, 6);
         jpnlDatosUsuario.add(jtxtCorreo, gridBagConstraints);
 
         jlblDireccion.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -318,7 +318,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 6, 4, 6);
+        gridBagConstraints.insets = new java.awt.Insets(2, 6, 3, 6);
         jpnlDatosUsuario.add(jlblDireccion, gridBagConstraints);
 
         jtxtDireccion.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -329,7 +329,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 8, 6);
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 5, 6);
         jpnlDatosUsuario.add(jtxtDireccion, gridBagConstraints);
 
         jlblTelefono.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -340,7 +340,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 6, 4, 6);
+        gridBagConstraints.insets = new java.awt.Insets(2, 6, 3, 6);
         jpnlDatosUsuario.add(jlblTelefono, gridBagConstraints);
 
         jtxtTelefono.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -351,7 +351,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 8, 6);
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 5, 6);
         jpnlDatosUsuario.add(jtxtTelefono, gridBagConstraints);
 
         jlblCuenta.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -375,7 +375,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 6);
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 5, 6);
         jpnlDatosUsuario.add(jsepCuenta, gridBagConstraints);
 
         jlblUsuario.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -386,7 +386,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 6, 4, 6);
+        gridBagConstraints.insets = new java.awt.Insets(2, 6, 3, 6);
         jpnlDatosUsuario.add(jlblUsuario, gridBagConstraints);
 
         jtxtUsuario.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -397,7 +397,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 8, 6);
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 5, 6);
         jpnlDatosUsuario.add(jtxtUsuario, gridBagConstraints);
 
         jlblRol.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -408,7 +408,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 6, 4, 6);
+        gridBagConstraints.insets = new java.awt.Insets(2, 6, 3, 6);
         jpnlDatosUsuario.add(jlblRol, gridBagConstraints);
 
         jcbxRol.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -419,7 +419,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 8, 6);
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 5, 6);
         jpnlDatosUsuario.add(jcbxRol, gridBagConstraints);
 
         jlblClave.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -430,7 +430,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 6, 4, 6);
+        gridBagConstraints.insets = new java.awt.Insets(2, 6, 3, 6);
         jpnlDatosUsuario.add(jlblClave, gridBagConstraints);
 
         jpswClave.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -441,7 +441,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 6);
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 5, 6);
         jpnlDatosUsuario.add(jpswClave, gridBagConstraints);
 
         jlblRepClave.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -452,7 +452,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 6, 4, 6);
+        gridBagConstraints.insets = new java.awt.Insets(2, 6, 3, 6);
         jpnlDatosUsuario.add(jlblRepClave, gridBagConstraints);
 
         jpswRepClave.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -463,7 +463,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 6);
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 5, 6);
         jpnlDatosUsuario.add(jpswRepClave, gridBagConstraints);
 
         jlblSeguridad.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
@@ -487,7 +487,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 14, 6);
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 8, 6);
         jpnlDatosUsuario.add(jpgrSeguridad, gridBagConstraints);
 
         jpnlBotones.setOpaque(false);

@@ -112,7 +112,9 @@ public class VentanaBase extends JFrame {
 
         @Override
         public boolean getScrollableTracksViewportHeight() {
-            return getParent().getHeight() >= ALTO_MINIMO;
+            // Alto mínimo REAL del contenido (suma de los mínimos de cada campo y botón):
+            // si la ventana es más baja, aparece la barra en vez de aplastar los botones.
+            return getParent().getHeight() >= Math.max(ALTO_MINIMO, getMinimumSize().height);
         }
     }
 

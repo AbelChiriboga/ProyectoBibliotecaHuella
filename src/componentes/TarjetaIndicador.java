@@ -15,9 +15,9 @@ import javax.swing.SwingConstants;
  */
 public class TarjetaIndicador extends JPanel {
 
-    private static final Color NARANJA_TEXTO = new Color(138, 58, 18);
-    private static final Color NARANJA_FONDO = new Color(253, 241, 232);
-    private static final Color NARANJA_BORDE = new Color(224, 179, 147);
+    /** Tarjeta de alerta: fondo rojo entero y todo el texto en blanco, para que resalte. */
+    private static final Color ROJO = new Color(198, 40, 40);
+    private static final Color GRIS_TEXTO = new Color(80, 90, 100);
 
     private final JLabel lblTitulo = new JLabel("Título");
     private final JLabel lblValor = new JLabel("—");
@@ -74,9 +74,11 @@ public class TarjetaIndicador extends JPanel {
     }
 
     private void aplicarColores() {
-        Color borde = alerta ? NARANJA_BORDE : util.Estilos.VERDE;
-        setBackground(alerta ? NARANJA_FONDO : Color.WHITE);
-        lblValor.setForeground(alerta ? NARANJA_TEXTO : util.Estilos.VERDE_TITULO);
+        Color borde = alerta ? ROJO : util.Estilos.VERDE;
+        setBackground(alerta ? ROJO : Color.WHITE);
+        lblValor.setForeground(alerta ? Color.WHITE : util.Estilos.VERDE_TITULO);
+        lblTitulo.setForeground(alerta ? Color.WHITE : GRIS_TEXTO);
+        lblDetalle.setForeground(alerta ? Color.WHITE : GRIS_TEXTO);
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(borde, 1, true),
                 BorderFactory.createEmptyBorder(10, 14, 10, 14)));
