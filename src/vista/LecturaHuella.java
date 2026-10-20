@@ -47,6 +47,7 @@ public class LecturaHuella {
         reacciones.put(Reaccion.REINTENTAR, e -> escuchar());
         reacciones.put(Reaccion.REINTENTAR_AVISANDO, e -> avisarYReintentar(e.getMessage()));
         reacciones.put(Reaccion.DETENER_LECTURA, e -> panel.mostrarResultado(e.getMessage(), false));
+        reacciones.put(Reaccion.ALERTA, e -> panel.mostrarResultado(e.getMessage(), false));
         reacciones.put(Reaccion.MOSTRAR_ERROR, e -> {
             panel.mostrarResultado("Sin identificar", false);
             util.Mensajes.error(ventana, e);

@@ -16,6 +16,12 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
     private modelo.Estudiante actual;
     /** Huellas capturadas en el formulario que todavía no se guardan (dedo → plantilla). */
     private final java.util.Map<modelo.Dedo, byte[]> huellasCapturadas = new java.util.EnumMap<>(modelo.Dedo.class);
+    /**
+     * Número de la captura vigente. Si el usuario cancela, cambia de estudiante o cierra la ventana
+     * mientras el lector espera el dedo, el número cambia y el resultado de esa captura vieja se ignora
+     * (no aparece ningún mensaje ni se guarda una huella en el estudiante equivocado).
+     */
+    private int capturaVigente;
 
     public CRUDEstudiantes() {
         initComponents();
@@ -29,7 +35,15 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtCedula, jtxtNombres, jtxtApellidos,
             jtxtTelefono, jtxtCorreo, jcbxCarrera, jcbxSemestre, jpnlHuella.getCbxDedo(), jpnlHuella.getBotonCapturar()},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
+        control.bloquearAlEditar(jtblEstudiantes);   // mientras se escribe no se puede elegir otra fila
         jpnlHuella.getBotonCapturar().addActionListener(e -> capturarHuella());
+        jpnlHuella.getBotonCapturar().setFocusable(false);   // solo con clic: Tab/Espacio no inician una captura
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                detenerCaptura();
+            }
+        });
         alCambiarLector(jpnlHuella::mostrarLector);   // el recuadro avisa si el lector se desconecta
         tabla.alSeleccionar(this::mostrar);
         tabla.usarBarra(barraBuscar);   // búsqueda al escribir + filtro por columnas
@@ -40,6 +54,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
     // ---------- Acciones de los botones ----------
 
     private void nuevo() {
+        detenerCaptura();
         actual = new modelo.Estudiante();
         limpiar();
         tabla.limpiarSeleccion();
@@ -51,6 +66,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
     private void editar() {
         ejecutar(() -> {
             actual = tabla.exigirSeleccionado("un estudiante");
+            detenerCaptura();
             huellasCapturadas.clear();
             control.edicion();
             jpnlHuella.setInfo(textoHuellas());
@@ -86,6 +102,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
 
     /** Vuelve al estado inicial y recarga la tabla (descarta cambios y huellas sin guardar). */
     private void cancelar() {
+        detenerCaptura();
         actual = null;
         huellasCapturadas.clear();
         limpiar();
@@ -102,11 +119,13 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
             modelo.Dedo dedo = componentes.Combos.seleccionado(jpnlHuella.getCbxDedo());
             if (confirmarReemplazo(dedo)) {
                 modelo.Estudiante estudiante = actual;
+                int esta = ++capturaVigente;
                 jpnlHuella.iniciarCaptura();
                 util.Tareas.enSegundoPlano(this,
                         () -> biometria.capturarHuella(estudiante, jpnlHuella),   // el panel muestra avance e imagen
-                        plantilla -> huellaCapturada(dedo, plantilla),
-                        jpnlHuella::terminarCaptura);
+                        plantilla -> siSigueVigente(esta, () -> huellaCapturada(dedo, plantilla)),
+                        error -> siSigueVigente(esta, () -> capturaFallida(error)),
+                        () -> siSigueVigente(esta, jpnlHuella::terminarCaptura));
             }
         });
     }
@@ -118,10 +137,14 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
     }
 
     private void cargarCarreras() {
-        ejecutar(() -> componentes.Combos.llenar(jcbxCarrera, servicio.listarCarreras()));
+        ejecutar(() -> {
+            componentes.Combos.llenar(jcbxCarrera, servicio.listarCarreras());
+            componentes.Combos.ajustarAncho(jcbxCarrera);   // ancho justo para el nombre de carrera más largo
+        });
     }
 
     private void recargarYSeleccionar(modelo.Estudiante e) {
+        detenerCaptura();
         huellasCapturadas.clear();
         cargar();
         control.consulta(false);
@@ -135,6 +158,32 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
                 || util.Mensajes.confirmar(this, "El " + dedo + " ya tiene huella. ¿Desea reemplazarla?");
     }
 
+    /** Deja de esperar el dedo y descarta el resultado de la captura que estaba en curso (si había una). */
+    private void detenerCaptura() {
+        capturaVigente++;
+        biometria.cancelarCaptura();
+    }
+
+    /** Ejecuta la acción solo si la captura que terminó es la vigente (no una ya cancelada). */
+    private void siSigueVigente(int captura, Runnable accion) {
+        if (captura == capturaVigente) {
+            accion.run();
+        }
+    }
+
+    /**
+     * Los problemas al capturar se avisan en el área de texto del panel de huella, sin ventana emergente:
+     * si la huella ya es de otro estudiante, en rojo. Los demás errores sí se muestran en un mensaje.
+     */
+    private void capturaFallida(excepciones.BibliotecaException error) {
+        if (error.getReaccion() == excepciones.Reaccion.MOSTRAR_ERROR) {
+            util.Mensajes.error(this, error);
+            jpnlHuella.reiniciar();
+        } else {
+            jpnlHuella.mostrarAviso(error.getMessage(), error.getReaccion() == excepciones.Reaccion.ALERTA);
+        }
+    }
+
     /** El lector avisa desde segundo plano; la pantalla se actualiza en el hilo de Swing. */
 
     private void huellaCapturada(modelo.Dedo dedo, byte[] plantilla) {
@@ -144,6 +193,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
     }
 
     private void mostrar(modelo.Estudiante e) {
+        detenerCaptura();
         actual = e;
         huellasCapturadas.clear();
         jtxtCedula.setText(e.getCedula());
@@ -158,17 +208,23 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         control.consulta(true);
     }
 
-    /** Huellas guardadas y capturadas (pendientes de guardar) del estudiante actual. */
+    /**
+     * Resumen corto de las huellas del estudiante. Ejemplos:
+     *   "Sin huellas. Capture al menos una."
+     *   "Por guardar: Índice derecho."
+     *   "Registradas: Índice derecho.  Por guardar: Pulgar derecho."
+     */
     private String textoHuellas() {
         String guardadas = actual == null ? "" : actual.getHuellas().stream().map(h -> h.getDedo().toString())
                 .collect(java.util.stream.Collectors.joining(", "));
         String pendientes = huellasCapturadas.keySet().stream().map(Object::toString)
                 .collect(java.util.stream.Collectors.joining(", "));
-        int total = (actual == null ? 0 : actual.getHuellas().size()) + huellasCapturadas.size();
-        return (guardadas.isEmpty() ? "Sin huellas registradas." : "Huellas registradas: " + guardadas + ".")
-                + (pendientes.isEmpty() ? "" : "\nCapturadas (se guardan al presionar Guardar): " + pendientes + ".")
-                + (total == 0 ? "\nDebe registrar al menos una huella para guardar." : "")
-                + (total == 1 ? "\nSe recomienda registrar 2 dedos." : "");
+        if (guardadas.isEmpty() && pendientes.isEmpty()) {
+            return "Sin huellas. Capture al menos una.";
+        }
+        return (guardadas.isEmpty() ? "" : "Registradas: " + guardadas + ".")
+                + (guardadas.isEmpty() || pendientes.isEmpty() ? "" : "\n")
+                + (pendientes.isEmpty() ? "" : "Por guardar: " + pendientes + ".");
     }
 
     private void limpiar() {
@@ -203,6 +259,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         jtxtApellidos = new javax.swing.JTextField();
         jlblTelefono = new javax.swing.JLabel();
         jtxtTelefono = new javax.swing.JTextField();
+        jpnlFila2 = new javax.swing.JPanel();
         jlblCorreo = new javax.swing.JLabel();
         jtxtCorreo = new javax.swing.JTextField();
         jlblCarrera = new javax.swing.JLabel();
@@ -321,74 +378,77 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         gridBagConstraints.insets = new java.awt.Insets(0, 6, 10, 6);
         jpnlDatosEst.add(jtxtTelefono, gridBagConstraints);
 
+        jpnlFila2.setOpaque(false);
+        jpnlFila2.setLayout(new java.awt.GridBagLayout());
+
         jlblCorreo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jlblCorreo.setText("Correo electrónico");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 6, 4, 6);
-        jpnlDatosEst.add(jlblCorreo, gridBagConstraints);
+        jpnlFila2.add(jlblCorreo, gridBagConstraints);
 
         jtxtCorreo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jtxtCorreo.setPreferredSize(new java.awt.Dimension(120, 32));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 6, 10, 6);
-        jpnlDatosEst.add(jtxtCorreo, gridBagConstraints);
+        jpnlFila2.add(jtxtCorreo, gridBagConstraints);
 
         jlblCarrera.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jlblCarrera.setText("Carrera");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 6, 4, 6);
-        jpnlDatosEst.add(jlblCarrera, gridBagConstraints);
+        jpnlFila2.add(jlblCarrera, gridBagConstraints);
 
         jcbxCarrera.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jcbxCarrera.setPreferredSize(new java.awt.Dimension(120, 32));
+        jcbxCarrera.setPreferredSize(new java.awt.Dimension(270, 32));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 6, 10, 6);
-        jpnlDatosEst.add(jcbxCarrera, gridBagConstraints);
+        jpnlFila2.add(jcbxCarrera, gridBagConstraints);
 
         jlblSemestre.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jlblSemestre.setText("Semestre");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 6, 4, 6);
-        jpnlDatosEst.add(jlblSemestre, gridBagConstraints);
+        jpnlFila2.add(jlblSemestre, gridBagConstraints);
 
         jcbxSemestre.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jcbxSemestre.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
-        jcbxSemestre.setPreferredSize(new java.awt.Dimension(120, 32));
+        jcbxSemestre.setPreferredSize(new java.awt.Dimension(90, 32));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 6, 10, 6);
-        jpnlDatosEst.add(jcbxSemestre, gridBagConstraints);
+        jpnlFila2.add(jcbxSemestre, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        jpnlDatosEst.add(jpnlFila2, gridBagConstraints);
 
         jpnlBotones.setOpaque(false);
         jpnlBotones.setLayout(new java.awt.GridLayout(1, 5, 10, 0));
@@ -495,6 +555,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
     private javax.swing.JLabel jlblSemestre;
     private javax.swing.JLabel jlblTelefono;
     private javax.swing.JPanel jpnlBotones;
+    private javax.swing.JPanel jpnlFila2;
     private javax.swing.JPanel jpnlContenido;
     private componentes.PanelGrupo jpnlDatosEst;
     private componentes.PanelGrupo jpnlEstReg;

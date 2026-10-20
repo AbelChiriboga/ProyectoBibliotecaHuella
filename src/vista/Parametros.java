@@ -53,7 +53,6 @@ public class Parametros extends componentes.VentanaBase {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
         java.awt.GridBagConstraints gridBagConstraints;
 
         jpnlContenido = new javax.swing.JPanel();
@@ -109,7 +108,6 @@ public class Parametros extends componentes.VentanaBase {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 4, 10);
         jpnlReglas.add(jtxtDias, gridBagConstraints);
 
-        jlblAyudaDias.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jlblAyudaDias.setText("Días que tiene el estudiante para devolver.");
         jlblAyudaDias.setForeground(new java.awt.Color(90, 105, 115));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -145,7 +143,6 @@ public class Parametros extends componentes.VentanaBase {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 4, 10);
         jpnlReglas.add(jtxtMaxPrestamos, gridBagConstraints);
 
-        jlblAyudaMax.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jlblAyudaMax.setText("Libros que puede tener a la vez.");
         jlblAyudaMax.setForeground(new java.awt.Color(90, 105, 115));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -181,7 +178,6 @@ public class Parametros extends componentes.VentanaBase {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 4, 10);
         jpnlReglas.add(jtxtMultaDia, gridBagConstraints);
 
-        jlblAyudaMulta.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jlblAyudaMulta.setText("Se cobra por cada día de atraso.");
         jlblAyudaMulta.setForeground(new java.awt.Color(90, 105, 115));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -217,7 +213,6 @@ public class Parametros extends componentes.VentanaBase {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 4, 10);
         jpnlReglas.add(jtxtUmbralHuella, gridBagConstraints);
 
-        jlblAyudaUmbral.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jlblAyudaUmbral.setText("Puntaje mínimo para aceptar la huella.");
         jlblAyudaUmbral.setForeground(new java.awt.Color(90, 105, 115));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -261,13 +256,21 @@ public class Parametros extends componentes.VentanaBase {
 
         jbtnCancelar.setText("Cancelar");
         jbtnCancelar.setPreferredSize(new java.awt.Dimension(110, 36));
-        jbtnCancelar.addActionListener(this::jbtnCancelarActionPerformed);
+        jbtnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnCancelarActionPerformed(evt);
+            }
+        });
         jpnlBotones.add(jbtnCancelar);
 
         jbtnGuardar.setText("Guardar cambios");
         jbtnGuardar.setPrimario(true);
         jbtnGuardar.setPreferredSize(new java.awt.Dimension(160, 36));
-        jbtnGuardar.addActionListener(this::jbtnGuardarActionPerformed);
+        jbtnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnGuardarActionPerformed(evt);
+            }
+        });
         jpnlBotones.add(jbtnGuardar);
 
         gridBagConstraints = new java.awt.GridBagConstraints();

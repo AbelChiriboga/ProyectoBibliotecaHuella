@@ -22,6 +22,7 @@ public class CRUDAutores extends componentes.VentanaBase {
                 a -> new Object[]{a.getNombres(), a.getApellidos(), a.getNacionalidad()});
         control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtNombres, jtxtApellidos, jtxtNacionalidad},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
+        control.bloquearAlEditar(jtblAutores);   // mientras se escribe no se puede elegir otra fila
         tabla.alSeleccionar(this::mostrar);
         tabla.usarBarra(barraBuscar);   // búsqueda al escribir + filtro por columnas
         cancelar();

@@ -25,6 +25,7 @@ public class CRUDLibros extends componentes.VentanaBase {
         control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtISBN, jtxtTitulo, jcbxAutor, jbtnAutor,
             jcbxCategoria, jbtnCategoria, jtxtEditorial, jtxtAnio},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
+        control.bloquearAlEditar(jtblLibros);   // mientras se escribe no se puede elegir otra fila
         control.agregarBotonDeSeleccion(jbtnEjemplares);
         tabla.alSeleccionar(this::mostrar);
         tabla.usarBarra(barraBuscar);   // búsqueda al escribir + filtro por columnas

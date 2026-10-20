@@ -28,10 +28,11 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         tabla = new componentes.TablaObjetos<>(jtblEjemplares,
                 e -> new Object[]{e.getCodigoInventario(), e.getUbicacion(), e.getEstado()});
         // El código lo asigna el sistema (siguiente número libre): nunca se escribe a mano
-        jtxtCodInv.setEditable(false);
+        componentes.ControlCrud.permitirEscribir(jtxtCodInv, false);
         jtxtCodInv.setFocusable(false);
         control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtUbicacion, jcbxEstado},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
+        control.bloquearAlEditar(jtblEjemplares);   // mientras se escribe no se puede elegir otra fila
         llenarEstados(false);
         tabla.alSeleccionar(this::mostrar);
         mostrarLibro();

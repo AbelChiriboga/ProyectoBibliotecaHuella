@@ -49,6 +49,10 @@ public interface LectorBiometrico extends AutoCloseable {
         return Optional.empty();
     }
 
+    /** Se llama al EMPEZAR una lectura (registro o identificación): borra una cancelación anterior. */
+    default void nuevaCaptura() {
+    }
+
     /** Detiene una captura que está esperando el dedo (por ejemplo, al cerrar la ventana). */
     default void cancelarCaptura() {
     }

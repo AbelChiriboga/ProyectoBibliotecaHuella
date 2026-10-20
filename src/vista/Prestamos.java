@@ -127,7 +127,6 @@ public class Prestamos extends componentes.VentanaBase {
         barraBuscar.setAyuda("Buscar por código, título o autor");
         jpnlPrestamos.add(barraBuscar, java.awt.BorderLayout.NORTH);
 
-
         jScrollPane1.setViewportView(jtblEjemplares);
 
         jpnlPrestamos.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -145,13 +144,21 @@ public class Prestamos extends componentes.VentanaBase {
 
         jbtnCancelar.setText("Cancelar");
         jbtnCancelar.setPreferredSize(new java.awt.Dimension(110, 36));
-        jbtnCancelar.addActionListener(this::jbtnCancelarActionPerformed);
+        jbtnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnCancelarActionPerformed(evt);
+            }
+        });
         jpnlAcciones.add(jbtnCancelar);
 
         jbtnConfirmar.setText("Confirmar préstamo");
         jbtnConfirmar.setPrimario(true);
         jbtnConfirmar.setPreferredSize(new java.awt.Dimension(180, 36));
-        jbtnConfirmar.addActionListener(this::jbtnConfirmarActionPerformed);
+        jbtnConfirmar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnConfirmarActionPerformed(evt);
+            }
+        });
         jpnlAcciones.add(jbtnConfirmar);
 
         jpnlPie.add(jpnlAcciones, java.awt.BorderLayout.EAST);

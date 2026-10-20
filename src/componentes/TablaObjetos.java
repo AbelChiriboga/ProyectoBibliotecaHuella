@@ -111,6 +111,13 @@ public class TablaObjetos<T> {
         return marcados;
     }
 
+    /** Marca (o desmarca) todas las casillas. */
+    public void marcarTodos(boolean marcado) {
+        for (int i = 0; i < tabla.getModel().getRowCount(); i++) {
+            tabla.getModel().setValueAt(marcado, i, 0);
+        }
+    }
+
     /** Ejecuta la acción cada vez que se marca o desmarca una casilla. */
     public void alMarcar(Runnable accion) {
         tabla.getModel().addTableModelListener(e -> {

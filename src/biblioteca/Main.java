@@ -44,5 +44,6 @@ public class Main {
                 JOptionPane.showMessageDialog(null, ex.getMessage());
             }
         }
+        util.Estilos.textoDeshabilitadoLegible();
     }
 }

@@ -22,6 +22,7 @@ public class CRUDCategoria extends componentes.VentanaBase {
                 c -> new Object[]{c.getNombre(), c.getCantidadLibros(), c.getCantidadEjemplares()});
         control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtNombre},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
+        control.bloquearAlEditar(jtblCategorias);   // mientras se escribe no se puede elegir otra fila
         tabla.alSeleccionar(this::mostrar);
         tabla.usarBarra(barraBuscar);   // búsqueda al escribir + filtro por columnas
         cancelar();

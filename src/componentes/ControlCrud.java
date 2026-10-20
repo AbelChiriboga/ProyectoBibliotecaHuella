@@ -53,6 +53,7 @@ public class ControlCrud {
     private final JButton eliminar;
     private final JButton cancelar;
     private final List<JComponent> conSeleccion = new ArrayList<>();
+    private final List<JComponent> bloqueadosAlEditar = new ArrayList<>();
     private Modo modo = Modo.CONSULTA;
 
     public ControlCrud(JComponent[] campos, JButton nuevo, JButton guardar, JButton editar,
@@ -68,6 +69,14 @@ public class ControlCrud {
     /** Componentes extra que solo funcionan con una fila seleccionada (por ejemplo el botón "Ejemplares"). */
     public void agregarBotonDeSeleccion(JComponent componente) {
         conSeleccion.add(componente);
+    }
+
+    /**
+     * Componentes que se bloquean mientras se llena un registro nuevo o se edita uno
+     * (normalmente la tabla): así el usuario no puede seleccionar otra fila y perder lo que escribió.
+     */
+    public void bloquearAlEditar(JComponent... componentes) {
+        bloqueadosAlEditar.addAll(Arrays.asList(componentes));
     }
 
     public void consulta(boolean haySeleccion) {
@@ -86,10 +95,22 @@ public class ControlCrud {
         return modo;
     }
 
+    /**
+     * Bloquea (en consulta) o desbloquea (Nuevo / Editar) un campo. Bloqueado no se puede
+     * escribir ni hacer clic, pero el texto se sigue viendo OSCURO, no gris
+     * (ver Estilos.textoDeshabilitadoLegible).
+     */
+    public static void permitirEscribir(JComponent c, boolean editable) {
+        c.setEnabled(editable);
+        if (c instanceof javax.swing.text.JTextComponent) {
+            ((javax.swing.text.JTextComponent) c).setDisabledTextColor(util.Estilos.TEXTO);
+        }
+    }
+
     private void aplicar(Modo modo, boolean haySeleccion) {
         this.modo = modo;
         boolean editable = modo.camposEditables();
-        campos.forEach(c -> c.setEnabled(editable));
+        campos.forEach(c -> permitirEscribir(c, editable));
         guardar.setEnabled(editable);
         cancelar.setEnabled(editable);
         nuevo.setEnabled(modo.puedeEmpezar(haySeleccion));
@@ -97,5 +118,6 @@ public class ControlCrud {
         editar.setEnabled(sobreSeleccion);
         eliminar.setEnabled(sobreSeleccion);
         conSeleccion.forEach(b -> b.setEnabled(sobreSeleccion));
+        bloqueadosAlEditar.forEach(c -> c.setEnabled(!editable));
     }
 }

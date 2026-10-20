@@ -34,7 +34,7 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
     // Modo verificación (préstamo / devolución)
     private final JPanel pnlEstudiante = new JPanel(new GridLayout(4, 1, 0, 4));
     private final JLabel lblNombre = new JLabel("—");
-    private final JLabel lblDatos = new JLabel("Cédula: —   ·   Carrera: —");
+    private final JLabel lblDatos = new JLabel("<html>Cédula: —<br>Carrera: —</html>");
     private final JLabel lblActivos = new JLabel("Préstamos activos: — de 3");
     private final JLabel lblEstadoEstudiante = new JLabel("SIN IDENTIFICAR");
 
@@ -62,6 +62,7 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         lblHuella.setFont(util.Estilos.FUENTE);
         lblHuella.setForeground(new Color(90, 110, 115));
         lblHuella.setPreferredSize(new Dimension(190, 190));
+        lblHuella.setMinimumSize(new Dimension(190, 190));          // el recuadro nunca se achica
         lblHuella.setHorizontalTextPosition(SwingConstants.CENTER);   // con imagen: texto debajo
         lblHuella.setVerticalTextPosition(SwingConstants.BOTTOM);
 
@@ -86,6 +87,12 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         lblEstadoEstudiante.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblEstadoEstudiante.setBackground(new Color(225, 230, 233));
         lblEstadoEstudiante.setForeground(GRIS);
+        // Ancho preferido pequeño: un nombre o carrera largos se cortan con "..." en vez de
+        // ensanchar el panel (si el panel no entra, GridBagLayout aplasta todo lo demás).
+        lblNombre.setPreferredSize(new Dimension(10, 24));
+        lblDatos.setPreferredSize(new Dimension(10, 40));
+        lblActivos.setPreferredSize(new Dimension(10, 20));
+        lblEstadoEstudiante.setPreferredSize(new Dimension(10, 40));
         pnlEstudiante.add(lblNombre);
         pnlEstudiante.add(lblDatos);
         pnlEstudiante.add(lblActivos);
@@ -212,6 +219,24 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
     public void mostrarAvance(int muestras, String mensaje) {
         barMuestras.setValue(muestras);
         barMuestras.setString(muestras + " de 3 muestras");
+        txtInfo.setForeground(util.Estilos.TEXTO);
+        txtInfo.setText(mensaje);
+        lblEstado.setText(envolver(mensaje));
+    }
+
+    /** Rojo para los avisos importantes del registro (por ejemplo, huella de otro estudiante). */
+    private static final Color ROJO_AVISO = new Color(198, 40, 40);
+
+    /**
+     * Problema al capturar: el recuadro vuelve a "Coloque el dedo" y el mensaje se muestra
+     * solo en el área de texto de abajo. Con alerta = true el texto va en rojo.
+     */
+    public void mostrarAviso(String mensaje, boolean alerta) {
+        lblHuella.setIcon(null);
+        pintarHuella("Coloque el dedo", FONDO_NORMAL, new Color(90, 110, 115));
+        barMuestras.setValue(0);
+        barMuestras.setString("0 de 3 muestras");
+        txtInfo.setForeground(alerta ? ROJO_AVISO : util.Estilos.TEXTO);
         txtInfo.setText(mensaje);
         lblEstado.setText(envolver(mensaje));
     }
@@ -244,7 +269,9 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
      */
     public void mostrarEstudiante(String nombre, String datos, String activos, String estado, boolean ok) {
         lblNombre.setText(nombre);
-        lblDatos.setText(datos);
+        lblNombre.setToolTipText(nombre);
+        lblDatos.setText("<html>" + datos.replace("\n", "<br>") + "</html>");   // cada dato en su línea
+        lblDatos.setToolTipText(datos);
         lblActivos.setText(activos);
         lblEstadoEstudiante.setText("<html><div style='text-align:center'>" + estado + "</div></html>");
         lblEstadoEstudiante.setBackground(ok ? FONDO_OK : FONDO_NO);
@@ -254,7 +281,7 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
     /** Vuelve la tarjeta a "sin identificar". */
     public void limpiarEstudiante() {
         lblNombre.setText("—");
-        lblDatos.setText("Cédula: —   ·   Carrera: —");
+        lblDatos.setText("<html>Cédula: —<br>Carrera: —</html>");
         lblActivos.setText("Préstamos activos: —");
         lblEstadoEstudiante.setText("SIN IDENTIFICAR");
         lblEstadoEstudiante.setBackground(new Color(225, 230, 233));
@@ -263,6 +290,7 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
 
     /** Texto informativo debajo del lector (por ejemplo, las huellas ya registradas). */
     public void setInfo(String texto) {
+        txtInfo.setForeground(util.Estilos.TEXTO);
         txtInfo.setText(texto);
         lblEstado.setText(envolver(texto));
     }

@@ -16,6 +16,7 @@ import util.Validaciones;
 public class UsuarioService {
 
     private final UsuarioDAO dao = new UsuarioDAO();
+    private final CedulaUnica cedulaUnica = new CedulaUnica();
 
     public List<Usuario> listar() {
         exigirPermiso();
@@ -37,6 +38,7 @@ public class UsuarioService {
         if (dao.buscarPorId(u.getCedula()).isPresent()) {
             throw new ValidacionException("Ya existe un usuario con esa cédula.");
         }
+        cedulaUnica.exigirQueNoSeaDeEstudiante(u.getCedula());
         u.setPasswordHash(Seguridad.sha256(Seguridad.validarNueva(clave, repetida)));
         u.setActivo(true);
         dao.insertar(u);

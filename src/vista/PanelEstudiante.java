@@ -61,7 +61,6 @@ public class PanelEstudiante extends componentes.VentanaBase {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
         java.awt.GridBagConstraints gridBagConstraints;
 
         jpnlContenido = new javax.swing.JPanel();
@@ -141,16 +140,13 @@ public class PanelEstudiante extends componentes.VentanaBase {
         jpnlIndicadores.setLayout(new java.awt.GridLayout(3, 1, 0, 10));
 
         jpnlActivos.setTitulo("Préstamos activos");
-        jpnlActivos.setValor("—");
         jpnlIndicadores.add(jpnlActivos);
 
         jpnlAtrasados.setTitulo("Atrasados");
-        jpnlAtrasados.setValor("—");
         jpnlAtrasados.setAlerta(true);
         jpnlIndicadores.add(jpnlAtrasados);
 
         jpnlMultas.setTitulo("Multas sin pagar");
-        jpnlMultas.setValor("—");
         jpnlMultas.setAlerta(true);
         jpnlIndicadores.add(jpnlMultas);
 
@@ -184,7 +180,6 @@ public class PanelEstudiante extends componentes.VentanaBase {
 
         jpnlHistorial.setTitulo("Mis préstamos");
         jpnlHistorial.setLayout(new java.awt.BorderLayout(0, 10));
-
 
         jScrollPane1.setViewportView(jtblPrestamos);
 

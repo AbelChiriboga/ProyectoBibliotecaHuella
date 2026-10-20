@@ -8,7 +8,6 @@ import dao.HuellaDAO;
 import dao.ParametroDAO;
 import dao.RegistroAutenticacionDAO;
 import excepciones.BibliotecaException;
-import excepciones.NegocioException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +58,7 @@ public class BiometriaService {
         Sesion.getInstancia().exigir(Usuario::puedeRegistrarEstudiantes, "registrar huellas");
         Validaciones.requerido(e, "un estudiante");
         exigirLectorListo();
+        lector.nuevaCaptura();
         byte[] plantilla = capturarRegistrando(e, aviso);
         exigirQueNoSeaDeOtro(e, plantilla);
         return plantilla;
@@ -84,6 +84,7 @@ public class BiometriaService {
      */
     public Identificacion identificarEstudiante(OperacionAutenticacion operacion) {
         exigirLectorListo();
+        lector.nuevaCaptura();
         byte[] muestra = lector.capturar();
         return identificar(muestra).orElseThrow(() -> {
             anotar(null, operacion, ResultadoAutenticacion.FALLO, null, "Huella no reconocida");
@@ -128,7 +129,7 @@ public class BiometriaService {
                 .ifPresent(id -> {
                     anotar(idParaBitacora(e), OperacionAutenticacion.REGISTRO_HUELLA, ResultadoAutenticacion.FALLO,
                             id.getPuntaje(), "La huella ya pertenece a " + id.getEstudiante().getCedula());
-                    throw new NegocioException("Esta huella ya pertenece a " + id.getEstudiante().getNombreCompleto() + ".");
+                    throw new excepciones.HuellaDuplicadaException(id.getEstudiante().getNombreCompleto());
                 });
     }
 

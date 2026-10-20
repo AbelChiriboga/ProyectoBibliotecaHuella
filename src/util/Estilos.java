@@ -36,6 +36,25 @@ public class Estilos {
     /** Verde más oscuro para el botón principal al pasar el mouse. */
     public static final Color VERDE_OSCURO = new Color(0, 98, 98);
 
+    /**
+     * Cajas de texto y combos deshabilitados (modo consulta) con el texto oscuro en vez de gris claro,
+     * para que el dato se lea bien. Se llama una vez, después de elegir el Look and Feel.
+     */
+    public static void textoDeshabilitadoLegible() {
+        javax.swing.UIDefaults d = javax.swing.UIManager.getLookAndFeelDefaults();
+        d.put("ComboBox:\"ComboBox.renderer\"[Disabled].textForeground", TEXTO);       // Nimbus (valor del combo)
+        d.put("ComboBox:\"ComboBox.listRenderer\"[Disabled].textForeground", TEXTO);
+        d.put("ComboBox.disabledForeground", TEXTO);                                     // otros Look and Feel
+        for (String caja : new String[]{"TextField", "PasswordField", "FormattedTextField", "TextArea"}) {
+            d.put(caja + "[Disabled].textForeground", TEXTO);                            // Nimbus
+            d.put(caja + ".inactiveForeground", TEXTO);                                  // otros
+            Object fondoNormal = d.get(caja + "[Enabled].backgroundPainter");
+            if (fondoNormal != null) {
+                d.put(caja + "[Disabled].backgroundPainter", fondoNormal);               // fondo blanco, no gris
+            }
+        }
+    }
+
     /** Franja de estado (ACTIVO / INACTIVO...): verde si está bien, naranja si no. */
     public static void franjaEstado(javax.swing.JLabel etiqueta, String texto, boolean bien) {
         etiqueta.setOpaque(true);

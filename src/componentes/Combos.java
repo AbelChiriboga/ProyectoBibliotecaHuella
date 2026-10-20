@@ -28,6 +28,31 @@ public final class Combos {
         llenar(combo, List.of(tipoEnum.getEnumConstants()));
     }
 
+    /**
+     * Deja el combo del ancho JUSTO para mostrar completo su texto más largo
+     * (por ejemplo, "Tecnologías de la Información"). Conserva el alto que tenía.
+     */
+    public static <T> void ajustarAncho(JComboBox<T> combo) {
+        java.awt.FontMetrics fm = combo.getFontMetrics(combo.getFont());
+        T masLargo = null;
+        for (int i = 0; i < combo.getItemCount(); i++) {
+            T item = combo.getItemAt(i);
+            if (masLargo == null || fm.stringWidth(String.valueOf(item)) > fm.stringWidth(String.valueOf(masLargo))) {
+                masLargo = item;
+            }
+        }
+        if (masLargo == null) {
+            return;
+        }
+        int alto = combo.getPreferredSize().height;
+        combo.setPrototypeDisplayValue(masLargo);
+        combo.setPreferredSize(null);                       // que el combo calcule su ancho con el texto más largo
+        java.awt.Dimension justo = new java.awt.Dimension(combo.getPreferredSize().width + 8, alto);
+        combo.setPreferredSize(justo);
+        combo.setMinimumSize(justo);
+        combo.revalidate();
+    }
+
     /** Objeto seleccionado con su tipo (null si el combo está vacío). */
     public static <T> T seleccionado(JComboBox<T> combo) {
         return combo.getItemAt(combo.getSelectedIndex());

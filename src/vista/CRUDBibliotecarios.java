@@ -30,6 +30,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtCedula, jtxtNombres, jtxtApellidos,
             jtxtCorreo, jtxtDireccion, jtxtTelefono, jtxtUsuario, jcbxRol, jpswClave, jpswRepClave},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnDesactivar, jbtnCancelar);
+        control.bloquearAlEditar(jtblUsuarios);   // mientras se escribe no se puede elegir otra fila
         componentes.Combos.llenar(jcbxRol, modelo.Rol.class);
         tabla.alSeleccionar(this::mostrar);
         tabla.usarBarra(barraBuscar);   // búsqueda al escribir + filtro por columnas
@@ -53,7 +54,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
             tabla.exigirSeleccionado("un usuario");
             alGuardar = u -> servicio.actualizar(u, clave(), claveRepetida());
             control.edicion();
-            jtxtCedula.setEnabled(false);           // la cédula es la llave: no se cambia
+            componentes.ControlCrud.permitirEscribir(jtxtCedula, false);   // la cédula es la llave: no se cambia
             jlblSeguridad.setText("Deje la contraseña vacía para no cambiarla");
             jtxtNombres.requestFocus();
         });

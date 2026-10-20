@@ -32,6 +32,7 @@ public class EstudianteService {
     private final PrestamoDAO prestamoDAO = new PrestamoDAO();
     private final dao.RegistroAutenticacionDAO bitacora = new dao.RegistroAutenticacionDAO();
     private final dao.MultaDAO multaDAO = new dao.MultaDAO();
+    private final CedulaUnica cedulaUnica = new CedulaUnica();
     private final dao.ParametroDAO parametroDAO = new dao.ParametroDAO();
 
     /** Estudiantes con sus huellas ya cargadas (2 consultas en total, no una por estudiante). */
@@ -77,11 +78,12 @@ public class EstudianteService {
      */
     public Estudiante guardar(Estudiante e, Map<Dedo, byte[]> huellasCapturadas) {
         exigir(Usuario::puedeRegistrarEstudiantes, "registrar estudiantes");
-        if (!e.tieneHuella() && huellasCapturadas.isEmpty()) {
-            throw new ValidacionException("Registre la huella del estudiante.");
-        }
         if (e.esNuevo()) {
             Validaciones.cedulaEcuatoriana(e.getCedula());
+        }
+        cedulaUnica.exigirQueNoSeaDeUsuario(e.getCedula());    // la cédula no puede ser de un admin/bibliotecario
+        if (!e.tieneHuella() && huellasCapturadas.isEmpty()) {
+            throw new ValidacionException("Registre la huella del estudiante.");
         }
         dao.guardarConHuellas(e, huellasCapturadas);
         huellasCapturadas.keySet().forEach(dedo -> bitacora.insertar(new RegistroAutenticacion(e.getIdEstudiante(),

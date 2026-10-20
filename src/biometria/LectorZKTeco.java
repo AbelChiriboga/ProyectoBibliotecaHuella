@@ -115,7 +115,6 @@ public class LectorZKTeco extends LectorBase {
         candado.lock();
         try {
             exigirAbierto();
-            cancelada = false;
             long limite = System.currentTimeMillis() + ESPERA_DEDO_MS;
             while (System.currentTimeMillis() < limite) {
                 if (cancelada) {
@@ -152,6 +151,12 @@ public class LectorZKTeco extends LectorBase {
         return img;
     }
 
+    @Override
+    public void nuevaCaptura() {
+        cancelada = false;
+    }
+
+    /** Vale también entre las 3 muestras del registro: la siguiente muestra ya no se espera. */
     @Override
     public void cancelarCaptura() {
         cancelada = true;

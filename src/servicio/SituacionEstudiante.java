@@ -69,9 +69,9 @@ public class SituacionEstudiante {
         return multasPendientes.signum() > 0;
     }
 
-    /** "Cédula: 1805...   ·   Carrera: Software". */
+    /** "Cédula: 1805..." y en otra línea "Carrera: Software". */
     public String getDatos() {
-        return "Cédula: " + estudiante.getCedula() + "   ·   Carrera: " + estudiante.getCarrera();
+        return "Cédula: " + estudiante.getCedula() + "\nCarrera: " + estudiante.getCarrera();
     }
 
     /** "Préstamos activos: 1 de 3". */
