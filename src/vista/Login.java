@@ -524,11 +524,11 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JPanel jpnlIniciarSesion;
     private javax.swing.JPanel jpnlPersonal;
     private javax.swing.JPanel jpnlPrincipal;
+    private javax.swing.JPasswordField jpswClave;
     private javax.swing.JSplitPane jsplSelector;
     private javax.swing.JToggleButton jtglEstudiante;
     private javax.swing.JToggleButton jtglPersonal;
-    private javax.swing.JTextField jtxtUsuario;
     private javax.swing.JTextField jtxtCedulaE;
-    private javax.swing.JPasswordField jpswClave;
+    private javax.swing.JTextField jtxtUsuario;
     // End of variables declaration//GEN-END:variables
 }
