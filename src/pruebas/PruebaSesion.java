@@ -6,10 +6,7 @@ import modelo.Usuario;
 import servicio.AutenticacionService;
 import servicio.Sesion;
 
-/**
- * Prueba de la Fase 3 (XAMPP encendido). En NetBeans: clic derecho → Run File (Shift+F6).
- * Para probar las ventanas, ejecuta el proyecto normal (F6) e ingresa con admin/admin123 o biblio/biblio123.
- */
+/** Prueba de la Fase 3 (XAMPP encendido). */
 public class PruebaSesion {
 
     public static void main(String[] args) {
@@ -32,9 +29,9 @@ public class PruebaSesion {
 
         UsuarioDAO dao = new UsuarioDAO();
         String cedulaBiblio = dao.buscarPorUsuario("biblio").orElseThrow().getCedula();
-        dao.eliminar(cedulaBiblio);                         // borrado lógico
+        dao.eliminar(cedulaBiblio);
         probar("Cuenta desactivada", () -> auth.iniciarSesion("biblio", "biblio123"));
-        dao.cambiarActivo(cedulaBiblio, true);              // se deja como estaba
+        dao.cambiarActivo(cedulaBiblio, true);
         System.out.println("  Sesión después de cerrar: " + Sesion.getInstancia().getUsuarioActual().isPresent());
 
         titulo("Consulta del estudiante por cédula");

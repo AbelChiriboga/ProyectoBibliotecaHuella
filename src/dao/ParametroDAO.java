@@ -7,10 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 import modelo.Parametro;
 
-/**
- * Parámetros del sistema (clave / valor). Las claves vienen precargadas: desde la app
- * solo se leen y se cambian sus valores (no se crean ni se borran).
- */
+/** Parámetros del sistema (clave / valor). */
 public class ParametroDAO extends BaseDAO<Parametro, String> {
 
     @Override
@@ -35,7 +32,6 @@ public class ParametroDAO extends BaseDAO<Parametro, String> {
         return p;
     }
 
-    /** Busca un parámetro que DEBE existir (si falta, la BD está incompleta). */
     public Parametro obtener(String clave) {
         return buscarPorId(clave).orElseThrow(
                 () -> new DatosException("Falta el parámetro " + clave + " en la tabla parametros."));
@@ -53,7 +49,6 @@ public class ParametroDAO extends BaseDAO<Parametro, String> {
         ejecutar("UPDATE parametros SET valor = ? WHERE clave = ?", p.getValor(), p.getClave());
     }
 
-    /** Guarda todos los parámetros juntos: o se cambian todos o ninguno. */
     public void actualizarVarios(List<Parametro> parametros) {
         enTransaccion(cn -> {
             for (Parametro p : parametros) {

@@ -5,10 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
- * Contraseñas: nunca se guardan ni se comparan en texto plano.
- * Se guarda el hash SHA-256 en hexadecimal (64 caracteres), el mismo que da SHA2('clave', 256) en MySQL.
- */
+/** Contraseñas: nunca se guardan ni se comparan en texto plano. */
 public final class Seguridad {
 
     public static final int LONGITUD_MINIMA = 6;
@@ -16,7 +13,6 @@ public final class Seguridad {
     private Seguridad() {
     }
 
-    /** SHA-256 en hexadecimal (minúsculas), igual que la función SHA2 de MySQL. */
     public static String sha256(String texto) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -27,12 +23,10 @@ public final class Seguridad {
             }
             return hex.toString();
         } catch (NoSuchAlgorithmException e) {
-            // Todas las JVM traen SHA-256: si falta, el entorno está dañado
             throw new IllegalStateException("SHA-256 no disponible", e);
         }
     }
 
-    /** Compara una contraseña escrita con el hash guardado, en tiempo constante. */
     public static boolean coincide(String claveEscrita, String hashGuardado) {
         if (claveEscrita == null || hashGuardado == null) {
             return false;
@@ -41,15 +35,11 @@ public final class Seguridad {
                 hashGuardado.toLowerCase().getBytes(StandardCharsets.UTF_8));
     }
 
-    /**
-     * Fortaleza de 0 a 100 para la barra de CRUDBibliotecarios:
-     * suma puntos por largo, minúsculas, mayúsculas, números y símbolos.
-     */
     public static int fortaleza(String clave) {
         if (clave == null || clave.isEmpty()) {
             return 0;
         }
-        int puntos = Math.min(clave.length(), 12) * 4;             // hasta 48 por largo
+        int puntos = Math.min(clave.length(), 12) * 4;
         puntos += clave.matches(".*[a-z].*") ? 10 : 0;
         puntos += clave.matches(".*[A-Z].*") ? 14 : 0;
         puntos += clave.matches(".*\\d.*") ? 14 : 0;
@@ -57,12 +47,10 @@ public final class Seguridad {
         return Math.min(puntos, 100);
     }
 
-    /** Texto para la fortaleza: Débil, Media o Fuerte. */
     public static String nivel(int fortaleza) {
         return fortaleza < 40 ? "Débil" : fortaleza < 70 ? "Media" : "Fuerte";
     }
 
-    /** Reglas mínimas para una contraseña nueva (se usa al registrar personal). */
     public static String validarNueva(String clave, String repetida) {
         String c = Validaciones.obligatorio(clave, "contraseña");
         if (c.length() < LONGITUD_MINIMA) {

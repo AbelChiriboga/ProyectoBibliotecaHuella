@@ -4,10 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import util.Validaciones;
 
-/**
- * Plantilla (template) de una huella de un estudiante. Un estudiante puede tener varias
- * (se recomiendan 2 dedos). La plantilla son los bytes que genera el SDK de ZKTeco.
- */
+/** Plantilla (template) de una huella de un estudiante. */
 public class Huella extends Entidad {
 
     private int idEstudiante;
@@ -39,7 +36,6 @@ public class Huella extends Entidad {
         this.dedo = Validaciones.requerido(dedo, "el dedo");
     }
 
-    /** Devuelve una COPIA: nadie de afuera puede modificar la plantilla guardada. */
     public byte[] getPlantilla() {
         return plantilla == null ? null : Arrays.copyOf(plantilla, plantilla.length);
     }

@@ -10,10 +10,7 @@ import modelo.RegistroAutenticacion;
 import modelo.ResultadoAutenticacion;
 import modelo.ValorBD;
 
-/**
- * Bitácora de autenticación biométrica. Solo se inserta (cada intento) y se consulta;
- * nunca se edita ni se borra (es auditoría), por eso no implementa CrudDAO.
- */
+/** Bitácora de autenticación biométrica. */
 public class RegistroAutenticacionDAO extends BaseDAO<RegistroAutenticacion, Integer> {
 
     @Override
@@ -46,7 +43,6 @@ public class RegistroAutenticacionDAO extends BaseDAO<RegistroAutenticacion, Int
         return r;
     }
 
-    /** Guarda un intento (la fecha la pone la BD). */
     public RegistroAutenticacion insertar(RegistroAutenticacion r) {
         r.setId(insertarConId("INSERT INTO registro_autenticacion (id_estudiante, operacion, resultado, puntaje, detalle) "
                 + "VALUES (?,?,?,?,?)", r.getIdEstudiante(), bd(r.getOperacion()), bd(r.getResultado()),
@@ -54,7 +50,6 @@ public class RegistroAutenticacionDAO extends BaseDAO<RegistroAutenticacion, Int
         return r;
     }
 
-    /** Filtros de la Bitácora; cualquier filtro en null se ignora. */
     public List<RegistroAutenticacion> listar(LocalDate desde, LocalDate hasta,
                                               OperacionAutenticacion operacion, ResultadoAutenticacion resultado) {
         Date d = desde == null ? null : Date.valueOf(desde);

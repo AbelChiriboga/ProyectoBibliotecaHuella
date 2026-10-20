@@ -5,11 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 import modelo.Libro;
 
-/**
- * CRUD de libros. Usa la vista v_catalogo de la BD para saber cuántos ejemplares hay
- * y cuántos están disponibles (no se repite ese cálculo en Java).
- * Reutiliza los mapeos de AutorDAO y CategoriaDAO.
- */
+/** CRUD de libros. */
 public class LibroDAO extends BaseDAO<Libro, Integer> implements CrudDAO<Libro, Integer> {
 
     static final String COLUMNAS =
@@ -18,7 +14,6 @@ public class LibroDAO extends BaseDAO<Libro, Integer> implements CrudDAO<Libro, 
             + "v.total_ejemplares AS lib_total, v.disponibles AS lib_disponibles, "
             + AutorDAO.COLUMNAS + ", " + CategoriaDAO.COLUMNAS;
 
-    /** JOIN que necesita un libro (autor, categoría y totales); otros DAO lo agregan tras "libros l". */
     static final String JOINS = "JOIN autores a ON a.id_autor = l.id_autor "
             + "JOIN categorias c ON c.id_categoria = l.id_categoria "
             + "JOIN v_catalogo v ON v.id_libro = l.id_libro";
@@ -56,7 +51,6 @@ public class LibroDAO extends BaseDAO<Libro, Integer> implements CrudDAO<Libro, 
         return l;
     }
 
-    /** fecha_registro no se envía: la pone la BD. */
     @Override
     public Libro insertar(Libro l) {
         l.setId(insertarConId("INSERT INTO libros (isbn, titulo, id_autor, id_categoria, editorial, anio_publicacion) "
@@ -72,13 +66,11 @@ public class LibroDAO extends BaseDAO<Libro, Integer> implements CrudDAO<Libro, 
                 l.getCategoria().getId(), l.getEditorial(), l.getAnio(), l.getId());
     }
 
-    /** Si tiene ejemplares, la BD no deja eliminarlo. */
     @Override
     public void eliminar(Integer id) {
         ejecutar("DELETE FROM libros WHERE id_libro = ?", id);
     }
 
-    /** Búsqueda por título, ISBN o autor (tabla de CRUDLibros). */
     public List<Libro> buscar(String texto) {
         String t = like(texto);
         return consultarLista(sqlSelect() + " WHERE l.titulo LIKE ? OR l.isbn LIKE ? "

@@ -1,15 +1,11 @@
 package util;
 
-/**
- * Estilos compartidos por todas las ventanas del sistema.
- * Así cada frame se ve igual sin repetir código.
- */
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+/** Colores, fuentes y estilos comunes de los componentes del sistema. */
 public class Estilos {
 
     public static final Color VERDE = new Color(0, 153, 153);
@@ -19,7 +15,6 @@ public class Estilos {
     public static final Color HOVER = new Color(230, 245, 243);
     public static final Font FUENTE = new Font("Segoe UI", Font.PLAIN, 14);
 
-    /** Panel con borde verde redondeado y título. */
     public static void grupo(JPanel panel, String titulo) {
         panel.setBackground(Color.WHITE);
         panel.setBorder(BorderFactory.createCompoundBorder(
@@ -33,29 +28,23 @@ public class Estilos {
                 BorderFactory.createEmptyBorder(4, 8, 8, 8)));
     }
 
-    /** Verde más oscuro para el botón principal al pasar el mouse. */
     public static final Color VERDE_OSCURO = new Color(0, 98, 98);
 
-    /**
-     * Cajas de texto y combos deshabilitados (modo consulta) con el texto oscuro en vez de gris claro,
-     * para que el dato se lea bien. Se llama una vez, después de elegir el Look and Feel.
-     */
     public static void textoDeshabilitadoLegible() {
         javax.swing.UIDefaults d = javax.swing.UIManager.getLookAndFeelDefaults();
-        d.put("ComboBox:\"ComboBox.renderer\"[Disabled].textForeground", TEXTO);       // Nimbus (valor del combo)
+        d.put("ComboBox:\"ComboBox.renderer\"[Disabled].textForeground", TEXTO);
         d.put("ComboBox:\"ComboBox.listRenderer\"[Disabled].textForeground", TEXTO);
-        d.put("ComboBox.disabledForeground", TEXTO);                                     // otros Look and Feel
+        d.put("ComboBox.disabledForeground", TEXTO);
         for (String caja : new String[]{"TextField", "PasswordField", "FormattedTextField", "TextArea"}) {
-            d.put(caja + "[Disabled].textForeground", TEXTO);                            // Nimbus
-            d.put(caja + ".inactiveForeground", TEXTO);                                  // otros
+            d.put(caja + "[Disabled].textForeground", TEXTO);
+            d.put(caja + ".inactiveForeground", TEXTO);
             Object fondoNormal = d.get(caja + "[Enabled].backgroundPainter");
             if (fondoNormal != null) {
-                d.put(caja + "[Disabled].backgroundPainter", fondoNormal);               // fondo blanco, no gris
+                d.put(caja + "[Disabled].backgroundPainter", fondoNormal);
             }
         }
     }
 
-    /** Franja de estado (ACTIVO / INACTIVO...): verde si está bien, naranja si no. */
     public static void franjaEstado(javax.swing.JLabel etiqueta, String texto, boolean bien) {
         etiqueta.setOpaque(true);
         etiqueta.setText(texto.toUpperCase());
@@ -63,10 +52,6 @@ public class Estilos {
         etiqueta.setForeground(bien ? VERDE_TITULO : new Color(138, 58, 18));
     }
 
-    /**
-     * Botón blanco; verde suave al pasar el mouse y verde completo al hacer clic.
-     * Si el botón tiene la marca "primario" (BotonSistema.setPrimario) va verde desde el inicio.
-     */
     public static void boton(JButton b) {
         b.setFocusPainted(false);
         b.setContentAreaFilled(false);
@@ -77,12 +62,11 @@ public class Estilos {
         b.getModel().addChangeListener(e -> pintarBoton(b));
     }
 
-    /** Colores del botón según su estado (normal, mouse encima, presionado). */
     public static void pintarBoton(JButton b) {
         ButtonModel m = b.getModel();
         boolean primario = Boolean.TRUE.equals(b.getClientProperty("primario"));
         Color fondo, texto, borde;
-        if (!m.isEnabled()) {                 // deshabilitado: gris, para que se note que no se puede usar
+        if (!m.isEnabled()) {
             fondo = new Color(241, 244, 246);
             texto = new Color(150, 160, 168);
             borde = new Color(214, 221, 225);
@@ -104,7 +88,6 @@ public class Estilos {
         b.setBorder(BorderFactory.createLineBorder(borde, 1, true));
     }
 
-    /** Barra de progreso plana y verde (Nimbus ignora el color si no se cambia el UI). */
     public static void barra(JProgressBar barra) {
         barra.setUI(new javax.swing.plaf.basic.BasicProgressBarUI());
         barra.setForeground(VERDE);
@@ -112,7 +95,6 @@ public class Estilos {
         barra.setBorderPainted(false);
     }
 
-    /** Imagen escalada en un botón. Texto debajo si abajo = true, a la derecha si false. */
     public static void icono(JButton b, String archivo, int tamano, boolean abajo) {
         java.net.URL ruta = Estilos.class.getResource("/imagenes/" + archivo);
         if (ruta == null) {
@@ -132,7 +114,6 @@ public class Estilos {
         }
     }
 
-    /** Tabla de solo lectura con las columnas dadas y el estilo del sistema. */
     public static void tabla(JTable t, JScrollPane scroll, String... columnas) {
         t.setModel(new DefaultTableModel(new Object[][]{}, columnas) {
             @Override

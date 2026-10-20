@@ -5,10 +5,7 @@ import java.math.RoundingMode;
 import modelo.Parametro;
 import util.Validaciones;
 
-/**
- * Los 4 parámetros que el administrador puede cambiar. Enum POLIMÓRFICO: cada uno sabe
- * su clave en la BD y cómo se valida (rango permitido). ParametroService no usa if/else.
- */
+/** Los 4 parámetros que el administrador puede cambiar. */
 public enum ParametroEditable {
 
     DIAS_PRESTAMO(Parametro.DIAS_PRESTAMO, "días de préstamo") {
@@ -56,6 +53,5 @@ public enum ParametroEditable {
         return nombre;
     }
 
-    /** Revisa el valor escrito y lo devuelve normalizado (por ejemplo, "0.5" → "0.50"). */
     public abstract String validar(String valor);
 }

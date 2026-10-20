@@ -5,23 +5,20 @@ import java.math.BigDecimal;
 import java.util.List;
 import modelo.*;
 
-/**
- * Prueba de la Fase 1 (sin BD ni ventanas). En NetBeans: clic derecho → Run File (Shift+F6).
- * Cada bloque muestra un principio de POO. Se puede borrar cuando ya no haga falta.
- */
+/** Prueba de la Fase 1 (sin BD ni ventanas). */
 public class PruebaModelo {
 
     public static void main(String[] args) {
         titulo("1. Fábrica sin if: cada Rol crea su subclase");
         Usuario a = Rol.ADMINISTRADOR.crearUsuario();
-        Usuario b = ValorBD.desde(Rol.class, "BIBLIOTECARIO").crearUsuario();   // como lo hace el DAO
+        Usuario b = ValorBD.desde(Rol.class, "BIBLIOTECARIO").crearUsuario();
         a.setCedula("1804567897"); a.setNombres("Ana"); a.setApellidos("Torres"); a.setUsuario("admin");
         b.setCedula("1712345675"); b.setNombres("Luis"); b.setApellidos("Mena"); b.setUsuario("biblio");
         System.out.println(a.getClass().getSimpleName() + " / " + b.getClass().getSimpleName());
 
         titulo("2. Polimorfismo: la misma pregunta, cada objeto responde distinto");
         List<Usuario> personal = List.of(a, b);
-        for (Usuario u : personal) {      // se trabaja como Usuario: ni if ni instanceof
+        for (Usuario u : personal) {
             System.out.printf("%-14s registrarEst=%-5s catalogo=%-5s prestamos=%-5s parametros=%-5s bitacora=%s%n",
                     u.getTipo(), u.puedeRegistrarEstudiantes(), u.puedeGestionarCatalogo(),
                     u.puedeGestionarPrestamos(), u.puedeConfigurarParametros(), u.puedeVerBitacora());

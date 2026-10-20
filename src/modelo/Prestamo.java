@@ -5,25 +5,20 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import util.Validaciones;
 
-/**
- * Préstamo de UN ejemplar a un estudiante, registrado por un usuario del personal.
- * Asociaciones: tiene un Ejemplar, un Estudiante, el Usuario que atendió y, si devolvió tarde, una Multa.
- * Las reglas fuertes (huella, estudiante activo, ejemplar disponible, máximo de préstamos,
- * fecha límite y multa) las aplican los triggers de la BD; aquí solo se modelan.
- */
+/** Préstamo de UN ejemplar a un estudiante, registrado por un usuario del personal. */
 public class Prestamo extends Entidad {
 
     private Ejemplar ejemplar;
     private Estudiante estudiante;
     private Usuario usuario;
     private LocalDateTime fechaPrestamo;
-    private LocalDateTime fechaLimite;        // si va nula al insertar, la calcula el trigger
+    private LocalDateTime fechaLimite;
     private LocalDateTime fechaDevolucion;
     private EstadoPrestamo estado = EstadoPrestamo.ACTIVO;
-    private boolean huellaPrestamo;           // 1 = huella verificada al prestar
-    private boolean huellaDevolucion;         // 1 = huella verificada al devolver
+    private boolean huellaPrestamo;
+    private boolean huellaDevolucion;
     private String observaciones;
-    private Multa multa;                      // nula si no hubo retraso
+    private Multa multa;
 
     public Prestamo() {
     }
@@ -34,13 +29,10 @@ public class Prestamo extends Entidad {
         setUsuario(usuario);
     }
 
-    // ---------- Comportamiento ----------
-
     public boolean estaActivo() {
         return estado == EstadoPrestamo.ACTIVO;
     }
 
-    /** Días de atraso a la fecha indicada (0 si no está atrasado). Igual que DATEDIFF de la BD. */
     public int diasAtraso(LocalDate aLaFecha) {
         if (fechaLimite == null || !aLaFecha.isAfter(fechaLimite.toLocalDate())) {
             return 0;
@@ -48,7 +40,6 @@ public class Prestamo extends Entidad {
         return (int) ChronoUnit.DAYS.between(fechaLimite.toLocalDate(), aLaFecha);
     }
 
-    /** Días de atraso a hoy (o a la fecha de devolución si ya se devolvió). */
     public int diasAtraso() {
         return diasAtraso(fechaDevolucion != null ? fechaDevolucion.toLocalDate() : LocalDate.now());
     }
@@ -60,8 +51,6 @@ public class Prestamo extends Entidad {
     public boolean tieneMulta() {
         return multa != null;
     }
-
-    // ---------- Getters y setters ----------
 
     public Ejemplar getEjemplar() {
         return ejemplar;
@@ -83,7 +72,6 @@ public class Prestamo extends Entidad {
         return usuario;
     }
 
-    /** Usuario que registró el préstamo (columna cedula_usuario; puede ser nulo). */
     public final void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }

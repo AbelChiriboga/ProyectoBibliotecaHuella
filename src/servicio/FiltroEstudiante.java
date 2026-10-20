@@ -3,10 +3,7 @@ package servicio;
 import java.util.function.Predicate;
 import modelo.EstadoEstudiante;
 
-/**
- * Filtro del combo "Estado" en la consulta de estudiantes. Cada opción lleva su condición
- * (un Predicate), así la ventana filtra sin if/else.
- */
+/** Filtro del combo "Estado" en la consulta de estudiantes. */
 public enum FiltroEstudiante {
 
     TODOS("Todos", s -> true),

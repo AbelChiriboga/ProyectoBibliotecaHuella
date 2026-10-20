@@ -2,12 +2,7 @@ package modelo;
 
 import util.Validaciones;
 
-/**
- * Clase base ABSTRACTA de todas las personas del sistema (personal y estudiantes).
- * Reúne los datos comunes para no repetirlos en cada hija (herencia) y obliga a cada hija
- * a decir qué tipo de persona es y si puede iniciar sesión (métodos abstractos).
- * No se puede hacer "new Persona()": solo existen Administrador, Bibliotecario y Estudiante.
- */
+/** Clase base ABSTRACTA de todas las personas del sistema (personal y estudiantes). */
 public abstract class Persona {
 
     private String cedula;
@@ -25,28 +20,18 @@ public abstract class Persona {
         setApellidos(apellidos);
     }
 
-    // ---------- Métodos abstractos: cada hija los implementa a su manera ----------
-
-    /** Texto del tipo de persona ("Administrador", "Bibliotecario", "Estudiante"). */
     public abstract String getTipo();
 
-    /** El personal inicia sesión con usuario y contraseña; el estudiante no. */
     public abstract boolean puedeIniciarSesion();
 
-    // ---------- Comportamiento común ----------
-
-    /** "Nombres Apellidos", para el encabezado y las tablas. */
     public String getNombreCompleto() {
         return nombres + " " + apellidos;
     }
-
-    // ---------- Getters y setters con validación (encapsulamiento) ----------
 
     public String getCedula() {
         return cedula;
     }
 
-    /** Solo verifica el formato (10 dígitos); el dígito verificador se valida al registrar. */
     public final void setCedula(String cedula) {
         this.cedula = Validaciones.formatoCedula(cedula);
     }
@@ -71,7 +56,6 @@ public abstract class Persona {
         return correo;
     }
 
-    /** Obligatorio y único en la BD (usuarios y estudiantes). */
     public void setCorreo(String correo) {
         Validaciones.obligatorio(correo, "correo");
         this.correo = Validaciones.maximo(Validaciones.correo(correo), 100, "correo");
@@ -90,7 +74,6 @@ public abstract class Persona {
         return getNombreCompleto();
     }
 
-    /** Dos personas son la misma si tienen la misma cédula. */
     @Override
     public boolean equals(Object o) {
         if (this == o) {

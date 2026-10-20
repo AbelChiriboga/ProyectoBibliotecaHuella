@@ -6,11 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 import modelo.Multa;
 
-/**
- * Multas. Las INSERTA el trigger trg_devolucion_liberar; desde Java solo se consultan
- * y se marcan como pagadas. Por eso no implementa CrudDAO.
- * Reutiliza el SELECT de PrestamoDAO para traer cada multa con su préstamo completo.
- */
+/** Multas. */
 public class MultaDAO extends BaseDAO<Multa, Integer> {
 
     static final String COLUMNAS = "m.id_multa AS mul_id, m.dias_retraso AS mul_dias, m.monto AS mul_monto, "
@@ -18,7 +14,6 @@ public class MultaDAO extends BaseDAO<Multa, Integer> {
 
     private final PrestamoDAO prestamoDAO = new PrestamoDAO();
 
-    /** Arma solo la multa (sin su préstamo). PrestamoDAO también lo usa. */
     static Multa mapearMulta(ResultSet rs) throws SQLException {
         Multa m = new Multa();
         m.setId(rs.getInt("mul_id"));
@@ -30,7 +25,6 @@ public class MultaDAO extends BaseDAO<Multa, Integer> {
         return m;
     }
 
-    /** El mismo SELECT del préstamo, pero solo los que SÍ tienen multa (JOIN en vez de LEFT JOIN). */
     @Override
     protected String sqlSelect() {
         return "SELECT " + PrestamoDAO.COLUMNAS + " FROM "
@@ -47,7 +41,6 @@ public class MultaDAO extends BaseDAO<Multa, Integer> {
         return "m.fecha_generacion DESC";
     }
 
-    /** La multa con su préstamo, estudiante y libro. */
     @Override
     protected Multa mapear(ResultSet rs) throws SQLException {
         return prestamoDAO.mapear(rs).getMulta();
@@ -61,7 +54,6 @@ public class MultaDAO extends BaseDAO<Multa, Integer> {
         return consultarLista(sqlSelect() + " WHERE p.id_estudiante = ? AND m.pagada = 0 ORDER BY " + orden(), idEstudiante);
     }
 
-    /** Total que debe un estudiante. */
     public BigDecimal totalPendiente(int idEstudiante) {
         List<BigDecimal> r = consultar("SELECT COALESCE(SUM(m.monto), 0) FROM multas m "
                 + "JOIN prestamos p ON p.id_prestamo = m.id_prestamo WHERE p.id_estudiante = ? AND m.pagada = 0",

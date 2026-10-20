@@ -5,12 +5,10 @@ public class LectorException extends BibliotecaException {
 
     private final boolean tecnico;
 
-    /** Aviso para el usuario (por ejemplo, "no se detectó ningún dedo"). */
     public LectorException(String mensaje) {
         this(mensaje, false, null);
     }
 
-    /** Falla técnica del dispositivo o del SDK. */
     public LectorException(String mensaje, Throwable causa) {
         this(mensaje, true, causa);
     }
@@ -25,7 +23,6 @@ public class LectorException extends BibliotecaException {
         return "Lector de huella";
     }
 
-    /** Si el lector falla, la lectura automática se detiene hasta que el lector vuelva a estar listo. */
     @Override
     public Reaccion getReaccion() {
         return Reaccion.DETENER_LECTURA;

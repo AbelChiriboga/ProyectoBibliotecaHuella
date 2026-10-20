@@ -9,14 +9,9 @@ import modelo.OperacionAutenticacion;
 import modelo.RegistroAutenticacion;
 import modelo.ResultadoAutenticacion;
 
-/**
- * Cálculos del panel de la Bitácora a partir de los intentos ya filtrados:
- * totales, tasa de éxito, intentos de hoy, puntajes y éxitos/fallos por día y por operación.
- * Objeto INMUTABLE: se calcula una vez y la ventana solo lo muestra.
- */
+/** Cálculos del panel de la Bitácora a partir de los intentos ya filtrados: totales, tasa de éxito, intentos de. */
 public final class ResumenBitacora {
 
-    /** Como máximo se grafican los últimos 14 días del periodo (para que las barras se lean). */
     private static final int DIAS_GRAFICO = 14;
 
     private final List<RegistroAutenticacion> registros;
@@ -45,7 +40,6 @@ public final class ResumenBitacora {
         return getTotal() - getExitos();
     }
 
-    /** Porcentaje de éxito (0 si no hay intentos). */
     public int getTasaExito() {
         return porcentaje(getExitos(), getTotal());
     }
@@ -58,12 +52,10 @@ public final class ResumenBitacora {
         return contar(esDeHoy().and(r -> !esExito(r)));
     }
 
-    /** Puntaje promedio de las huellas aceptadas (vacío si no hay). */
     public OptionalDouble getPuntajeAceptados() {
         return promedio(ResumenBitacora::esExito);
     }
 
-    /** Puntaje promedio de los rechazados que sí tienen puntaje (por ejemplo, huella de otro estudiante). */
     public OptionalDouble getPuntajeRechazados() {
         return promedio(r -> !esExito(r));
     }
@@ -76,9 +68,6 @@ public final class ResumenBitacora {
         return porcentaje(contar(r -> r.getOperacion() == op && esExito(r)), getTotal(op));
     }
 
-    // ---------- Gráfico por día ----------
-
-    /** Días del gráfico: del inicio del periodo (o 14 días antes del final) hasta el final. */
     public List<LocalDate> getDiasGrafico() {
         LocalDate fin = hasta != null ? hasta : LocalDate.now();
         LocalDate inicio = desde != null && !desde.isBefore(fin.minusDays(DIAS_GRAFICO - 1))
@@ -98,8 +87,6 @@ public final class ResumenBitacora {
     public int[] getFallosPorDia() {
         return getDiasGrafico().stream().mapToInt(d -> contar(r -> esDelDia(r, d) && !esExito(r))).toArray();
     }
-
-    // ---------- Ayudantes ----------
 
     private int contar(Predicate<RegistroAutenticacion> condicion) {
         return (int) registros.stream().filter(condicion).count();

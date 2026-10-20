@@ -1,9 +1,6 @@
 package modelo;
 
-/**
- * Administrador: registra estudiantes (con huella) y personal, configura parámetros,
- * ve la bitácora y genera reportes. No atiende el catálogo ni los préstamos.
- */
+/** Administrador: registra estudiantes (con huella) y personal, configura parámetros, ve la bitácora y genera. */
 public class Administrador extends Usuario {
 
     public Administrador() {

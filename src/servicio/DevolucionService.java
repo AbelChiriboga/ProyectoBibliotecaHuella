@@ -10,10 +10,7 @@ import modelo.OperacionAutenticacion;
 import modelo.Parametro;
 import modelo.Prestamo;
 
-/**
- * Devolución de uno o varios libros, SOLO con la huella del mismo estudiante que los llevó.
- * Los triggers de la BD ponen la fecha de devolución, liberan el ejemplar y generan la multa.
- */
+/** Devolución de uno o varios libros, SOLO con la huella del mismo estudiante que los llevó. */
 public class DevolucionService extends AtencionConHuella {
 
     public DevolucionService() {
@@ -38,10 +35,6 @@ public class DevolucionService extends AtencionConHuella {
         return parametroDAO.obtenerDecimal(Parametro.MULTA_POR_DIA);
     }
 
-    /**
-     * Registra la devolución en UNA transacción y la anota en la bitácora.
-     * @return el resumen con la multa que realmente generó la BD
-     */
     public ResumenDevolucion devolver(FichaEstudiante ficha, List<Prestamo> marcados) {
         exigirPermiso();
         exigirIdentificado(ficha);
@@ -56,7 +49,6 @@ public class DevolucionService extends AtencionConHuella {
         return new ResumenDevolucion(devueltos(ficha, ids), multaPorDia());
     }
 
-    /** La huella debe ser del mismo estudiante que tiene los libros (nadie devuelve por otro). */
     private static void exigirQueSeanSuyos(FichaEstudiante ficha, List<Prestamo> marcados) {
         Set<Integer> suyos = ficha.getPrestamosActivos().stream().map(Prestamo::getId).collect(Collectors.toSet());
         marcados.stream().filter(p -> !suyos.contains(p.getId())).findFirst().ifPresent(p -> {
@@ -65,7 +57,6 @@ public class DevolucionService extends AtencionConHuella {
         });
     }
 
-    /** Los préstamos recién devueltos, leídos otra vez de la BD (con fecha de devolución). */
     private List<Prestamo> devueltos(FichaEstudiante ficha, List<Integer> ids) {
         return prestamoDAO.listarPorEstudiante(ficha.getEstudiante().getIdEstudiante()).stream()
                 .filter(p -> ids.contains(p.getId()))

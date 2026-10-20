@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import modelo.Categoria;
 import modelo.Usuario;
 
-/** Categorías de libros. Solo el bibliotecario las modifica. */
+/** Categorías de libros. */
 public class CategoriaService extends ServicioCrud<Categoria> {
 
     private final CategoriaDAO categoriaDAO;
@@ -30,12 +30,10 @@ public class CategoriaService extends ServicioCrud<Categoria> {
         return "gestionar el catálogo";
     }
 
-    /** Para la tabla: cada categoría con su número de libros y ejemplares. */
     public List<Categoria> listarConTotales() {
         return categoriaDAO.listarConTotales("");
     }
 
-    /** Mensaje claro en vez del genérico de la BD. */
     @Override
     protected void antesDeEliminar(Categoria c) {
         if (c.getCantidadLibros() > 0) {

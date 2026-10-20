@@ -1,16 +1,10 @@
 package vista;
 
-/**
- * Consulta de estudiantes. El bibliotecario no los registra, solo los activa o desactiva.
- * Hereda de VentanaBase: encabezado, pie, tamaño y botón Regresar ya vienen listos.
- *
- * @author User
- */
+/** Consulta de estudiantes. */
 public class BEstudiantes extends componentes.VentanaBase {
 
     private final servicio.EstudianteService servicio = new servicio.EstudianteService();
     private final componentes.TablaObjetos<servicio.SituacionEstudiante> tabla;
-    /** Todos los estudiantes leídos de la BD; el combo Estado filtra sobre esta lista. */
     private java.util.List<servicio.SituacionEstudiante> todos = java.util.List.of();
 
     public BEstudiantes() {
@@ -29,14 +23,11 @@ public class BEstudiantes extends componentes.VentanaBase {
         cargar();
     }
 
-    // ---------- Acciones ----------
-
     private void cargar() {
         ejecutar(() -> todos = servicio.listarSituaciones());
         filtrar();
     }
 
-    /** Aplica el filtro del combo Estado (Todos, Activos, Inactivos, Con atrasos, Con multas). */
     private void filtrar() {
         servicio.FiltroEstudiante elegido = componentes.Combos.seleccionado(jcbxEstado);
         servicio.FiltroEstudiante filtro = elegido != null ? elegido : jcbxEstado.getItemAt(0);
@@ -52,8 +43,6 @@ public class BEstudiantes extends componentes.VentanaBase {
         cambiarEstado(modelo.EstadoEstudiante.INACTIVO, "desactivar");
     }
 
-    // ---------- Ayudantes ----------
-
     private void cambiarEstado(modelo.EstadoEstudiante nuevo, String verbo) {
         ejecutar(() -> {
             modelo.Estudiante e = tabla.exigirSeleccionado("un estudiante").getEstudiante();
@@ -65,7 +54,6 @@ public class BEstudiantes extends componentes.VentanaBase {
         });
     }
 
-    /** Datos del estudiante seleccionado, a la derecha. */
     private void mostrar(servicio.SituacionEstudiante s) {
         modelo.Estudiante e = s.getEstudiante();
         jlblNombres.setText(e.getNombreCompleto());
@@ -93,7 +81,6 @@ public class BEstudiantes extends componentes.VentanaBase {
         jbtnDesactivar.setEnabled(false);
     }
 
-    /** Después de recargar, vuelve a seleccionar al mismo estudiante (si sigue en la lista filtrada). */
     private void seleccionar(modelo.Estudiante e) {
         tabla.getDatos().stream().filter(s -> s.getEstudiante().equals(e)).findFirst().ifPresent(tabla::seleccionar);
     }
@@ -162,7 +149,6 @@ public class BEstudiantes extends componentes.VentanaBase {
         jpnlBarra.add(jpnlFiltro, java.awt.BorderLayout.EAST);
 
         jpnlEstudiantes.add(jpnlBarra, java.awt.BorderLayout.NORTH);
-
 
         jScrollPane1.setViewportView(jtblEstudiantes);
 
@@ -289,7 +275,6 @@ public class BEstudiantes extends componentes.VentanaBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
 
     private void jcbxEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbxEstadoActionPerformed
         filtrar();

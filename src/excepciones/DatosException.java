@@ -1,9 +1,6 @@
 package excepciones;
 
-/**
- * Problema técnico con la base de datos (XAMPP apagado, error de SQL inesperado...).
- * La crea BaseDAO a partir de una SQLException para que las ventanas no tengan que conocer JDBC.
- */
+/** Problema técnico con la base de datos (XAMPP apagado, error de SQL inesperado...). */
 public class DatosException extends BibliotecaException {
 
     public DatosException(String mensaje, Throwable causa) {

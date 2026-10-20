@@ -1,6 +1,6 @@
 package modelo;
 
-/** Estado del estudiante. Solo ACTIVO puede pedir préstamos (el trigger de la BD también lo exige). */
+/** Estado del estudiante. */
 public enum EstadoEstudiante implements ValorBD {
 
     ACTIVO("ACTIVO", "Activo"),
@@ -25,12 +25,10 @@ public enum EstadoEstudiante implements ValorBD {
         return descripcion;
     }
 
-    /** Solo un estudiante activo puede pedir préstamos. */
     public boolean puedePrestar() {
         return this == ACTIVO;
     }
 
-    /** Los combos muestran la descripción. */
     @Override
     public String toString() {
         return descripcion;

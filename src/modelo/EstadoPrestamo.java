@@ -24,7 +24,6 @@ public enum EstadoPrestamo implements ValorBD {
         return descripcion;
     }
 
-    /** Los combos muestran la descripción. */
     @Override
     public String toString() {
         return descripcion;

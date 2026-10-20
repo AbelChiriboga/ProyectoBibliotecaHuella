@@ -2,7 +2,7 @@ package modelo;
 
 import util.Validaciones;
 
-/** Carrera de la FISEI. Son 5 fijas y precargadas en la BD (sin CRUD). */
+/** Carrera de la FISEI. */
 public class Carrera extends Entidad {
 
     private String nombre;

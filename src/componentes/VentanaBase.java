@@ -13,14 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
-/**
- * Clase padre de todas las ventanas internas del sistema (todas menos el Login).
- * Pone el encabezado, el pie, el tamaño estándar y el comportamiento del botón Regresar.
- *
- * Cada frame solo diseña su contenido en NetBeans y en el constructor llama:
- *     initComponents();
- *     montar("REGISTRO DE LIBROS", jpnlContenido);
- */
+/** Clase padre de todas las ventanas internas del sistema (todas menos el Login). */
 public class VentanaBase extends JFrame {
 
     public static final Dimension TAMANO = new Dimension(1130, 700);
@@ -29,25 +22,16 @@ public class VentanaBase extends JFrame {
     protected final PiePagina pie = new PiePagina();
 
     public VentanaBase() {
-        // Sin la barra de título de Windows; la ventana se mueve arrastrando el encabezado.
         setUndecorated(true);
         util.Arrastre.permitir(this, encabezado);
-        // Comportamiento por defecto: Regresar cierra esta ventana
-        // (util.Navegacion se encarga de mostrar la anterior).
         encabezado.getBotonRegresar().addActionListener(e -> dispose());
     }
 
-    /** Ventana normal: encabezado con Regresar, contenido y pie. */
     protected void montar(String subtitulo, JComponent contenido) {
         encabezado.setSubtitulo(subtitulo);
-        // Datos del usuario que inició sesión (si se abre el frame suelto, se quedan los de ejemplo)
         servicio.Sesion.getInstancia().getUsuarioActual().ifPresent(
                 u -> encabezado.setUsuario(u.getNombreCompleto(), u.getCedula(), u.getTipo()));
 
-        // El contenido va dentro de un panel blanco con margen,
-        // así nunca se le pisa el borde (por ejemplo, el borde verde de un PanelGrupo).
-        // Si la pantalla es más pequeña que la ventana (por ejemplo, laptop con escala 125 %),
-        // el contenido NO se aplasta: aparece una barra de desplazamiento.
         JScrollPane cuerpo = new JScrollPane(new Lienzo(contenido));
         cuerpo.setBorder(BorderFactory.createEmptyBorder());
         cuerpo.getViewport().setBackground(Color.WHITE);
@@ -68,19 +52,14 @@ public class VentanaBase extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    /** Nunca más grande que el área útil de la pantalla (sin la barra de tareas). */
     private void ajustarAPantalla() {
         java.awt.Rectangle util = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
         setSize(Math.min(getWidth(), util.width), Math.min(getHeight(), util.height));
     }
 
-    /**
-     * Panel blanco con margen que envuelve el contenido. Ocupa todo el espacio disponible
-     * y, solo si no alcanza, mantiene su tamaño preferido para que se pueda desplazar.
-     */
+    /** Panel blanco con margen que envuelve el contenido. */
     private static final class Lienzo extends JPanel implements javax.swing.Scrollable {
 
-        /** Alto desde el que el contenido entra sin aplastarse; con menos, aparece la barra. */
         private static final int ALTO_MINIMO = 500;
 
         Lienzo(JComponent contenido) {
@@ -107,22 +86,15 @@ public class VentanaBase extends JFrame {
 
         @Override
         public boolean getScrollableTracksViewportWidth() {
-            return getParent().getWidth() >= getMinimumSize().width;   // a lo ancho casi nunca hace falta barra
+            return getParent().getWidth() >= getMinimumSize().width;
         }
 
         @Override
         public boolean getScrollableTracksViewportHeight() {
-            // Alto mínimo REAL del contenido (suma de los mínimos de cada campo y botón):
-            // si la ventana es más baja, aparece la barra en vez de aplastar los botones.
             return getParent().getHeight() >= Math.max(ALTO_MINIMO, getMinimumSize().height);
         }
     }
 
-    /**
-     * Ventana de menú: encabezado con Cerrar sesión y Salir; cerrar la ventana termina el programa.
-     * pantallaInicio es la ventana a la que vuelve al cerrar sesión (se pasa Login::new),
-     * así este paquete no depende del paquete vista.
-     */
     protected void montarMenu(String subtitulo, JComponent contenido, Supplier<JFrame> pantallaInicio) {
         encabezado.setModoMenu(true);
         encabezado.getBotonSalir().addActionListener(e -> confirmarSalida());
@@ -131,13 +103,9 @@ public class VentanaBase extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    /**
-     * La ventana recibe el estado del lector ahora y cada vez que cambie.
-     * Al cerrar la ventana deja de escucharlo.
-     */
     protected void alCambiarLector(java.util.function.Consumer<biometria.EstadoLector> accion) {
         biometria.MonitorLector monitor = biometria.MonitorLector.getInstancia();
-        monitor.iniciar();                       // por si la ventana se abre sin pasar por Main
+        monitor.iniciar();
         monitor.agregarOyente(accion);
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -147,7 +115,6 @@ public class VentanaBase extends JFrame {
         });
     }
 
-    /** Ejecuta una acción y, si falla con una excepción del sistema, muestra el mensaje. */
     protected boolean ejecutar(Runnable accion) {
         return util.Mensajes.ejecutar(this, accion);
     }

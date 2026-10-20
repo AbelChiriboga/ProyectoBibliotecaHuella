@@ -7,10 +7,7 @@ import modelo.Ejemplar;
 import modelo.EstadoEjemplar;
 import modelo.ValorBD;
 
-/**
- * CRUD de ejemplares (copias físicas). El estado PRESTADO/DISPONIBLE lo cambian los triggers
- * de préstamo y devolución; desde la ventana solo se editan código, ubicación y Dañado/Perdido.
- */
+/** CRUD de ejemplares (copias físicas). */
 public class EjemplarDAO extends BaseDAO<Ejemplar, Integer> implements CrudDAO<Ejemplar, Integer> {
 
     static final String COLUMNAS = "ej.id_ejemplar AS eje_id, ej.codigo_inventario AS eje_codigo, "
@@ -56,19 +53,15 @@ public class EjemplarDAO extends BaseDAO<Ejemplar, Integer> implements CrudDAO<E
                 e.getCodigoInventario(), bd(e.getEstado()), e.getUbicacion(), e.getId());
     }
 
-    /** Si ya tuvo préstamos, la BD no deja eliminarlo (se marca como Perdido o Dañado). */
     @Override
     public void eliminar(Integer id) {
         ejecutar("DELETE FROM ejemplares WHERE id_ejemplar = ?", id);
     }
 
-    /** Ejemplares de un libro (CRUDEjemplares). */
     public List<Ejemplar> listarPorLibro(int idLibro) {
         return consultarLista(sqlSelect() + " WHERE ej.id_libro = ? ORDER BY " + orden(), idLibro);
     }
 
-    /** Ejemplares disponibles que coinciden con el texto (tabla de Préstamos). */
-    /** Mayor número usado en los códigos de inventario (LIB-0012 → 12); 0 si no hay ejemplares. */
     public int ultimoNumeroCodigo() {
         return consultarEntero("SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(codigo_inventario, '-', -1) AS UNSIGNED)), 0) "
                 + "FROM ejemplares");

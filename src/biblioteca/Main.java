@@ -2,22 +2,18 @@ package biblioteca;
 
 import javax.swing.JOptionPane;
 
+/** Punto de entrada: aplica el estilo visual, vigila el lector y abre el Login. */
 public class Main {
 
     public static void main(String[] args) {
         aplicarEstilo();
         iniciarMonitorLector();
 
-        
         javax.swing.SwingUtilities.invokeLater(() -> {
             new vista.Login().setVisible(true);
         });
     }
 
-    /**
-     * Vigila el lector de huella mientras el sistema esté abierto: el pie de cada ventana
-     * muestra Conectado / Desconectado y, si cambia en pleno uso, aparece un aviso.
-     */
     private static void iniciarMonitorLector() {
         biometria.MonitorLector monitor = biometria.MonitorLector.getInstancia();
         monitor.alCambiar(Main::avisarCambioLector);

@@ -13,7 +13,6 @@ public class ParametroService {
 
     private final ParametroDAO dao = new ParametroDAO();
 
-    /** Valor actual de cada parámetro editable. */
     public Map<ParametroEditable, String> obtenerTodos() {
         Map<ParametroEditable, String> valores = new EnumMap<>(ParametroEditable.class);
         for (ParametroEditable p : ParametroEditable.values()) {
@@ -22,7 +21,6 @@ public class ParametroService {
         return valores;
     }
 
-    /** Valida TODOS los valores y los guarda juntos (si uno está mal, no se guarda ninguno). */
     public void guardar(Map<ParametroEditable, String> escritos) {
         Sesion.getInstancia().exigir(Usuario::puedeConfigurarParametros, "cambiar los parámetros");
         List<Parametro> parametros = new ArrayList<>();

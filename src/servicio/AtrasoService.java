@@ -29,7 +29,6 @@ public class AtrasoService {
         return parametroDAO.obtenerDecimal(Parametro.MULTA_POR_DIA);
     }
 
-    /** Marca como pagada la multa del préstamo (después de esto el estudiante puede volver a prestar). */
     public void registrarPago(Prestamo p) {
         Sesion.getInstancia().exigir(Usuario::puedeGestionarPrestamos, "registrar pagos");
         if (p.getMulta() == null || p.getMulta().isPagada()) {

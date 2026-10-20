@@ -1,15 +1,9 @@
 package vista;
 
-/**
- * Parámetros del sistema (días de préstamo, máximo de préstamos, multa y umbral de huella).
- * Hereda de VentanaBase: encabezado, pie, tamaño y botón Regresar ya vienen listos.
- *
- * @author User
- */
+/** Parámetros del sistema (días de préstamo, máximo de préstamos, multa y umbral de huella). */
 public class Parametros extends componentes.VentanaBase {
 
     private final servicio.ParametroService parametros = new servicio.ParametroService();
-    /** Cada parámetro con su caja de texto (tabla en vez de 4 líneas repetidas de get/set). */
     private final java.util.Map<servicio.ParametroEditable, javax.swing.JTextField> campos =
             new java.util.EnumMap<>(servicio.ParametroEditable.class);
 
@@ -24,9 +18,6 @@ public class Parametros extends componentes.VentanaBase {
         cargar();
     }
 
-    // ---------- Acciones ----------
-
-    /** Muestra los valores guardados en la BD (también deshace lo escrito: Cancelar). */
     private void cargar() {
         ejecutar(() -> {
             java.util.Map<servicio.ParametroEditable, String> valores = parametros.obtenerTodos();
@@ -34,7 +25,6 @@ public class Parametros extends componentes.VentanaBase {
         });
     }
 
-    /** Valida y guarda los 4 parámetros juntos. */
     private void guardar() {
         ejecutar(() -> {
             java.util.Map<servicio.ParametroEditable, String> escritos = new java.util.EnumMap<>(servicio.ParametroEditable.class);
@@ -296,7 +286,6 @@ public class Parametros extends componentes.VentanaBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
 
     private void jbtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGuardarActionPerformed
         guardar();

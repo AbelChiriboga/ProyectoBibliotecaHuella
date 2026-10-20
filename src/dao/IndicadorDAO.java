@@ -4,11 +4,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import modelo.Indicador;
 
-/**
- * Conteos para las tarjetas de los menús. Cada indicador tiene su consulta en una tabla
- * (EnumMap), así no hay un if/else por indicador y el SQL queda solo en la capa DAO.
- * Hereda de AccesoBD (no de BaseDAO) porque no es una tabla de entidades: solo cuenta.
- */
+/** Conteos para las tarjetas de los menús. */
 public class IndicadorDAO extends AccesoBD {
 
     private static final Map<Indicador, String> CONSULTAS = new EnumMap<>(Indicador.class);

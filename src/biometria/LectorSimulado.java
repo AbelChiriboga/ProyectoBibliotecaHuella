@@ -9,13 +9,7 @@ import java.util.Optional;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-/**
- * Lector SIMULADO para probar el sistema sin el lector conectado.
- *
- * "Poner el dedo" = escribir un código en un cuadro de diálogo (por ejemplo, la cédula del
- * estudiante). El mismo código produce siempre la misma plantilla, así que registrar con
- * "1800000001" y luego identificar con "1800000001" coincide; otro código no coincide.
- */
+/** Lector SIMULADO para probar el sistema sin el lector conectado. */
 public class LectorSimulado extends LectorBase {
 
     private volatile javax.swing.JDialog dialogo;
@@ -26,10 +20,6 @@ public class LectorSimulado extends LectorBase {
         return Optional.ofNullable(ultimaImagen);
     }
 
-    /**
-     * Dibuja una huella de mentira (crestas en espiral) para probar sin el lector real.
-     * El mismo código da siempre el mismo dibujo.
-     */
     private static java.awt.image.BufferedImage dibujarHuella(String codigo) {
         int w = 220, h = 260;
         java.util.Random azar = new java.util.Random(codigo.hashCode());
@@ -40,7 +30,7 @@ public class LectorSimulado extends LectorBase {
             for (int x = 0; x < w; x++) {
                 double dx = (x - w / 2.0) / (w / 2.2), dy = (y - h / 2.0) / (h / 2.1);
                 int gris = 255;
-                if (dx * dx + dy * dy <= 1) {                               // dentro de la yema del dedo
+                if (dx * dx + dy * dy <= 1) {
                     double r = Math.hypot(x - cx, y - cy), ang = Math.atan2(y - cy, x - cx);
                     double cresta = Math.sin(r * separacion + ang * giro);
                     gris = cresta > 0.15 ? 40 : 235;
@@ -83,7 +73,6 @@ public class LectorSimulado extends LectorBase {
         return EstadoLector.SIMULADO;
     }
 
-    /** Pide el código del "dedo" en un diálogo (en el hilo de Swing, aunque se llame en segundo plano). */
     @Override
     public byte[] capturar() {
         exigirAbierto();
@@ -106,7 +95,6 @@ public class LectorSimulado extends LectorBase {
         return util.Seguridad.sha256("HUELLA:" + ultimoCodigo).getBytes(java.nio.charset.StandardCharsets.US_ASCII);
     }
 
-    /** Ventana donde se "pone el dedo" (se escribe el código). Se cierra si se cancela la captura. */
     private String pedirCodigo() {
         JOptionPane panel = new JOptionPane(
                 "LECTOR SIMULADO\nEscriba el código del dedo (por ejemplo, la cédula del estudiante):",
@@ -115,7 +103,7 @@ public class LectorSimulado extends LectorBase {
         panel.setInitialSelectionValue(ultimoCodigo);
         javax.swing.JDialog d = panel.createDialog(null, "Lector simulado");
         dialogo = d;
-        d.setVisible(true);                       // espera hasta que se responda o se cancele
+        d.setVisible(true);
         d.dispose();
         dialogo = null;
         Object valor = panel.getInputValue();
@@ -123,7 +111,6 @@ public class LectorSimulado extends LectorBase {
                 ? null : (String) valor;
     }
 
-    /** Cierra la ventana del lector simulado si está esperando (por ejemplo, al cerrar Préstamos). */
     @Override
     public void cancelarCaptura() {
         SwingUtilities.invokeLater(() -> {

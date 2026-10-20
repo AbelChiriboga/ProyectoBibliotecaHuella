@@ -1,9 +1,6 @@
 package modelo;
 
-/**
- * Bibliotecario: libros, ejemplares, autores y categorías; préstamos, devoluciones y atrasos;
- * reportes. No registra estudiantes, pero sí puede activarlos o desactivarlos.
- */
+/** Bibliotecario: libros, ejemplares, autores y categorías; préstamos, devoluciones y atrasos; reportes. */
 public class Bibliotecario extends Usuario {
 
     public Bibliotecario() {

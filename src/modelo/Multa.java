@@ -5,10 +5,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import util.Validaciones;
 
-/**
- * Multa por devolver tarde. La GENERA el trigger de la BD al registrar la devolución;
- * en Java solo se lee, se marca como pagada y se calcula una vista previa.
- */
+/** Multa por devolver tarde. */
 public class Multa extends Entidad {
 
     private Prestamo prestamo;
@@ -21,10 +18,6 @@ public class Multa extends Entidad {
     public Multa() {
     }
 
-    /**
-     * Vista previa del monto (días × multa por día) para mostrarla en Devoluciones
-     * ANTES de confirmar. El valor que se guarda lo calcula el trigger.
-     */
     public static BigDecimal calcularMonto(int diasAtraso, BigDecimal multaPorDia) {
         if (diasAtraso <= 0) {
             return BigDecimal.ZERO.setScale(2);
@@ -80,7 +73,6 @@ public class Multa extends Entidad {
         this.fechaPago = fechaPago;
     }
 
-    /** Monto con formato de dinero, por ejemplo "$2.00". */
     public String getMontoTexto() {
         return "$" + monto.setScale(2, RoundingMode.HALF_UP).toPlainString();
     }

@@ -10,7 +10,6 @@ public final class Eventos {
     private Eventos() {
     }
 
-    /** Ejecuta la acción cada vez que cambia el texto del campo (al escribir o borrar). */
     public static void alCambiar(JTextComponent campo, Runnable accion) {
         campo.getDocument().addDocumentListener(new DocumentListener() {
             @Override public void insertUpdate(DocumentEvent e) { accion.run(); }

@@ -3,11 +3,7 @@ package componentes;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Elemento de un combo de FILTRO: un valor con su texto. La opción "Todos" lleva valor null,
- * que para los DAO significa "no filtrar por esto".
- * Ejemplo: Combos.llenar(jcbxOperacion, Opcion.conTodas("Todas", List.of(PRESTAMO, DEVOLUCION)));
- */
+/** Elemento de un combo de FILTRO: un valor con su texto. */
 public final class Opcion<T> {
 
     private final T valor;
@@ -18,7 +14,6 @@ public final class Opcion<T> {
         this.texto = texto;
     }
 
-    /** null = todos. */
     public T getValor() {
         return valor;
     }
@@ -28,7 +23,6 @@ public final class Opcion<T> {
         return texto;
     }
 
-    /** "Todos" primero y después cada valor con su toString(). */
     public static <T> List<Opcion<T>> conTodas(String textoTodos, List<T> valores) {
         List<Opcion<T>> opciones = new ArrayList<>();
         opciones.add(new Opcion<>(null, textoTodos));

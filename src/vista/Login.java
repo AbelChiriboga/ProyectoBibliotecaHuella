@@ -1,25 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package vista;
 
-/**
- *
- * @author User
- */
+/** Inicio de sesión del personal y consulta del estudiante por cédula. */
 public class Login extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Login.class.getName());
 
-    /** Reglas del ingreso (la ventana no sabe de SQL ni de contraseñas cifradas). */
     private final servicio.AutenticacionService autenticacion = new servicio.AutenticacionService();
 
-    /**
-     * Creates new form Login
-     */
     public Login() {
-        setUndecorated(true);               // sin la barra de título de Windows
+        setUndecorated(true);
         initComponents();
         util.Arrastre.permitir(this, getContentPane());
         InicializarElementos();
@@ -29,18 +18,17 @@ public class Login extends javax.swing.JFrame {
     }
     
     private void estiloSalir() {
-        util.Estilos.boton(jbtnSalir);   // blanco, verde suave al pasar el mouse, verde al hacer clic
+        util.Estilos.boton(jbtnSalir);
         jbtnSalir.setToolTipText("Cerrar el sistema");
         jbtnSalir.setPreferredSize(new java.awt.Dimension(120, 40));
         util.Estilos.icono(jbtnSalir, "Exit.png", 50, false);  
-        jbtnSalir.setBackground(util.Estilos.VERDE);// ícono a la izquierda del texto
+        jbtnSalir.setBackground(util.Estilos.VERDE);
     }
     private void armarLogin() {
         java.awt.Color verde = new java.awt.Color(0, 153, 153);
         java.awt.Dimension campo = new java.awt.Dimension(320, 34);
         java.awt.Dimension boton = new java.awt.Dimension(320, 38);
 
-        // ---- Textos y tamaños ----
         jLabel1.setText("Usuario:");
         jLabel6.setText("Contraseña:");
         jLabel8.setText("Cédula:");
@@ -63,20 +51,16 @@ public class Login extends javax.swing.JFrame {
             b.setFocusPainted(false);
         }
 
-        // ---- Tarjeta Personal: Usuario, Contraseña, Ingresar ----
         apilar(jpnlPersonal, jLabel1, jtxtUsuario, jLabel6, jpswClave, jbtnIngresar);
 
-        // ---- Tarjeta Estudiante: Cédula, Consultar ----
         apilar(jpnlEstudiante, jLabel8, jtxtCedulaE, jbtnConsultar);
 
-        // ---- Contenedor de tarjetas ----
         jpnlFormularios.removeAll();
         jpnlFormularios.setLayout(new java.awt.CardLayout());
         jpnlFormularios.setBackground(java.awt.Color.WHITE);
         jpnlFormularios.add(jpnlPersonal, "personal");
         jpnlFormularios.add(jpnlEstudiante, "estudiante");
 
-        // ---- Selector Personal | Estudiante (split bloqueado) ----
         jsplSelector.setLeftComponent(jtglPersonal);
         jsplSelector.setRightComponent(jtglEstudiante);
         jsplSelector.setEnabled(false);
@@ -92,9 +76,8 @@ public class Login extends javax.swing.JFrame {
         grupoTipo.add(jtglPersonal);
         grupoTipo.add(jtglEstudiante);
 
-        // ---- Tarjeta blanca: título, selector y formularios uno debajo del otro ----
         jpnlIniciarSesion.removeAll();
-        jpnlIniciarSesion.setPreferredSize(null);   // quita el 526x102 del diseñador
+        jpnlIniciarSesion.setPreferredSize(null);
         jpnlIniciarSesion.setCursor(java.awt.Cursor.getDefaultCursor());
         jpnlIniciarSesion.setLayout(new java.awt.GridBagLayout());
         jpnlIniciarSesion.setBackground(java.awt.Color.WHITE);
@@ -106,7 +89,7 @@ public class Login extends javax.swing.JFrame {
         g.gridx = 0;
         g.gridy = 0;
         g.insets = new java.awt.Insets(0, 0, 24, 0);
-        jpnlIniciarSesion.add(jLabel2, g);          // "Iniciar Sesión"
+        jpnlIniciarSesion.add(jLabel2, g);
 
         g.gridy = 1;
         g.insets = new java.awt.Insets(0, 0, 24, 0);
@@ -116,7 +99,6 @@ public class Login extends javax.swing.JFrame {
         g.insets = new java.awt.Insets(0, 0, 0, 0);
         jpnlIniciarSesion.add(jpnlFormularios, g);
 
-        // ---- Panel rosado: centra la tarjeta ----
         jpnlPrincipal.removeAll();
         jpnlPrincipal.setLayout(new java.awt.GridBagLayout());
         jpnlPrincipal.add(jpnlIniciarSesion);
@@ -129,7 +111,6 @@ public class Login extends javax.swing.JFrame {
 
     }
 
-/** Pone los componentes uno debajo del otro, alineados a la izquierda y del mismo ancho. */
     private void apilar(javax.swing.JPanel panel, javax.swing.JComponent... comps) {
         panel.removeAll();
         panel.setLayout(new java.awt.GridBagLayout());
@@ -154,7 +135,6 @@ public class Login extends javax.swing.JFrame {
             panel.add(c, g);
         }
 
-        // Relleno al final: empuja todo hacia arriba para que ambas tarjetas empiecen igual
         g.gridy = fila;
         g.weighty = 1;
         g.fill = java.awt.GridBagConstraints.BOTH;
@@ -183,10 +163,7 @@ public class Login extends javax.swing.JFrame {
         t.setForeground(activo ? java.awt.Color.WHITE : new java.awt.Color(60, 70, 80));
         t.setBorder(javax.swing.BorderFactory.createLineBorder(verde, 1));
     }
-    
-    // ---------- Acciones de los botones ----------
 
-    /** Ingreso del personal: valida usuario y contraseña y abre el menú según el rol (sin if). */
     private void iniciarSesion() {
         boolean ingreso = util.Mensajes.ejecutar(this, () -> {
             modelo.Usuario usuario = autenticacion.iniciarSesion(jtxtUsuario.getText(), new String(jpswClave.getPassword()));
@@ -197,12 +174,10 @@ public class Login extends javax.swing.JFrame {
         }
     }
 
-    /** Consulta del estudiante por cédula. */
     private void consultarEstudiante() {
         util.Mensajes.ejecutar(this, () -> mostrarEstudiante(autenticacion.consultarEstudiante(jtxtCedulaE.getText())));
     }
 
-    /** Abre el panel del estudiante; al cerrarlo vuelve al login con la cédula borrada. */
     private void mostrarEstudiante(modelo.Estudiante estudiante) {
         jtxtCedulaE.setText("");
         util.Navegacion.abrir(this, new PanelEstudiante(estudiante));
@@ -222,7 +197,7 @@ public class Login extends javax.swing.JFrame {
         java.awt.Image escalada = original.getImage().getScaledInstance(213, 183, java.awt.Image.SCALE_SMOOTH);
         jlblLogo.setIcon(new javax.swing.ImageIcon(escalada));
 
-        setPreferredSize(null);   // quita el 825x510 del diseñador
+        setPreferredSize(null);
         getContentPane().setPreferredSize(new java.awt.Dimension(1130, 700));
         setMinimumSize(new java.awt.Dimension(1000, 640));
         pack();
@@ -513,15 +488,8 @@ public class Login extends javax.swing.JFrame {
         salir();
     }//GEN-LAST:event_jbtnSalirActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -534,7 +502,6 @@ public class Login extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new Login().setVisible(true));
     }
 

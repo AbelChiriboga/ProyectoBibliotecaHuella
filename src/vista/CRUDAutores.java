@@ -1,17 +1,11 @@
 package vista;
 
-/**
- * Registro de autores.
- * Hereda de VentanaBase: encabezado, pie, tamaño y botón Regresar ya vienen listos.
- *
- * @author User
- */
+/** Registro de autores. */
 public class CRUDAutores extends componentes.VentanaBase {
 
     private final servicio.AutorService servicio = new servicio.AutorService();
     private final componentes.TablaObjetos<modelo.Autor> tabla;
     private final componentes.ControlCrud control;
-    /** Autor que se está viendo o editando (uno nuevo al presionar Nuevo). */
     private modelo.Autor actual;
 
     public CRUDAutores() {
@@ -22,13 +16,11 @@ public class CRUDAutores extends componentes.VentanaBase {
                 a -> new Object[]{a.getNombres(), a.getApellidos(), a.getNacionalidad()});
         control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtNombres, jtxtApellidos, jtxtNacionalidad},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
-        control.bloquearAlEditar(jtblAutores);   // mientras se escribe no se puede elegir otra fila
+        control.bloquearAlEditar(jtblAutores);
         tabla.alSeleccionar(this::mostrar);
-        tabla.usarBarra(barraBuscar);   // búsqueda al escribir + filtro por columnas
+        tabla.usarBarra(barraBuscar);
         cancelar();
     }
-
-    // ---------- Acciones de los botones ----------
 
     private void nuevo() {
         actual = new modelo.Autor();
@@ -67,15 +59,12 @@ public class CRUDAutores extends componentes.VentanaBase {
         });
     }
 
-    /** Vuelve al estado inicial y recarga la tabla (descarta cambios sin guardar). */
     private void cancelar() {
         actual = null;
         limpiar();
         cargar();
         control.consulta(false);
     }
-
-    // ---------- Métodos de apoyo ----------
 
     private void cargar() {
         ejecutar(() -> tabla.mostrar(servicio.listar()));
@@ -288,7 +277,6 @@ public class CRUDAutores extends componentes.VentanaBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
 
     private void jbtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnNuevoActionPerformed
         nuevo();

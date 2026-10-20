@@ -12,13 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
-/**
- * Encabezado verde común a todas las ventanas.
- * Reemplaza el jpnlInicio + 11 labels + su GroupLayout que estaba repetido en 14 frames.
- *
- * Modo normal: botón Regresar a la izquierda.
- * Modo menú  : botones Cerrar sesión y Salir a la izquierda.
- */
+/** Encabezado verde común a todas las ventanas. */
 public class Encabezado extends JPanel {
 
     private final BotonSistema botonRegresar = new BotonSistema("Regresar");
@@ -41,7 +35,6 @@ public class Encabezado extends JPanel {
         setBackground(util.Estilos.VERDE);
         setBorder(BorderFactory.createEmptyBorder(10, 12, 10, 16));
 
-        // ---- Izquierda: botones ----
         JPanel izquierda = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         izquierda.setOpaque(false);
         botonRegresar.setRutaIcono("Regresar.png");
@@ -55,7 +48,6 @@ public class Encabezado extends JPanel {
         }
         botonSalir.setForeground(new Color(140, 30, 30));
 
-        // ---- Centro: título y subtítulo ----
         JPanel centro = new JPanel(new GridLayout(2, 1));
         centro.setOpaque(false);
         estiloTexto(lblTitulo, new Font("Segoe UI Black", Font.BOLD, 36), SwingConstants.CENTER);
@@ -63,7 +55,6 @@ public class Encabezado extends JPanel {
         centro.add(lblTitulo);
         centro.add(lblSubtitulo);
 
-        // ---- Derecha: usuario y reloj ----
         JPanel derecha = new JPanel(new GridLayout(4, 1));
         derecha.setOpaque(false);
         estiloTexto(lblRol, new Font("Segoe UI", Font.BOLD, 26), SwingConstants.RIGHT);
@@ -96,7 +87,6 @@ public class Encabezado extends JPanel {
                 + "    Hora: " + ahora.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")));
     }
 
-    // El reloj corre solo mientras el encabezado está en pantalla
     @Override
     public void addNotify() {
         super.addNotify();
@@ -109,7 +99,6 @@ public class Encabezado extends JPanel {
         super.removeNotify();
     }
 
-    // ---- Propiedades ----
     public String getSubtitulo() { return lblSubtitulo.getText(); }
     public void setSubtitulo(String subtitulo) { lblSubtitulo.setText(subtitulo); }
 
@@ -123,7 +112,6 @@ public class Encabezado extends JPanel {
         lblRol.setText(modoMenu ? "BIENVENIDO" : rol);
     }
 
-    /** Datos del usuario que inició sesión. En ventanas normales el rol reemplaza a "USUARIO". */
     public void setUsuario(String nombre, String cedula, String rol) {
         lblNombre.setText(nombre);
         lblCedula.setText("C.I: " + cedula);

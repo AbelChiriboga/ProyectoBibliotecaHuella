@@ -21,13 +21,7 @@ import modelo.ResultadoAutenticacion;
 import modelo.Usuario;
 import util.Validaciones;
 
-/**
- * Todo lo que tiene que ver con huellas: registrar, identificar 1:N y anotar cada intento
- * en la bitácora. Trabaja con la INTERFAZ LectorBiometrico, así funciona igual con el
- * lector ZKTeco o con el simulado.
- *
- * Los métodos que usan el lector bloquean hasta que se pone el dedo: llamarlos con util.Tareas.
- */
+/** Todo lo que tiene que ver con huellas: registrar, identificar 1:N y anotar cada intento en la bitácora. */
 public class BiometriaService {
 
     private final LectorBiometrico lector;
@@ -40,7 +34,6 @@ public class BiometriaService {
         this(FabricaLector.obtener());
     }
 
-    /** Permite usar otro lector (por ejemplo, el simulado en pruebas). */
     public BiometriaService(LectorBiometrico lector) {
         this.lector = lector;
     }
@@ -49,11 +42,6 @@ public class BiometriaService {
         return lector.getNombre();
     }
 
-    /**
-     * Captura la huella de un dedo para el formulario del estudiante: 3 muestras del mismo dedo.
-     * Verifica que esa huella no pertenezca ya a OTRO estudiante. NO guarda nada:
-     * la huella se guarda junto con el estudiante al presionar Guardar (EstudianteService).
-     */
     public byte[] capturarHuella(Estudiante e, AvisoCaptura aviso) {
         Sesion.getInstancia().exigir(Usuario::puedeRegistrarEstudiantes, "registrar huellas");
         Validaciones.requerido(e, "un estudiante");
@@ -64,10 +52,6 @@ public class BiometriaService {
         return plantilla;
     }
 
-    /**
-     * Identificación 1:N: compara la muestra con TODAS las huellas registradas y devuelve
-     * el estudiante dueño, solo si el puntaje alcanza el parámetro UMBRAL_HUELLA.
-     */
     public Optional<Identificacion> identificar(byte[] muestra) {
         Map<Integer, Integer> duenos = cargarPlantillasEnLector();
         int umbral = parametroDAO.obtenerEntero(Parametro.UMBRAL_HUELLA);
@@ -77,11 +61,6 @@ public class BiometriaService {
                         .map(est -> new Identificacion(est, c.getPuntaje())));
     }
 
-    /**
-     * Préstamo / devolución: el estudiante pone el dedo y se busca entre TODAS las huellas (1:N).
-     * Si nadie coincide (o el puntaje no llega al umbral) se anota el FALLO en la bitácora.
-     * Bloquea hasta que se pone el dedo: llamarlo con util.Tareas.
-     */
     public Identificacion identificarEstudiante(OperacionAutenticacion operacion) {
         exigirLectorListo();
         lector.nuevaCaptura();
@@ -92,20 +71,15 @@ public class BiometriaService {
         });
     }
 
-    /** Deja de esperar el dedo (por ejemplo, al cerrar la ventana de préstamos). */
     public void cancelarCaptura() {
         lector.cancelarCaptura();
     }
 
-    /** Anota un intento en la bitácora (préstamo, devolución o registro de huella). */
     public void anotar(Integer idEstudiante, OperacionAutenticacion operacion, ResultadoAutenticacion resultado,
                        Integer puntaje, String detalle) {
         bitacora.insertar(new RegistroAutenticacion(idEstudiante, operacion, resultado, puntaje, detalle));
     }
 
-    // ---------- Ayudantes ----------
-
-    /** Sin lector conectado no se registran ni se leen huellas (el resto del sistema sigue funcionando). */
     private void exigirLectorListo() {
         biometria.EstadoLector estado = lector.verificarEstado();
         if (!estado.permiteCapturar()) {
@@ -133,12 +107,10 @@ public class BiometriaService {
                 });
     }
 
-    /** Un estudiante que aún no se guarda no tiene id: en la bitácora va nulo. */
     private static Integer idParaBitacora(Estudiante e) {
         return e.esNuevo() ? null : e.getIdEstudiante();
     }
 
-    /** Pasa todas las huellas de la BD al lector. Devuelve: id de huella → id de estudiante. */
     private Map<Integer, Integer> cargarPlantillasEnLector() {
         List<Huella> huellas = huellaDAO.listar();
         Map<Integer, byte[]> plantillas = new HashMap<>();

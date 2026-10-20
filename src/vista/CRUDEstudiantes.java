@@ -1,26 +1,14 @@
 package vista;
 
-/**
- * Registro de estudiantes con su huella (solo el administrador).
- * Hereda de VentanaBase: encabezado, pie, tamaño y botón Regresar ya vienen listos.
- *
- * @author User
- */
+/** Registro de estudiantes con su huella (solo el administrador). */
 public class CRUDEstudiantes extends componentes.VentanaBase {
 
     private final servicio.EstudianteService servicio = new servicio.EstudianteService();
     private final servicio.BiometriaService biometria = new servicio.BiometriaService();
     private final componentes.TablaObjetos<modelo.Estudiante> tabla;
     private final componentes.ControlCrud control;
-    /** Estudiante que se está viendo o editando (uno nuevo al presionar Nuevo). */
     private modelo.Estudiante actual;
-    /** Huellas capturadas en el formulario que todavía no se guardan (dedo → plantilla). */
     private final java.util.Map<modelo.Dedo, byte[]> huellasCapturadas = new java.util.EnumMap<>(modelo.Dedo.class);
-    /**
-     * Número de la captura vigente. Si el usuario cancela, cambia de estudiante o cierra la ventana
-     * mientras el lector espera el dedo, el número cambia y el resultado de esa captura vieja se ignora
-     * (no aparece ningún mensaje ni se guarda una huella en el estudiante equivocado).
-     */
     private int capturaVigente;
 
     public CRUDEstudiantes() {
@@ -31,27 +19,24 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         componentes.Tablas.anchos(jtblEstudiantes, 95, 0, 0, 180, 65, 60, 70);
         tabla = new componentes.TablaObjetos<>(jtblEstudiantes, e -> new Object[]{e.getCedula(), e.getNombres(),
             e.getApellidos(), e.getCarrera(), e.getSemestre(), e.getHuellas().size(), e.getEstado()});
-        // La huella es parte del formulario: se captura en Nuevo o Editar y se guarda con Guardar
         control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtCedula, jtxtNombres, jtxtApellidos,
             jtxtTelefono, jtxtCorreo, jcbxCarrera, jcbxSemestre, jpnlHuella.getCbxDedo(), jpnlHuella.getBotonCapturar()},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
-        control.bloquearAlEditar(jtblEstudiantes);   // mientras se escribe no se puede elegir otra fila
+        control.bloquearAlEditar(jtblEstudiantes);
         jpnlHuella.getBotonCapturar().addActionListener(e -> capturarHuella());
-        jpnlHuella.getBotonCapturar().setFocusable(false);   // solo con clic: Tab/Espacio no inician una captura
+        jpnlHuella.getBotonCapturar().setFocusable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosed(java.awt.event.WindowEvent e) {
                 detenerCaptura();
             }
         });
-        alCambiarLector(jpnlHuella::mostrarLector);   // el recuadro avisa si el lector se desconecta
+        alCambiarLector(jpnlHuella::mostrarLector);
         tabla.alSeleccionar(this::mostrar);
-        tabla.usarBarra(barraBuscar);   // búsqueda al escribir + filtro por columnas
+        tabla.usarBarra(barraBuscar);
         cargarCarreras();
         cancelar();
     }
-
-    // ---------- Acciones de los botones ----------
 
     private void nuevo() {
         detenerCaptura();
@@ -74,7 +59,6 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         });
     }
 
-    /** Guarda el estudiante con sus huellas. Sin al menos una huella, el servicio no lo deja guardar. */
     private void guardar() {
         ejecutar(() -> {
             actual.setCedula(jtxtCedula.getText());
@@ -100,7 +84,6 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         });
     }
 
-    /** Vuelve al estado inicial y recarga la tabla (descarta cambios y huellas sin guardar). */
     private void cancelar() {
         detenerCaptura();
         actual = null;
@@ -110,10 +93,6 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         control.consulta(false);
     }
 
-    /**
-     * Captura la huella del dedo elegido (3 muestras). Queda pendiente hasta presionar Guardar.
-     * La captura espera el dedo, por eso corre en segundo plano y la ventana no se congela.
-     */
     private void capturarHuella() {
         ejecutar(() -> {
             modelo.Dedo dedo = componentes.Combos.seleccionado(jpnlHuella.getCbxDedo());
@@ -122,15 +101,13 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
                 int esta = ++capturaVigente;
                 jpnlHuella.iniciarCaptura();
                 util.Tareas.enSegundoPlano(this,
-                        () -> biometria.capturarHuella(estudiante, jpnlHuella),   // el panel muestra avance e imagen
+                        () -> biometria.capturarHuella(estudiante, jpnlHuella),
                         plantilla -> siSigueVigente(esta, () -> huellaCapturada(dedo, plantilla)),
                         error -> siSigueVigente(esta, () -> capturaFallida(error)),
                         () -> siSigueVigente(esta, jpnlHuella::terminarCaptura));
             }
         });
     }
-
-    // ---------- Métodos de apoyo ----------
 
     private void cargar() {
         ejecutar(() -> tabla.mostrar(servicio.listarConHuellas()));
@@ -139,7 +116,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
     private void cargarCarreras() {
         ejecutar(() -> {
             componentes.Combos.llenar(jcbxCarrera, servicio.listarCarreras());
-            componentes.Combos.ajustarAncho(jcbxCarrera);   // ancho justo para el nombre de carrera más largo
+            componentes.Combos.ajustarAncho(jcbxCarrera);
         });
     }
 
@@ -151,30 +128,23 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         tabla.seleccionar(e);
     }
 
-    /** Si el dedo ya tiene huella (guardada o recién capturada), pregunta si se reemplaza. */
     private boolean confirmarReemplazo(modelo.Dedo dedo) {
         boolean yaExiste = actual.buscarHuella(dedo).isPresent() || huellasCapturadas.containsKey(dedo);
         return !yaExiste
                 || util.Mensajes.confirmar(this, "El " + dedo + " ya tiene huella. ¿Desea reemplazarla?");
     }
 
-    /** Deja de esperar el dedo y descarta el resultado de la captura que estaba en curso (si había una). */
     private void detenerCaptura() {
         capturaVigente++;
         biometria.cancelarCaptura();
     }
 
-    /** Ejecuta la acción solo si la captura que terminó es la vigente (no una ya cancelada). */
     private void siSigueVigente(int captura, Runnable accion) {
         if (captura == capturaVigente) {
             accion.run();
         }
     }
 
-    /**
-     * Los problemas al capturar se avisan en el área de texto del panel de huella, sin ventana emergente:
-     * si la huella ya es de otro estudiante, en rojo. Los demás errores sí se muestran en un mensaje.
-     */
     private void capturaFallida(excepciones.BibliotecaException error) {
         if (error.getReaccion() == excepciones.Reaccion.MOSTRAR_ERROR) {
             util.Mensajes.error(this, error);
@@ -183,8 +153,6 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
             jpnlHuella.mostrarAviso(error.getMessage(), error.getReaccion() == excepciones.Reaccion.ALERTA);
         }
     }
-
-    /** El lector avisa desde segundo plano; la pantalla se actualiza en el hilo de Swing. */
 
     private void huellaCapturada(modelo.Dedo dedo, byte[] plantilla) {
         huellasCapturadas.put(dedo, plantilla);
@@ -208,12 +176,6 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         control.consulta(true);
     }
 
-    /**
-     * Resumen corto de las huellas del estudiante. Ejemplos:
-     *   "Sin huellas. Capture al menos una."
-     *   "Por guardar: Índice derecho."
-     *   "Registradas: Índice derecho.  Por guardar: Pulgar derecho."
-     */
     private String textoHuellas() {
         String guardadas = actual == null ? "" : actual.getHuellas().stream().map(h -> h.getDedo().toString())
                 .collect(java.util.stream.Collectors.joining(", "));
@@ -233,7 +195,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
             t.setText("");
         }
         jcbxCarrera.setSelectedIndex(-1);
-        jcbxSemestre.setSelectedIndex(-1);          // sin semestre hasta que se elija
+        jcbxSemestre.setSelectedIndex(-1);
         jpnlHuella.reiniciar();
     }
 
@@ -497,7 +459,6 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         barraBuscar.setAyuda("Buscar por cédula o nombre");
         jpnlEstReg.add(barraBuscar, java.awt.BorderLayout.NORTH);
 
-
         jScrollPane1.setViewportView(jtblEstudiantes);
 
         jpnlEstReg.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -515,7 +476,6 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
 
     private void jbtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnNuevoActionPerformed
         nuevo();

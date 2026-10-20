@@ -5,16 +5,13 @@ import java.util.Collections;
 import java.util.List;
 import util.Validaciones;
 
-/**
- * Estudiante: hereda los datos personales de Persona y agrega carrera, semestre, estado y huellas.
- * No inicia sesión: se identifica con su huella (préstamo/devolución) o con su cédula (consulta).
- */
+/** Estudiante: hereda los datos personales de Persona y agrega carrera, semestre, estado y huellas. */
 public class Estudiante extends Persona {
 
     public static final int SEMESTRE_MIN = 1;
     public static final int SEMESTRE_MAX = 10;
 
-    private int idEstudiante;          // llave de la tabla estudiantes (la cédula es UNIQUE)
+    private int idEstudiante;
     private Carrera carrera;
     private int semestre = SEMESTRE_MIN;
     private EstadoEstudiante estado = EstadoEstudiante.ACTIVO;
@@ -30,8 +27,6 @@ public class Estudiante extends Persona {
         setSemestre(semestre);
     }
 
-    // ---------- Implementación de los abstractos de Persona ----------
-
     @Override
     public String getTipo() {
         return "Estudiante";
@@ -42,9 +37,6 @@ public class Estudiante extends Persona {
         return false;
     }
 
-    // ---------- Comportamiento propio ----------
-
-    /** Solo un estudiante activo puede pedir préstamos (la BD también lo valida con un trigger). */
     public boolean puedePrestar() {
         return estado.puedePrestar();
     }
@@ -53,7 +45,6 @@ public class Estudiante extends Persona {
         return !huellas.isEmpty();
     }
 
-    /** Agrega una huella; no permite registrar dos veces el mismo dedo. */
     public void agregarHuella(Huella huella) {
         Validaciones.requerido(huella, "la huella");
         for (Huella h : huellas) {
@@ -65,12 +56,10 @@ public class Estudiante extends Persona {
         huellas.add(huella);
     }
 
-    /** Huella ya registrada de ese dedo, si existe. */
     public java.util.Optional<Huella> buscarHuella(Dedo dedo) {
         return huellas.stream().filter(h -> h.getDedo() == dedo).findFirst();
     }
 
-    /** Lista de solo lectura: desde afuera no se puede modificar sin pasar por agregarHuella. */
     public List<Huella> getHuellas() {
         return Collections.unmodifiableList(huellas);
     }
@@ -79,13 +68,10 @@ public class Estudiante extends Persona {
         huellas.clear();
     }
 
-    // ---------- Getters y setters ----------
-
     public int getIdEstudiante() {
         return idEstudiante;
     }
 
-    /** Lo asigna la BD (AUTO_INCREMENT); 0 = todavía no guardado. */
     public void setIdEstudiante(int idEstudiante) {
         this.idEstudiante = idEstudiante;
     }

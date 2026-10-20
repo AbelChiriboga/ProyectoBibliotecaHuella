@@ -1,17 +1,11 @@
 package vista;
 
-/**
- * Devolución de libros: el estudiante se identifica con su huella; la multa se calcula sola.
- * Hereda de VentanaBase: encabezado, pie, tamaño y botón Regresar ya vienen listos.
- *
- * @author User
- */
+/** Devolución de libros: el estudiante se identifica con su huella; la multa se calcula sola. */
 public class Devoluciones extends componentes.VentanaBase {
 
     private final servicio.DevolucionService servicio = new servicio.DevolucionService();
     private final componentes.TablaObjetos<modelo.Prestamo> tabla;
     private final LecturaHuella lectura;
-    /** Parámetro MULTA_POR_DIA (se lee una vez al abrir, no en cada casilla). */
     private java.math.BigDecimal multaPorDia = java.math.BigDecimal.ZERO;
 
     public Devoluciones() {
@@ -23,7 +17,6 @@ public class Devoluciones extends componentes.VentanaBase {
             p.getEjemplar().getCodigoInventario(), p.getEjemplar().getLibro().getTitulo(),
             util.Formatos.fecha(p.getFechaPrestamo()), util.Formatos.fecha(p.getFechaLimite()), estadoTexto(p)});
         tabla.alMarcar(this::actualizarResumen);
-        // La huella se lee sola: no hay botón (ver LecturaHuella)
         lectura = new LecturaHuella(this, jpnlHuella, servicio::identificar, this::estudianteIdentificado,
                 servicio::cancelarLectura);
         alCambiarLector(lectura::lectorCambio);
@@ -31,9 +24,6 @@ public class Devoluciones extends componentes.VentanaBase {
         actualizarResumen();
     }
 
-    // ---------- Acciones de los botones ----------
-
-    /** Registra la devolución de los libros marcados; la BD genera la multa si hay atraso. */
     private void confirmarDevolucion() {
         ejecutar(() -> {
             java.util.List<modelo.Prestamo> marcados = tabla.getMarcados();
@@ -45,16 +35,12 @@ public class Devoluciones extends componentes.VentanaBase {
         });
     }
 
-    /** Deja la pantalla lista para el siguiente estudiante. */
     private void nuevaDevolucion() {
         lectura.limpiar();
         tabla.mostrar(java.util.List.of());
         actualizarResumen();
     }
 
-    // ---------- Ayudantes ----------
-
-    /** Muestra los préstamos activos del estudiante identificado. */
     private void estudianteIdentificado(servicio.FichaEstudiante ficha) {
         int atrasados = (int) ficha.getPrestamosActivos().stream().filter(modelo.Prestamo::estaAtrasado).count();
         String estado = ficha.getCantidadActivos() == 0 ? "NO TIENE LIBROS POR DEVOLVER"
@@ -63,14 +49,13 @@ public class Devoluciones extends componentes.VentanaBase {
         jpnlHuella.mostrarEstudiante(ficha.getEstudiante().getNombreCompleto(), ficha.getDatos(),
                 ficha.getTextoActivos(), estado, atrasados == 0 && ficha.getCantidadActivos() > 0);
         tabla.mostrar(ficha.getPrestamosActivos());
-        tabla.marcarTodos(true);        // lo normal es devolver todo: se desmarca lo que no trae
+        tabla.marcarTodos(true);
         actualizarResumen();
     }
 
-    /** Tarjetas: días de retraso, multa por día y total a pagar de los libros marcados. */
     private void actualizarResumen() {
         if (lectura == null) {
-            return;                                    // todavía se está armando la ventana
+            return;
         }
         servicio.ResumenDevolucion r = new servicio.ResumenDevolucion(tabla.getMarcados(), multaPorDia);
         jpnlDiasRetraso.setValor(String.valueOf(r.getDiasRetraso()));
@@ -118,7 +103,6 @@ public class Devoluciones extends componentes.VentanaBase {
 
         jpnlPrestamos.setTitulo("Préstamos activos del estudiante");
         jpnlPrestamos.setLayout(new java.awt.BorderLayout(0, 12));
-
 
         jScrollPane1.setViewportView(jtblPrestamos);
 
@@ -169,7 +153,6 @@ public class Devoluciones extends componentes.VentanaBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
 
     private void jbtnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnConfirmarActionPerformed
         confirmarDevolucion();

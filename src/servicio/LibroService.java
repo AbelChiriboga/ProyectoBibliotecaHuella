@@ -10,10 +10,7 @@ import modelo.Categoria;
 import modelo.Libro;
 import modelo.Usuario;
 
-/**
- * Libros del catálogo. Además del CRUD, entrega los datos de los combos (autores y categorías)
- * para que la ventana no use los DAO directamente.
- */
+/** Libros del catálogo. */
 public class LibroService extends ServicioCrud<Libro> {
 
     private final AutorDAO autorDAO = new AutorDAO();
@@ -41,7 +38,6 @@ public class LibroService extends ServicioCrud<Libro> {
         return categoriaDAO.listar();
     }
 
-    /** Un libro con ejemplares no se elimina (sus copias tienen historial de préstamos). */
     @Override
     protected void antesDeEliminar(Libro l) {
         if (l.getEjemplaresTotales() > 0) {

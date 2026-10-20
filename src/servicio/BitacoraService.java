@@ -15,7 +15,6 @@ public class BitacoraService {
     private final RegistroAutenticacionDAO dao = new RegistroAutenticacionDAO();
     private final ParametroDAO parametroDAO = new ParametroDAO();
 
-    /** Intentos del periodo con los filtros elegidos (null = sin filtro) y sus cálculos. */
     public ResumenBitacora consultar(LocalDate desde, LocalDate hasta, OperacionAutenticacion operacion,
                                      ResultadoAutenticacion resultado) {
         Sesion.getInstancia().exigir(Usuario::puedeVerBitacora, "ver la bitácora");

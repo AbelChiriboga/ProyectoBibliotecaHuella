@@ -1,17 +1,11 @@
 package vista;
 
-/**
- * Panel del estudiante: sus datos, préstamos, atrasos y multas (solo consulta).
- * Hereda de VentanaBase: encabezado, pie, tamaño y botón Regresar ya vienen listos.
- *
- * @author User
- */
+/** Panel del estudiante: sus datos, préstamos, atrasos y multas (solo consulta). */
 public class PanelEstudiante extends componentes.VentanaBase {
 
     private final servicio.EstudianteService servicio = new servicio.EstudianteService();
     private final componentes.TablaObjetos<modelo.Prestamo> tabla;
 
-    /** Se abre desde el Login (Estudiante → cédula). Solo muestra datos, no cambia nada. */
     public PanelEstudiante(modelo.Estudiante estudiante) {
         initComponents();
         montar("MI PANEL", jpnlContenido);
@@ -191,7 +185,6 @@ public class PanelEstudiante extends componentes.VentanaBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;

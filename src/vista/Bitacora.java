@@ -1,11 +1,6 @@
 package vista;
 
-/**
- * Bitácora de autenticación por huella (dashboard). El contenido va dentro de un scroll.
- * Hereda de VentanaBase: encabezado, pie, tamaño y botón Regresar ya vienen listos.
- *
- * @author User
- */
+/** Bitácora de autenticación por huella (dashboard). */
 public class Bitacora extends componentes.VentanaBase {
 
     private static final int DIAS_POR_DEFECTO = 7;
@@ -35,17 +30,12 @@ public class Bitacora extends componentes.VentanaBase {
         aplicar();
     }
 
-    // ---------- Acciones ----------
-
-    /** Consulta con los filtros y actualiza tarjetas, gráfico, barras por operación y tabla. */
     private void aplicar() {
         ejecutar(() -> mostrar(bitacora.consultar(util.Formatos.aLocalDate(jdcDesde.getDate()),
                 util.Formatos.aLocalDate(jdcHasta.getDate()),
                 componentes.Combos.seleccionado(jcbxOperacion).getValor(),
                 componentes.Combos.seleccionado(jcbxResultado).getValor())));
     }
-
-    // ---------- Ayudantes ----------
 
     private void mostrar(servicio.ResumenBitacora r) {
         jpnlIntentosHoy.setValor(String.valueOf(r.getIntentosHoy()));
@@ -65,7 +55,6 @@ public class Bitacora extends componentes.VentanaBase {
         tabla.mostrar(r.getRegistros());
     }
 
-    /** Cantidad de intentos de la operación; la barra llena = porcentaje de éxito. */
     private static void mostrarOperacion(servicio.ResumenBitacora r, modelo.OperacionAutenticacion op,
                                          javax.swing.JLabel cantidad, javax.swing.JProgressBar barra) {
         cantidad.setText(r.getTotal(op) + "  (" + r.getTasaExito(op) + "% éxito)");
@@ -422,7 +411,6 @@ public class Bitacora extends componentes.VentanaBase {
         jpnlDetalles.setPreferredSize(new java.awt.Dimension(400, 280));
         jpnlDetalles.setLayout(new java.awt.BorderLayout(0, 0));
 
-
         jScrollPane2.setViewportView(jtblIntentos);
 
         jpnlDetalles.add(jScrollPane2, java.awt.BorderLayout.CENTER);
@@ -442,7 +430,6 @@ public class Bitacora extends componentes.VentanaBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
 
     private void jbtnAplicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnAplicarActionPerformed
         aplicar();

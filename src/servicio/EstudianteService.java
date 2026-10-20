@@ -20,10 +20,7 @@ import modelo.ResultadoAutenticacion;
 import modelo.Usuario;
 import util.Validaciones;
 
-/**
- * Estudiantes. El ADMINISTRADOR los registra (con huella); el BIBLIOTECARIO solo los activa
- * o desactiva. Cada operación exige el permiso polimórfico que corresponde.
- */
+/** Estudiantes. */
 public class EstudianteService {
 
     private final EstudianteDAO dao = new EstudianteDAO();
@@ -35,7 +32,6 @@ public class EstudianteService {
     private final CedulaUnica cedulaUnica = new CedulaUnica();
     private final dao.ParametroDAO parametroDAO = new dao.ParametroDAO();
 
-    /** Estudiantes con sus huellas ya cargadas (2 consultas en total, no una por estudiante). */
     public List<Estudiante> listarConHuellas() {
         List<Estudiante> estudiantes = dao.listar();
         Map<Integer, List<Huella>> huellas = huellaDAO.listar().stream()
@@ -46,10 +42,6 @@ public class EstudianteService {
         return estudiantes;
     }
 
-    /**
-     * Consulta de estudiantes (bibliotecario): cada estudiante con sus préstamos activos.
-     * 3 consultas en total (estudiantes, préstamos activos y parámetro), no una por estudiante.
-     */
     public List<SituacionEstudiante> listarSituaciones() {
         Map<Integer, List<modelo.Prestamo>> activos = prestamoDAO.listarActivos().stream()
                 .collect(Collectors.groupingBy(p -> p.getEstudiante().getIdEstudiante()));
@@ -60,28 +52,21 @@ public class EstudianteService {
                 .collect(Collectors.toList());
     }
 
-    /** Panel del estudiante: todo su historial de préstamos, atrasos y multas (solo lectura). */
     public SituacionEstudiante situacion(Estudiante e) {
         return new SituacionEstudiante(e, prestamoDAO.listarPorEstudiante(e.getIdEstudiante()),
                 parametroDAO.obtenerEntero(modelo.Parametro.MAX_PRESTAMOS), multaDAO.totalPendiente(e.getIdEstudiante()));
     }
 
-    /** Las 5 carreras fijas (para el combo). */
     public List<Carrera> listarCarreras() {
         return carreraDAO.listar();
     }
 
-    /**
-     * Inserta o actualiza el estudiante junto con las huellas capturadas en el formulario.
-     * Regla: un estudiante NO se guarda sin al menos una huella.
-     * La cédula ecuatoriana completa se valida al registrar.
-     */
     public Estudiante guardar(Estudiante e, Map<Dedo, byte[]> huellasCapturadas) {
         exigir(Usuario::puedeRegistrarEstudiantes, "registrar estudiantes");
         if (e.esNuevo()) {
             Validaciones.cedulaEcuatoriana(e.getCedula());
         }
-        cedulaUnica.exigirQueNoSeaDeUsuario(e.getCedula());    // la cédula no puede ser de un admin/bibliotecario
+        cedulaUnica.exigirQueNoSeaDeUsuario(e.getCedula());
         if (!e.tieneHuella() && huellasCapturadas.isEmpty()) {
             throw new ValidacionException("Registre la huella del estudiante.");
         }
@@ -92,7 +77,6 @@ public class EstudianteService {
         return e;
     }
 
-    /** Solo se elimina si nunca pidió préstamos; si tiene historial, se debe desactivar. */
     public void eliminar(Estudiante e) {
         exigir(Usuario::puedeRegistrarEstudiantes, "eliminar estudiantes");
         if (!prestamoDAO.listarPorEstudiante(e.getIdEstudiante()).isEmpty()) {
@@ -101,7 +85,6 @@ public class EstudianteService {
         dao.eliminar(e.getIdEstudiante());
     }
 
-    /** Activar / desactivar (lo puede hacer el bibliotecario). */
     public void cambiarEstado(Estudiante e, EstadoEstudiante nuevo) {
         exigir(Usuario::puedeCambiarEstadoEstudiantes, "cambiar el estado de los estudiantes");
         dao.cambiarEstado(e.getIdEstudiante(), Validaciones.requerido(nuevo, "el estado"));

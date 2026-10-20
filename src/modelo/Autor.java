@@ -45,7 +45,6 @@ public class Autor extends Entidad {
         this.nacionalidad = Validaciones.maximo(Validaciones.opcional(nacionalidad), 50, "nacionalidad");
     }
 
-    /** El combo de autores en CRUDLibros muestra el nombre completo. */
     @Override
     public String toString() {
         return getNombreCompleto();

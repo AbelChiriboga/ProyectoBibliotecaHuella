@@ -8,11 +8,7 @@ import modelo.EstadoEstudiante;
 import modelo.Estudiante;
 import modelo.ValorBD;
 
-/**
- * DAO de estudiantes. Llave: id_estudiante (la cédula es UNIQUE y se busca con buscarPorCedula).
- * Reutiliza el mapeo de CarreraDAO (composición): no repite cómo se arma una Carrera.
- * Las huellas se cargan aparte con HuellaDAO solo cuando hacen falta.
- */
+/** DAO de estudiantes. */
 public class EstudianteDAO extends BaseDAO<Estudiante, Integer> implements CrudDAO<Estudiante, Integer> {
 
     static final String COLUMNAS =
@@ -70,20 +66,11 @@ public class EstudianteDAO extends BaseDAO<Estudiante, Integer> implements CrudD
                 e.getCarrera().getId(), e.getSemestre(), bd(e.getEstado()), e.getIdEstudiante());
     }
 
-    /**
-     * Borrado físico (sus huellas se borran en cascada). Si ya tiene préstamos, la BD lo impide
-     * y BaseDAO lo traduce a "tiene registros relacionados": en ese caso se debe desactivar.
-     */
     @Override
     public void eliminar(Integer id) {
         ejecutar("DELETE FROM estudiantes WHERE id_estudiante = ?", id);
     }
 
-    /**
-     * Guarda el estudiante (nuevo o existente) y sus huellas capturadas en UNA transacción:
-     * si algo falla, no queda un estudiante sin huella. Si el dedo ya tenía huella, se reemplaza
-     * (UNIQUE id_estudiante + dedo con ON DUPLICATE KEY UPDATE).
-     */
     public void guardarConHuellas(Estudiante e, java.util.Map<modelo.Dedo, byte[]> huellas) {
         boolean eraNuevo = e.esNuevo();
         try {
@@ -107,23 +94,20 @@ public class EstudianteDAO extends BaseDAO<Estudiante, Integer> implements CrudD
             });
         } catch (RuntimeException ex) {
             if (eraNuevo) {
-                e.setIdEstudiante(0);          // no se guardó: sigue siendo nuevo
+                e.setIdEstudiante(0);
             }
             throw ex;
         }
     }
 
-    /** Activar / desactivar (lo que puede hacer el bibliotecario). */
     public void cambiarEstado(int idEstudiante, EstadoEstudiante estado) {
         ejecutar("UPDATE estudiantes SET estado = ? WHERE id_estudiante = ?", bd(estado), idEstudiante);
     }
 
-    /** Consulta del estudiante por cédula (login de estudiante). */
     public Optional<Estudiante> buscarPorCedula(String cedula) {
         return consultarUno(sqlSelect() + " WHERE e.cedula = ?", cedula);
     }
 
-    /** Búsqueda para las tablas; estado null = todos. */
     public List<Estudiante> buscar(String texto, EstadoEstudiante estado) {
         String t = like(texto);
         return consultarLista(sqlSelect()

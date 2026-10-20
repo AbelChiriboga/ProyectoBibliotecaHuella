@@ -3,13 +3,9 @@ package modelo;
 import java.math.BigDecimal;
 import util.Validaciones;
 
-/**
- * Parámetro del sistema (tabla parametros: clave / valor).
- * El valor se guarda como texto; los métodos getValorEntero y getValorDecimal lo convierten.
- */
+/** Parámetro del sistema (tabla parametros: clave / valor). */
 public class Parametro {
 
-    // Claves que existen en la BD
     public static final String DIAS_PRESTAMO = "DIAS_PRESTAMO";
     public static final String MAX_PRESTAMOS = "MAX_PRESTAMOS";
     public static final String MULTA_POR_DIA = "MULTA_POR_DIA";

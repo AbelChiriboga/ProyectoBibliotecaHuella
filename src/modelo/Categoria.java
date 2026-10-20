@@ -7,7 +7,6 @@ public class Categoria extends Entidad {
 
     private String nombre;
 
-    // Datos calculados para la tabla (no se guardan)
     private int cantidadLibros;
     private int cantidadEjemplares;
 

@@ -7,11 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import modelo.*;
 
-/**
- * Prueba de la Fase 2 contra la BD real (XAMPP encendido, script biblioteca_huella.sql cargado).
- * En NetBeans: clic derecho → Run File (Shift+F6).
- * Al final borra lo que creó, así la BD queda como estaba.
- */
+/** Prueba de la Fase 2 contra la BD real (XAMPP encendido, script biblioteca_huella.sql cargado). */
 public class PruebaDAO {
 
     private static final List<Integer> prestamosCreados = new ArrayList<>();
@@ -106,7 +102,6 @@ public class PruebaDAO {
             dao.insertar(otra);
         });
 
-        // 3 más: superaría el máximo (1 + 3 = 4) → el trigger rechaza el último y se deshace TODO
         List<Prestamo> varios = new ArrayList<>();
         for (int id : new int[]{3, 4, 6}) {
             Prestamo x = new Prestamo(ejemplares.buscarPorId(id).orElseThrow(), carlos, biblio);
@@ -116,7 +111,6 @@ public class PruebaDAO {
         probar("Tres préstamos más en una transacción", () -> dao.insertarVarios(varios));
         System.out.println("  Préstamos activos de Carlos tras el rollback: " + dao.contarActivos(carlos.getIdEstudiante()));
 
-        // Simulamos que venció hace 4 días (solo para la prueba) y devolvemos
         Pruebas.sql("UPDATE prestamos SET fecha_limite = DATE_SUB(NOW(), INTERVAL 4 DAY) WHERE id_prestamo = " + p.getId());
         System.out.println("  Atrasados ahora: " + dao.listarAtrasados("").size());
         dao.registrarDevoluciones(List.of(p.getId()));
@@ -146,10 +140,9 @@ public class PruebaDAO {
                 + ", MULTA_POR_DIA = " + parametros.obtenerDecimal(Parametro.MULTA_POR_DIA));
     }
 
-    /** Deja la BD como estaba. */
     private static void limpiar() {
         for (int id : prestamosCreados) {
-            Pruebas.sql("DELETE FROM prestamos WHERE id_prestamo = " + id);   // la multa se borra en cascada
+            Pruebas.sql("DELETE FROM prestamos WHERE id_prestamo = " + id);
         }
         Pruebas.sql("UPDATE ejemplares SET estado = 'DISPONIBLE'");
         if (registroCreado != null) {

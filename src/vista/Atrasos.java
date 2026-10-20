@@ -1,16 +1,10 @@
 package vista;
 
-/**
- * Préstamos atrasados y multas pendientes. Aquí se registra el pago de las multas.
- * Hereda de VentanaBase: encabezado, pie, tamaño y botón Regresar ya vienen listos.
- *
- * @author User
- */
+/** Préstamos atrasados y multas pendientes. */
 public class Atrasos extends componentes.VentanaBase {
 
     private final servicio.AtrasoService servicio = new servicio.AtrasoService();
     private final componentes.TablaObjetos<modelo.Prestamo> tabla;
-    /** Parámetro MULTA_POR_DIA (para estimar la multa de los préstamos que siguen atrasados). */
     private java.math.BigDecimal multaPorDia = java.math.BigDecimal.ZERO;
 
     public Atrasos() {
@@ -28,16 +22,12 @@ public class Atrasos extends componentes.VentanaBase {
         cargar();
     }
 
-    // ---------- Acciones ----------
-
-    /** Vuelve a leer la lista según lo elegido en "Ver" (atrasados o multas pendientes). */
     private void cargar() {
         ejecutar(() -> tabla.mostrar(tipo().listar(servicio)));
         mostrarTotal();
         actualizarBotones();
     }
 
-    /** Marca como pagada la multa seleccionada. */
     private void registrarPago() {
         ejecutar(() -> {
             modelo.Prestamo p = tabla.exigirSeleccionado("una multa");
@@ -49,8 +39,6 @@ public class Atrasos extends componentes.VentanaBase {
             }
         });
     }
-
-    // ---------- Ayudantes ----------
 
     private servicio.TipoAtraso tipo() {
         servicio.TipoAtraso tipo = componentes.Combos.seleccionado(jcbxVer);
@@ -64,14 +52,12 @@ public class Atrasos extends componentes.VentanaBase {
             util.Formatos.dinero(tipo().multa(p, multaPorDia))};
     }
 
-    /** "Registros: 3   ·   Total: $4.50". */
     private void mostrarTotal() {
         java.math.BigDecimal total = tabla.getDatos().stream().map(p -> tipo().multa(p, multaPorDia))
                 .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
         jlblTotal.setText("Registros: " + tabla.getDatos().size() + "   ·   Total: " + util.Formatos.dinero(total));
     }
 
-    /** Registrar pago solo se puede en "Multas pendientes" y con una fila seleccionada. */
     private void actualizarBotones() {
         jbtnPagar.setEnabled(tipo().permitePago() && tabla.getSeleccionado().isPresent());
     }
@@ -151,7 +137,6 @@ public class Atrasos extends componentes.VentanaBase {
 
         jpnlAtrasos.add(jpnlBarra, java.awt.BorderLayout.NORTH);
 
-
         jScrollPane1.setViewportView(jtblAtrasos);
 
         jpnlAtrasos.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -167,7 +152,6 @@ public class Atrasos extends componentes.VentanaBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
 
     private void jcbxVerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbxVerActionPerformed
         cargar();

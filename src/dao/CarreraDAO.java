@@ -4,10 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import modelo.Carrera;
 
-/**
- * Carreras de la FISEI: 5 fijas, precargadas y SIN CRUD.
- * Por eso solo hereda las consultas de BaseDAO (ConsultaDAO) y no implementa CrudDAO.
- */
+/** Carreras de la FISEI: 5 fijas, precargadas y SIN CRUD. */
 public class CarreraDAO extends BaseDAO<Carrera, Integer> {
 
     static final String COLUMNAS = "ca.id_carrera AS car_id, ca.nombre AS car_nombre, ca.facultad AS car_facultad";

@@ -39,15 +39,10 @@ public class Ejemplar extends Entidad {
         this.codigoInventario = normalizarCodigo(codigoInventario);
     }
 
-    /** Prefijo de los códigos de inventario de la biblioteca. */
     public static final String PREFIJO = "LIB";
     private static final java.util.regex.Pattern FORMATO =
             java.util.regex.Pattern.compile("^(?:([A-Z]{2,5})\\s*-?\\s*)?0*(\\d{1,6})$");
 
-    /**
-     * Todos los códigos quedan con el MISMO formato: LIB-0005. Así "5", "005", "lib-5" y "LIB-0005"
-     * son el mismo código y la BD (UNIQUE) no deja registrarlo dos veces.
-     */
     public static String normalizarCodigo(String codigo) {
         String escrito = Validaciones.obligatorio(codigo, "código de inventario").toUpperCase();
         java.util.regex.Matcher m = FORMATO.matcher(escrito);
@@ -58,7 +53,6 @@ public class Ejemplar extends Entidad {
         return prefijo + "-" + String.format("%04d", Integer.parseInt(m.group(2)));
     }
 
-    /** Código que sigue al número indicado: 7 → LIB-0007. */
     public static String codigoNumero(int numero) {
         return PREFIJO + "-" + String.format("%04d", numero);
     }

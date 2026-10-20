@@ -6,19 +6,15 @@ import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/**
- * Las ventanas no tienen la barra de título de Windows (setUndecorated). Para poder moverlas,
- * se arrastran desde una zona (el encabezado verde o el fondo del login).
- */
+/** Las ventanas no tienen la barra de título de Windows (setUndecorated). */
 public final class Arrastre {
 
     private Arrastre() {
     }
 
-    /** Al arrastrar con el mouse sobre la zona, se mueve la ventana. */
     public static void permitir(Window ventana, Component zona) {
         MouseAdapter mover = new MouseAdapter() {
-            private Point distancia;                     // del mouse a la esquina de la ventana
+            private Point distancia;
 
             @Override
             public void mousePressed(MouseEvent e) {

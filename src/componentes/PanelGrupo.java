@@ -2,10 +2,7 @@ package componentes;
 
 import javax.swing.JPanel;
 
-/**
- * Panel blanco con borde verde y título (reemplaza a util.Estilos.grupo en cada frame).
- * El título se cambia desde Properties → titulo.
- */
+/** Panel blanco con borde verde y título (reemplaza a util.Estilos.grupo en cada frame). */
 public class PanelGrupo extends JPanel {
 
     private String titulo = "Grupo";

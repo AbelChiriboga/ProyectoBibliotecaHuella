@@ -8,14 +8,7 @@ import modelo.Multa;
 import modelo.Prestamo;
 import modelo.ValorBD;
 
-/**
- * DAO de préstamos. No implementa CrudDAO a propósito: un préstamo nunca se edita ni se borra,
- * solo se REGISTRA y luego se DEVUELVE (y queda como historial).
- *
- * Toda la validación fuerte la hacen los triggers de la BD (huella, estudiante activo,
- * ejemplar disponible, máximo de préstamos, fecha límite, multa); si algo falla, el mensaje
- * del trigger llega como NegocioException gracias a BaseDAO.traducir().
- */
+/** DAO de préstamos. */
 public class PrestamoDAO extends BaseDAO<Prestamo, Integer> {
 
     static final String COLUMNAS =
@@ -25,7 +18,6 @@ public class PrestamoDAO extends BaseDAO<Prestamo, Integer> {
             + EjemplarDAO.COLUMNAS + ", " + EstudianteDAO.COLUMNAS + ", "
             + UsuarioDAO.COLUMNAS + ", " + MultaDAO.COLUMNAS;
 
-    /** Tablas del préstamo; el JOIN de multas es LEFT porque la mayoría no tiene multa. */
     static final String TABLAS = "prestamos p "
             + "JOIN ejemplares ej ON ej.id_ejemplar = p.id_ejemplar "
             + "JOIN libros l ON l.id_libro = ej.id_libro " + LibroDAO.JOINS + " "
@@ -79,18 +71,11 @@ public class PrestamoDAO extends BaseDAO<Prestamo, Integer> {
         return p;
     }
 
-    // ---------- Registrar préstamos ----------
-
-    /** Un préstamo. La fecha límite la calcula el trigger con DIAS_PRESTAMO. */
     public Prestamo insertar(Prestamo p) {
         p.setId(insertarConId(INSERT, valoresInsert(p)));
         return p;
     }
 
-    /**
-     * Varios préstamos del mismo estudiante en UNA transacción: si el trigger rechaza uno
-     * (por ejemplo, superó el máximo), no se guarda ninguno.
-     */
     public void insertarVarios(List<Prestamo> prestamos) {
         enTransaccion(cn -> {
             for (Prestamo p : prestamos) {
@@ -104,12 +89,6 @@ public class PrestamoDAO extends BaseDAO<Prestamo, Integer> {
             p.getUsuario() == null ? null : p.getUsuario().getCedula(), p.isHuellaPrestamo(), p.getObservaciones()};
     }
 
-    // ---------- Devolver ----------
-
-    /**
-     * Devuelve varios préstamos en UNA transacción. Marca huella_devolucion = 1;
-     * los triggers ponen la fecha, liberan el ejemplar y generan la multa si hay atraso.
-     */
     public void registrarDevoluciones(List<Integer> idsPrestamo) {
         enTransaccion(cn -> {
             for (Integer id : idsPrestamo) {
@@ -117,8 +96,6 @@ public class PrestamoDAO extends BaseDAO<Prestamo, Integer> {
             }
         });
     }
-
-    // ---------- Consultas ----------
 
     public List<Prestamo> listarActivosPorEstudiante(int idEstudiante) {
         return consultarLista(sqlSelect() + " WHERE p.id_estudiante = ? AND p.estado = ? ORDER BY p.fecha_limite",
@@ -130,25 +107,18 @@ public class PrestamoDAO extends BaseDAO<Prestamo, Integer> {
                 idEstudiante, bd(EstadoPrestamo.ACTIVO));
     }
 
-    /** Historial completo de un estudiante (panel del estudiante). */
     public List<Prestamo> listarPorEstudiante(int idEstudiante) {
         return consultarLista(sqlSelect() + " WHERE p.id_estudiante = ? ORDER BY " + orden(), idEstudiante);
     }
 
-    /** Préstamos ya devueltos con multa SIN PAGAR (pantalla Atrasos → Multas pendientes). */
     public List<Prestamo> listarConMultaPendiente() {
         return consultarLista(sqlSelect() + " WHERE m.id_multa IS NOT NULL AND m.pagada = 0 ORDER BY m.fecha_generacion");
     }
 
-    /** Todos los préstamos activos (para contar por estudiante en la consulta de estudiantes). */
     public List<Prestamo> listarActivos() {
         return consultarLista(sqlSelect() + " WHERE p.estado = ? ORDER BY p.fecha_limite", bd(EstadoPrestamo.ACTIVO));
     }
 
-    /**
-     * Préstamos atrasados (pantalla Atrasos). Usa la vista v_prestamos_activos de la BD,
-     * que ya calcula dias_restantes (negativo = atrasado).
-     */
     public List<Prestamo> listarAtrasados(String texto) {
         String t = like(texto);
         return consultarLista(sqlSelect()

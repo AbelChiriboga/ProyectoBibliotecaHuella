@@ -8,12 +8,7 @@ import modelo.Usuario;
 import util.Seguridad;
 import util.Validaciones;
 
-/**
- * Reglas del ingreso al sistema:
- *  - Personal: usuario + contraseña (SHA-256). Solo cuentas activas.
- *  - Estudiante: no inicia sesión, solo consulta su información con la cédula.
- * La ventana Login solo llama a estos métodos; no sabe nada de SQL ni de hashes.
- */
+/** Reglas del ingreso al sistema: - Personal: usuario + contraseña (SHA-256). */
 public class AutenticacionService {
 
     private static final String CREDENCIALES_INVALIDAS = "Usuario o contraseña incorrectos.";
@@ -25,17 +20,11 @@ public class AutenticacionService {
         this(new UsuarioDAO(), new EstudianteDAO());
     }
 
-    /** Permite pasar otros DAO (por ejemplo, para pruebas). */
     public AutenticacionService(UsuarioDAO usuarioDAO, EstudianteDAO estudianteDAO) {
         this.usuarioDAO = usuarioDAO;
         this.estudianteDAO = estudianteDAO;
     }
 
-    /**
-     * Inicia la sesión del personal y devuelve el usuario como Usuario
-     * (en realidad un Administrador o un Bibliotecario, creado por la fábrica del DAO).
-     * Por seguridad, el mismo mensaje sirve para "no existe" y "contraseña incorrecta".
-     */
     public Usuario iniciarSesion(String nombreUsuario, String clave) {
         String usuarioEscrito = Validaciones.obligatorio(nombreUsuario, "usuario");
         Validaciones.obligatorio(clave, "contraseña");
@@ -44,7 +33,7 @@ public class AutenticacionService {
                 .filter(x -> Seguridad.coincide(clave, x.getPasswordHash()))
                 .orElseThrow(() -> new NegocioException(CREDENCIALES_INVALIDAS));
 
-        if (!u.puedeIniciarSesion()) {          // polimórfico: Usuario lo resuelve con "activo"
+        if (!u.puedeIniciarSesion()) {
             throw new NegocioException("Su cuenta está desactivada.");
         }
         Sesion.getInstancia().iniciar(u);
@@ -55,7 +44,6 @@ public class AutenticacionService {
         Sesion.getInstancia().cerrar();
     }
 
-    /** Consulta del estudiante por cédula (botón Consultar del Login). */
     public Estudiante consultarEstudiante(String cedula) {
         String c = Validaciones.formatoCedula(cedula);
         return estudianteDAO.buscarPorCedula(c)

@@ -1,25 +1,14 @@
 package vista;
 
-/**
- * Copias físicas de un libro. Solo se abre desde CRUDLibros (botón Ejemplares).
- * Hereda de VentanaBase: encabezado, pie, tamaño y botón Regresar ya vienen listos.
- *
- * @author User
- */
+/** Copias físicas de un libro. */
 public class CRUDEjemplares extends componentes.VentanaBase {
 
     private final servicio.EjemplarService servicio = new servicio.EjemplarService();
     private final componentes.TablaObjetos<modelo.Ejemplar> tabla;
     private final componentes.ControlCrud control;
-    /** Libro dueño de los ejemplares: llega desde CRUDLibros y no cambia. */
     private final modelo.Libro libro;
-    /** Ejemplar que se está viendo o editando (uno nuevo al presionar Nuevo). */
     private modelo.Ejemplar actual;
 
-    /**
-     * Solo existe este constructor: la ventana NO se puede abrir sin un libro,
-     * así se cumple la regla de que los ejemplares se gestionan desde CRUDLibros.
-     */
     public CRUDEjemplares(modelo.Libro libro) {
         this.libro = util.Validaciones.requerido(libro, "un libro");
         initComponents();
@@ -27,19 +16,16 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         componentes.Tablas.soloLectura(jtblEjemplares, jScrollPane1, "Código de inventario", "Ubicación", "Estado");
         tabla = new componentes.TablaObjetos<>(jtblEjemplares,
                 e -> new Object[]{e.getCodigoInventario(), e.getUbicacion(), e.getEstado()});
-        // El código lo asigna el sistema (siguiente número libre): nunca se escribe a mano
         componentes.ControlCrud.permitirEscribir(jtxtCodInv, false);
         jtxtCodInv.setFocusable(false);
         control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtUbicacion, jcbxEstado},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
-        control.bloquearAlEditar(jtblEjemplares);   // mientras se escribe no se puede elegir otra fila
+        control.bloquearAlEditar(jtblEjemplares);
         llenarEstados(false);
         tabla.alSeleccionar(this::mostrar);
         mostrarLibro();
         cancelar();
     }
-
-    // ---------- Acciones de los botones ----------
 
     private void nuevo() {
         actual = new modelo.Ejemplar();
@@ -48,14 +34,14 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         tabla.limpiarSeleccion();
         llenarEstados(true);
         control.nuevo();
-        ejecutar(() -> jtxtCodInv.setText(servicio.siguienteCodigo()));   // código automático
+        ejecutar(() -> jtxtCodInv.setText(servicio.siguienteCodigo()));
         jtxtUbicacion.requestFocus();
     }
 
     private void editar() {
         ejecutar(() -> {
             actual = tabla.exigirSeleccionado("un ejemplar");
-            servicio.verificarEditable(actual);          // prestado: no se puede editar
+            servicio.verificarEditable(actual);
             llenarEstados(true);
             componentes.Combos.seleccionar(jcbxEstado, actual.getEstado());
             control.edicion();
@@ -84,7 +70,6 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         });
     }
 
-    /** Vuelve al estado inicial y recarga la tabla (descarta cambios sin guardar). */
     private void cancelar() {
         actual = null;
         llenarEstados(false);
@@ -92,8 +77,6 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         cargar();
         control.consulta(false);
     }
-
-    // ---------- Métodos de apoyo ----------
 
     private void cargar() {
         ejecutar(() -> {
@@ -112,7 +95,6 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         tabla.seleccionar(e);
     }
 
-    /** Franja superior con los datos del libro. */
     private void mostrarLibro() {
         jlblTitulo.setText(libro.getTitulo());
         jlblAutor.setText(libro.getAutor().getNombreCompleto());
@@ -127,11 +109,6 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         control.consulta(true);
     }
 
-    /**
-     * Al ver un ejemplar se muestran todos los estados (también "Prestado").
-     * Al crear o editar solo se ofrecen los que el bibliotecario puede poner a mano:
-     * Disponible, Dañado y Perdido. "Prestado" lo pone y lo quita el sistema.
-     */
     private void llenarEstados(boolean soloEditables) {
         componentes.Combos.llenar(jcbxEstado, java.util.Arrays.stream(modelo.EstadoEjemplar.values())
                 .filter(estado -> !soloEditables || estado.esEditableManualmente())
@@ -350,7 +327,6 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         jpnlEjemplaresReg.setTitulo("Ejemplares de este libro");
         jpnlEjemplaresReg.setLayout(new java.awt.BorderLayout(0, 10));
 
-
         jScrollPane1.setViewportView(jtblEjemplares);
 
         jpnlEjemplaresReg.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -366,7 +342,6 @@ public class CRUDEjemplares extends componentes.VentanaBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
 
     private void jbtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnNuevoActionPerformed
         nuevo();

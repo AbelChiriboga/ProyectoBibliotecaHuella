@@ -4,10 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import util.Validaciones;
 
-/**
- * Libro del catálogo (la obra). Las copias físicas son objetos Ejemplar.
- * Composición: un libro TIENE un Autor y una Categoría (objetos, no solo ids).
- */
+/** Libro del catálogo (la obra). */
 public class Libro extends Entidad {
 
     private String isbn;
@@ -18,7 +15,6 @@ public class Libro extends Entidad {
     private Integer anio;
     private LocalDateTime fechaRegistro;
 
-    // Datos calculados (vienen de la vista v_catalogo, no se guardan)
     private int ejemplaresTotales;
     private int ejemplaresDisponibles;
 
@@ -32,7 +28,6 @@ public class Libro extends Entidad {
         setCategoria(categoria);
     }
 
-    /** Texto de la columna "Disponibles" de CRUDLibros, por ejemplo "1 / 2". */
     public String getResumenDisponibles() {
         return ejemplaresDisponibles + " / " + ejemplaresTotales;
     }
@@ -41,7 +36,6 @@ public class Libro extends Entidad {
         return isbn;
     }
 
-    /** ISBN-10 o ISBN-13 (se aceptan guiones). Opcional. */
     public final void setIsbn(String isbn) {
         String i = Validaciones.opcional(isbn);
         if (i != null && !i.replace("-", "").matches("\\d{9}[\\dXx]|\\d{13}")) {
@@ -86,7 +80,6 @@ public class Libro extends Entidad {
         return anio;
     }
 
-    /** Año de publicación: opcional, entre 1450 y el año actual. */
     public void setAnio(Integer anio) {
         if (anio != null) {
             Validaciones.rango(anio, "año", 1450, LocalDate.now().getYear());
@@ -98,7 +91,6 @@ public class Libro extends Entidad {
         return fechaRegistro;
     }
 
-    /** La llena la BD; no se muestra en el formulario. */
     public void setFechaRegistro(LocalDateTime fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }

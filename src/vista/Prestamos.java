@@ -1,17 +1,11 @@
 package vista;
 
-/**
- * Préstamo de libros: el estudiante se identifica solo con su huella.
- * Hereda de VentanaBase: encabezado, pie, tamaño y botón Regresar ya vienen listos.
- *
- * @author User
- */
+/** Préstamo de libros: el estudiante se identifica solo con su huella. */
 public class Prestamos extends componentes.VentanaBase {
 
     private final servicio.PrestamoService servicio = new servicio.PrestamoService();
     private final componentes.TablaObjetos<modelo.Ejemplar> tabla;
     private final LecturaHuella lectura;
-    /** Fecha límite si se presta hoy (se calcula al cargar, no en cada casilla). */
     private String devolverHasta = "—";
 
     public Prestamos() {
@@ -23,16 +17,12 @@ public class Prestamos extends componentes.VentanaBase {
             e.getCodigoInventario(), e.getLibro().getTitulo(), e.getLibro().getAutor(), e.getUbicacion()});
         tabla.usarBarra(barraBuscar);
         tabla.alMarcar(this::actualizarResumen);
-        // La huella se lee sola: no hay botón (ver LecturaHuella)
         lectura = new LecturaHuella(this, jpnlHuella, servicio::identificar, this::estudianteIdentificado,
                 servicio::cancelarLectura);
         alCambiarLector(lectura::lectorCambio);
         cargarEjemplares();
     }
 
-    // ---------- Acciones de los botones ----------
-
-    /** Registra el préstamo de los libros marcados al estudiante identificado con su huella. */
     private void confirmarPrestamo() {
         ejecutar(() -> {
             java.util.List<modelo.Prestamo> hechos = servicio.prestar(lectura.getFicha(), tabla.getMarcados());
@@ -41,14 +31,11 @@ public class Prestamos extends componentes.VentanaBase {
         });
     }
 
-    /** Deja la pantalla lista para el siguiente estudiante. */
     private void nuevoPrestamo() {
         lectura.limpiar();
         barraBuscar.limpiar();
         cargarEjemplares();
     }
-
-    // ---------- Ayudantes ----------
 
     private void cargarEjemplares() {
         ejecutar(() -> {
@@ -58,7 +45,6 @@ public class Prestamos extends componentes.VentanaBase {
         actualizarResumen();
     }
 
-    /** Tarjeta del estudiante: verde si puede llevar libros; naranja con el motivo si no. */
     private void estudianteIdentificado(servicio.FichaEstudiante ficha) {
         java.util.Optional<String> bloqueo = servicio.motivoBloqueo(ficha);
         String estado = bloqueo.orElse("PUEDE LLEVAR " + ficha.getCupos() + " LIBRO(S)");
@@ -67,10 +53,9 @@ public class Prestamos extends componentes.VentanaBase {
         actualizarResumen();
     }
 
-    /** "Seleccionados: 2 de 3 permitidos · Devolver hasta: 25/10/2026". */
     private void actualizarResumen() {
         if (lectura == null) {
-            return;                                    // todavía se está armando la ventana
+            return;
         }
         servicio.FichaEstudiante ficha = lectura.getFicha();
         String permitidos = ficha == null ? "" : " de " + ficha.getCupos() + " permitidos";
@@ -171,7 +156,6 @@ public class Prestamos extends componentes.VentanaBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
 
     private void jbtnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnConfirmarActionPerformed
         confirmarPrestamo();

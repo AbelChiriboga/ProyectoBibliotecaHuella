@@ -1,10 +1,6 @@
 package modelo;
 
-/**
- * Base de las clases que en la BD tienen una llave numérica autoincremental
- * (carrera, autor, categoría, libro, ejemplar, préstamo, multa, huella, bitácora).
- * Evita repetir en cada clase el id, equals y hashCode (herencia para reutilizar código).
- */
+/** Base de las clases que en la BD tienen una llave numérica autoincremental (carrera, autor, categoría, libro. */
 public abstract class Entidad {
 
     private int id;
@@ -13,7 +9,6 @@ public abstract class Entidad {
         return id;
     }
 
-    /** 0 significa "todavía no guardado en la BD". */
     public final void setId(int id) {
         if (id < 0) {
             throw new excepciones.ValidacionException("El id no puede ser negativo.");
@@ -25,7 +20,6 @@ public abstract class Entidad {
         return id == 0;
     }
 
-    /** Mismo tipo y mismo id = mismo registro (sirve para seleccionar en combos y tablas). */
     @Override
     public boolean equals(Object o) {
         if (this == o) {

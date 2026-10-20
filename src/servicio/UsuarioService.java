@@ -9,10 +9,7 @@ import modelo.Usuario;
 import util.Seguridad;
 import util.Validaciones;
 
-/**
- * Personal del sistema (administradores y bibliotecarios). Solo el administrador lo gestiona.
- * Borrado LÓGICO: un usuario nunca se elimina, se desactiva (y se puede volver a activar).
- */
+/** Personal del sistema (administradores y bibliotecarios). */
 public class UsuarioService {
 
     private final UsuarioDAO dao = new UsuarioDAO();
@@ -23,15 +20,10 @@ public class UsuarioService {
         return dao.listar();
     }
 
-    /**
-     * Crea un usuario vacío de la subclase que corresponde al rol elegido en el combo.
-     * Usa la fábrica del enum Rol: no hay if para decidir si es Administrador o Bibliotecario.
-     */
     public Usuario crear(Rol rol) {
         return Validaciones.requerido(rol, "el rol").crearUsuario();
     }
 
-    /** Registra un usuario nuevo con su contraseña (se guarda solo el hash SHA-256). */
     public void registrar(Usuario u, String clave, String repetida) {
         exigirPermiso();
         Validaciones.cedulaEcuatoriana(u.getCedula());
@@ -44,7 +36,6 @@ public class UsuarioService {
         dao.insertar(u);
     }
 
-    /** Actualiza los datos. La contraseña solo cambia si se escribió una nueva. */
     public void actualizar(Usuario u, String clave, String repetida) {
         exigirPermiso();
         exigirQueNoCambieSuPropioRol(u);
@@ -56,7 +47,6 @@ public class UsuarioService {
         }
     }
 
-    /** Activa o desactiva (borrado lógico). Nadie puede desactivarse a sí mismo. */
     public void cambiarEstado(Usuario u) {
         exigirPermiso();
         if (esUsuarioActual(u)) {

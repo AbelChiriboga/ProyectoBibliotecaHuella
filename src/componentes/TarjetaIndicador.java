@@ -8,14 +8,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-/**
- * Tarjeta con título pequeño, número grande y una línea de detalle opcional.
- * Reemplaza los métodos tarjeta()/armarTarjeta() repetidos en los menús, Bitácora,
- * Devoluciones y BEstudiantes.
- */
+/** Tarjeta con título pequeño, número grande y una línea de detalle opcional. */
 public class TarjetaIndicador extends JPanel {
 
-    /** Tarjeta de alerta: fondo rojo entero y todo el texto en blanco, para que resalte. */
     private static final Color ROJO = new Color(198, 40, 40);
     private static final Color GRIS_TEXTO = new Color(80, 90, 100);
 
@@ -50,20 +45,17 @@ public class TarjetaIndicador extends JPanel {
     public String getValor() { return lblValor.getText(); }
     public void setValor(String valor) { lblValor.setText(valor); }
 
-    /** Línea pequeña debajo del número. Vacía no se muestra pero conserva el alto. */
     public String getDetalle() { return lblDetalle.getText(); }
     public void setDetalle(String detalle) {
         lblDetalle.setText(detalle == null || detalle.isEmpty() ? " " : detalle);
     }
 
-    /** true = estilo naranja (atrasos, fallos, multas). */
     public boolean isAlerta() { return alerta; }
     public void setAlerta(boolean alerta) {
         this.alerta = alerta;
         aplicarColores();
     }
 
-    /** true = textos centrados (estilo de los menús). */
     public boolean isCentrado() { return centrado; }
     public void setCentrado(boolean centrado) {
         this.centrado = centrado;

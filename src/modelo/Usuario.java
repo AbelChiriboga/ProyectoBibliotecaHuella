@@ -3,14 +3,7 @@ package modelo;
 import java.time.LocalDateTime;
 import util.Validaciones;
 
-/**
- * Personal del sistema (tabla usuarios). Sigue siendo ABSTRACTA: un usuario siempre es
- * Administrador o Bibliotecario.
- *
- * Los permisos son métodos abstractos: cada hija responde a su manera (polimorfismo).
- * Así las ventanas preguntan "usuario.puedeGestionarCatalogo()" y nunca
- * "¿es un Bibliotecario?" con if o instanceof.
- */
+/** Personal del sistema (tabla usuarios). */
 public abstract class Usuario extends Persona {
 
     private String usuario;
@@ -27,51 +20,35 @@ public abstract class Usuario extends Persona {
         setUsuario(usuario);
     }
 
-    // ---------- Abstractos: cada rol los define ----------
-
-    /** Rol del usuario; también es lo que se guarda en la columna rol. */
     public abstract Rol getRol();
 
-    /** Registrar estudiantes con su huella. */
     public abstract boolean puedeRegistrarEstudiantes();
 
-    /** Activar o desactivar estudiantes. */
     public abstract boolean puedeCambiarEstadoEstudiantes();
 
-    /** Registrar y desactivar al personal (administradores y bibliotecarios). */
     public abstract boolean puedeGestionarPersonal();
 
-    /** Libros, ejemplares, autores y categorías. */
     public abstract boolean puedeGestionarCatalogo();
 
-    /** Préstamos, devoluciones y atrasos. */
     public abstract boolean puedeGestionarPrestamos();
 
-    /** Parámetros del sistema. */
     public abstract boolean puedeConfigurarParametros();
 
-    /** Bitácora de autenticación. */
     public abstract boolean puedeVerBitacora();
 
-    /** Reportes con JasperReports (ambos roles; una hija podría redefinirlo). */
     public boolean puedeGenerarReportes() {
         return true;
     }
-
-    // ---------- Implementación de los abstractos de Persona ----------
 
     @Override
     public String getTipo() {
         return getRol().getDescripcion();
     }
 
-    /** El personal inicia sesión solo si su cuenta está activa (borrado lógico). */
     @Override
     public boolean puedeIniciarSesion() {
         return activo;
     }
-
-    // ---------- Getters y setters ----------
 
     public String getUsuario() {
         return usuario;
@@ -86,7 +63,6 @@ public abstract class Usuario extends Persona {
         this.usuario = u;
     }
 
-    /** Hash SHA-256 de la contraseña. La contraseña en texto plano nunca se guarda. */
     public String getPasswordHash() {
         return passwordHash;
     }
@@ -115,7 +91,6 @@ public abstract class Usuario extends Persona {
         return fechaCreacion;
     }
 
-    /** La pone la BD al insertar; el DAO la copia al leer. */
     public void setFechaCreacion(LocalDateTime fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }

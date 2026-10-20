@@ -16,29 +16,21 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
-/**
- * Panel del lector de huella. Un solo componente para las tres ventanas que lo usan:
- *  - modoRegistro = false: Préstamos y Devoluciones (identifica al estudiante y muestra sus datos).
- *  - modoRegistro = true : CRUDEstudiantes (elige dedo y captura 3 muestras).
- * Antes estaba copiado completo en Préstamos y Devoluciones, y otra variante en CRUDEstudiantes.
- */
+/** Panel del lector de huella. */
 public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
 
     private static final Color GRIS = new Color(60, 75, 85);
 
-    // Comunes
     private final JLabel lblHuella = new JLabel("Coloque el dedo");
     private final JLabel lblEstado = new JLabel(" ");
     private final BotonSistema botonCapturar = new BotonSistema("Capturar huella");
 
-    // Modo verificación (préstamo / devolución)
     private final JPanel pnlEstudiante = new JPanel(new GridLayout(4, 1, 0, 4));
     private final JLabel lblNombre = new JLabel("—");
     private final JLabel lblDatos = new JLabel("<html>Cédula: —<br>Carrera: —</html>");
     private final JLabel lblActivos = new JLabel("Préstamos activos: — de 3");
     private final JLabel lblEstadoEstudiante = new JLabel("SIN IDENTIFICAR");
 
-    // Modo registro (estudiantes)
     private final JLabel lblDedo = new JLabel("Dedo");
     private final JComboBox<modelo.Dedo> cbxDedo = new JComboBox<>(modelo.Dedo.values());
     private final JProgressBar barMuestras = new JProgressBar(0, 3);
@@ -62,8 +54,8 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         lblHuella.setFont(util.Estilos.FUENTE);
         lblHuella.setForeground(new Color(90, 110, 115));
         lblHuella.setPreferredSize(new Dimension(190, 190));
-        lblHuella.setMinimumSize(new Dimension(190, 190));          // el recuadro nunca se achica
-        lblHuella.setHorizontalTextPosition(SwingConstants.CENTER);   // con imagen: texto debajo
+        lblHuella.setMinimumSize(new Dimension(190, 190));
+        lblHuella.setHorizontalTextPosition(SwingConstants.CENTER);
         lblHuella.setVerticalTextPosition(SwingConstants.BOTTOM);
 
         lblEstado.setHorizontalAlignment(SwingConstants.CENTER);
@@ -71,7 +63,6 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         lblEstado.setForeground(GRIS);
         botonCapturar.setPreferredSize(new Dimension(200, 36));
 
-        // Tarjeta del estudiante
         pnlEstudiante.setBackground(new Color(247, 249, 250));
         pnlEstudiante.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(util.Estilos.BORDE, 1, true),
@@ -87,8 +78,6 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         lblEstadoEstudiante.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblEstadoEstudiante.setBackground(new Color(225, 230, 233));
         lblEstadoEstudiante.setForeground(GRIS);
-        // Ancho preferido pequeño: un nombre o carrera largos se cortan con "..." en vez de
-        // ensanchar el panel (si el panel no entra, GridBagLayout aplasta todo lo demás).
         lblNombre.setPreferredSize(new Dimension(10, 24));
         lblDatos.setPreferredSize(new Dimension(10, 40));
         lblActivos.setPreferredSize(new Dimension(10, 20));
@@ -98,11 +87,10 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         pnlEstudiante.add(lblActivos);
         pnlEstudiante.add(lblEstadoEstudiante);
 
-        // Controles de registro
         lblDedo.setFont(util.Estilos.FUENTE);
         cbxDedo.setFont(util.Estilos.FUENTE);
         cbxDedo.setPreferredSize(new Dimension(100, 32));
-        cbxDedo.setSelectedItem(modelo.Dedo.INDICE_DERECHO);   // valores fijos: el enum Dedo
+        cbxDedo.setSelectedItem(modelo.Dedo.INDICE_DERECHO);
         barMuestras.setStringPainted(true);
         barMuestras.setString("0 de 3 muestras");
         barMuestras.setForeground(util.Estilos.VERDE);
@@ -117,7 +105,6 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         txtInfo.setBackground(new Color(247, 249, 250));
         txtInfo.setBorder(BorderFactory.createEmptyBorder(6, 8, 6, 8));
         scrInfo.setBorder(BorderFactory.createLineBorder(util.Estilos.BORDE));
-        // Ancho pequeño: así el panel no se aplasta cuando es angosto (GridBag usaría los mínimos)
         scrInfo.setPreferredSize(new Dimension(100, 70));
 
         int fila = 0;
@@ -144,7 +131,6 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         add(relleno, g);
     }
 
-    /** false = préstamo/devolución, true = registro de huella. */
     public boolean isModoRegistro() { return modoRegistro; }
 
     public void setModoRegistro(boolean modoRegistro) {
@@ -156,20 +142,15 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         pnlEstudiante.setVisible(!modoRegistro);
         lblEstado.setVisible(!modoRegistro);
         botonCapturar.setText("Capturar huella");
-        botonCapturar.setVisible(modoRegistro);     // en préstamo/devolución la huella se lee sola
+        botonCapturar.setVisible(modoRegistro);
         botonCapturar.setPrimario(true);
         revalidate();
         repaint();
     }
 
-    // ---- Estados de la captura (los usan Préstamos, Devoluciones y CRUDEstudiantes) ----
-
     private static final Color FONDO_NORMAL = new Color(242, 249, 248);
     private static final Color FONDO_EXITO = new Color(212, 238, 235);
     private static final Color FONDO_FALLO = new Color(253, 241, 232);
-
-    // ---- Avisos del lector durante el registro (AvisoCaptura) ----
-    // El lector avisa desde otro hilo: se pasa al hilo de Swing con invokeLater.
 
     @Override
     public void avisar(int muestrasListas, String mensaje) {
@@ -181,7 +162,6 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         javax.swing.SwingUtilities.invokeLater(() -> mostrarImagen(huella));
     }
 
-    /** Dibuja la huella leída dentro del recuadro (escalada sin deformarla). */
     public void mostrarImagen(java.awt.image.BufferedImage huella) {
         int lado = 150;
         double escala = Math.min((double) lado / huella.getWidth(), (double) lado / huella.getHeight());
@@ -192,7 +172,6 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         lblHuella.setBackground(Color.WHITE);
     }
 
-    /** Vuelve al estado inicial: "Coloque el dedo", sin muestras. */
     public void reiniciar() {
         lblHuella.setIcon(null);
         pintarHuella("Coloque el dedo", FONDO_NORMAL, new Color(90, 110, 115));
@@ -201,7 +180,6 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
                 : "Coloque el dedo en el lector.");
     }
 
-    /** Durante la captura: bloquea el botón y avisa que se está leyendo. */
     public void iniciarCaptura() {
         lblHuella.setIcon(null);
         botonCapturar.setEnabled(false);
@@ -209,13 +187,11 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         pintarHuella("Leyendo...", FONDO_NORMAL, util.Estilos.VERDE_TITULO);
     }
 
-    /** Al terminar la captura (bien o mal) se vuelve a habilitar el botón. */
     public void terminarCaptura() {
         botonCapturar.setEnabled(true);
         cbxDedo.setEnabled(true);
     }
 
-    /** Avance del registro: cuántas muestras van y la instrucción para el usuario. */
     public void mostrarAvance(int muestras, String mensaje) {
         barMuestras.setValue(muestras);
         barMuestras.setString(muestras + " de 3 muestras");
@@ -224,13 +200,8 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         lblEstado.setText(envolver(mensaje));
     }
 
-    /** Rojo para los avisos importantes del registro (por ejemplo, huella de otro estudiante). */
     private static final Color ROJO_AVISO = new Color(198, 40, 40);
 
-    /**
-     * Problema al capturar: el recuadro vuelve a "Coloque el dedo" y el mensaje se muestra
-     * solo en el área de texto de abajo. Con alerta = true el texto va en rojo.
-     */
     public void mostrarAviso(String mensaje, boolean alerta) {
         lblHuella.setIcon(null);
         pintarHuella("Coloque el dedo", FONDO_NORMAL, new Color(90, 110, 115));
@@ -241,13 +212,11 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         lblEstado.setText(envolver(mensaje));
     }
 
-    /** Resultado final: verde si salió bien, naranja si no. */
     public void mostrarResultado(String texto, boolean exito) {
         pintarHuella(texto, exito ? FONDO_EXITO : FONDO_FALLO,
                 exito ? util.Estilos.VERDE_TITULO : new Color(138, 58, 18));
     }
 
-    /** Muestra en el recuadro si el lector está listo o no (no borra el texto informativo). */
     public void mostrarLector(biometria.EstadoLector estado) {
         lblHuella.setIcon(null);
         if (estado.permiteCapturar()) {
@@ -257,20 +226,13 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         }
     }
 
-    // ---- Tarjeta del estudiante identificado (préstamo / devolución) ----
-
     private static final Color FONDO_OK = new Color(212, 238, 235);
     private static final Color FONDO_NO = new Color(253, 241, 232);
 
-    /**
-     * Muestra al estudiante que se identificó con la huella.
-     * @param estado texto de la franja inferior ("PUEDE LLEVAR 2 LIBROS", "INACTIVO"...)
-     * @param ok     verde si puede continuar, naranja si hay algún impedimento
-     */
     public void mostrarEstudiante(String nombre, String datos, String activos, String estado, boolean ok) {
         lblNombre.setText(nombre);
         lblNombre.setToolTipText(nombre);
-        lblDatos.setText("<html>" + datos.replace("\n", "<br>") + "</html>");   // cada dato en su línea
+        lblDatos.setText("<html>" + datos.replace("\n", "<br>") + "</html>");
         lblDatos.setToolTipText(datos);
         lblActivos.setText(activos);
         lblEstadoEstudiante.setText("<html><div style='text-align:center'>" + estado + "</div></html>");
@@ -278,7 +240,6 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         lblEstadoEstudiante.setForeground(ok ? util.Estilos.VERDE_TITULO : new Color(138, 58, 18));
     }
 
-    /** Vuelve la tarjeta a "sin identificar". */
     public void limpiarEstudiante() {
         lblNombre.setText("—");
         lblDatos.setText("<html>Cédula: —<br>Carrera: —</html>");
@@ -288,14 +249,12 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         lblEstadoEstudiante.setForeground(GRIS);
     }
 
-    /** Texto informativo debajo del lector (por ejemplo, las huellas ya registradas). */
     public void setInfo(String texto) {
         txtInfo.setForeground(util.Estilos.TEXTO);
         txtInfo.setText(texto);
         lblEstado.setText(envolver(texto));
     }
 
-    /** Texto en varias líneas para que quepa en el ancho del panel. */
     private static String envolver(String texto) {
         return "<html><div style='text-align:center;width:150px'>" + texto + "</div></html>";
     }
@@ -306,7 +265,6 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         lblHuella.setForeground(letra);
     }
 
-    // ---- Acceso para la lógica ----
     public JLabel getLblHuella() { return lblHuella; }
     public JLabel getLblEstado() { return lblEstado; }
     public BotonSistema getBotonCapturar() { return botonCapturar; }

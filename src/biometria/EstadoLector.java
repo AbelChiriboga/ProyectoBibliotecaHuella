@@ -1,9 +1,6 @@
 package biometria;
 
-/**
- * Estado del lector de huella. Cada constante sabe su texto para el pie de página
- * y si permite capturar huellas (polimorfismo en el enum, sin if en las ventanas).
- */
+/** Estado del lector de huella. */
 public enum EstadoLector {
 
     CONECTADO("Conectado", true),
@@ -23,7 +20,6 @@ public enum EstadoLector {
         return descripcion;
     }
 
-    /** Solo con el lector listo se pueden registrar o leer huellas. */
     public boolean permiteCapturar() {
         return permiteCapturar;
     }

@@ -1,22 +1,12 @@
 package vista;
 
-/**
- * Registro de usuarios del sistema (administradores y bibliotecarios).
- * Hereda de VentanaBase: encabezado, pie, tamaño y botón Regresar ya vienen listos.
- *
- * @author User
- */
+/** Registro de usuarios del sistema (administradores y bibliotecarios). */
 public class CRUDBibliotecarios extends componentes.VentanaBase {
 
     private final servicio.UsuarioService servicio = new servicio.UsuarioService();
     private final componentes.TablaObjetos<modelo.Usuario> tabla;
     private final componentes.ControlCrud control;
-    /**
-     * Qué hacer al presionar Guardar. Nuevo lo cambia a "registrar" y Editar a "actualizar"
-     * (estrategia con lambdas: así guardar() no necesita un if para saber el modo).
-     */
     private java.util.function.Consumer<modelo.Usuario> alGuardar = u -> { };
-    /** Estado (activo) del usuario mostrado; un usuario nuevo empieza activo. */
     private boolean activoActual = true;
 
     public CRUDBibliotecarios() {
@@ -30,15 +20,13 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtCedula, jtxtNombres, jtxtApellidos,
             jtxtCorreo, jtxtDireccion, jtxtTelefono, jtxtUsuario, jcbxRol, jpswClave, jpswRepClave},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnDesactivar, jbtnCancelar);
-        control.bloquearAlEditar(jtblUsuarios);   // mientras se escribe no se puede elegir otra fila
+        control.bloquearAlEditar(jtblUsuarios);
         componentes.Combos.llenar(jcbxRol, modelo.Rol.class);
         tabla.alSeleccionar(this::mostrar);
-        tabla.usarBarra(barraBuscar);   // búsqueda al escribir + filtro por columnas
+        tabla.usarBarra(barraBuscar);
         util.Eventos.alCambiar(jpswClave, this::mostrarFortaleza);
         cancelar();
     }
-
-    // ---------- Acciones de los botones ----------
 
     private void nuevo() {
         limpiar();
@@ -54,7 +42,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
             tabla.exigirSeleccionado("un usuario");
             alGuardar = u -> servicio.actualizar(u, clave(), claveRepetida());
             control.edicion();
-            componentes.ControlCrud.permitirEscribir(jtxtCedula, false);   // la cédula es la llave: no se cambia
+            componentes.ControlCrud.permitirEscribir(jtxtCedula, false);
             jlblSeguridad.setText("Deje la contraseña vacía para no cambiarla");
             jtxtNombres.requestFocus();
         });
@@ -69,7 +57,6 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         });
     }
 
-    /** Borrado lógico: desactiva o vuelve a activar al usuario seleccionado. */
     private void cambiarEstado() {
         ejecutar(() -> {
             modelo.Usuario u = tabla.exigirSeleccionado("un usuario");
@@ -81,14 +68,11 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         });
     }
 
-    /** Vuelve al estado inicial y recarga la tabla (descarta cambios sin guardar). */
     private void cancelar() {
         limpiar();
         cargar();
         control.consulta(false);
     }
-
-    // ---------- Métodos de apoyo ----------
 
     private void cargar() {
         ejecutar(() -> tabla.mostrar(servicio.listar()));
@@ -101,10 +85,6 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         tabla.seleccionar(u);
     }
 
-    /**
-     * Arma el usuario con los datos del formulario. La subclase (Administrador o Bibliotecario)
-     * la decide el rol elegido, mediante la fábrica del enum Rol.
-     */
     private modelo.Usuario leerFormulario() {
         modelo.Usuario u = servicio.crear(componentes.Combos.seleccionado(jcbxRol));
         u.setCedula(jtxtCedula.getText());
@@ -149,7 +129,6 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         mostrarFortaleza();
     }
 
-    /** Barra de seguridad: se actualiza mientras se escribe la contraseña. */
     private void mostrarFortaleza() {
         int fortaleza = util.Seguridad.fortaleza(clave());
         jpgrSeguridad.setValue(fortaleza);
@@ -539,7 +518,6 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         barraBuscar.setAyuda("Buscar por cédula, nombre o usuario");
         jpnlUsuariosReg.add(barraBuscar, java.awt.BorderLayout.NORTH);
 
-
         jScrollPane1.setViewportView(jtblUsuarios);
 
         jpnlUsuariosReg.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -550,7 +528,6 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
 
     private void jbtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnNuevoActionPerformed
         nuevo();

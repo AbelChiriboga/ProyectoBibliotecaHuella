@@ -1,17 +1,11 @@
 package vista;
 
-/**
- * Registro de libros. Desde aquí se abren Autores, Categorías y los Ejemplares del libro seleccionado.
- * Hereda de VentanaBase: encabezado, pie, tamaño y botón Regresar ya vienen listos.
- *
- * @author User
- */
+/** Registro de libros. */
 public class CRUDLibros extends componentes.VentanaBase {
 
     private final servicio.LibroService servicio = new servicio.LibroService();
     private final componentes.TablaObjetos<modelo.Libro> tabla;
     private final componentes.ControlCrud control;
-    /** Libro que se está viendo o editando (uno nuevo al presionar Nuevo). */
     private modelo.Libro actual;
 
     public CRUDLibros() {
@@ -25,15 +19,13 @@ public class CRUDLibros extends componentes.VentanaBase {
         control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtISBN, jtxtTitulo, jcbxAutor, jbtnAutor,
             jcbxCategoria, jbtnCategoria, jtxtEditorial, jtxtAnio},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
-        control.bloquearAlEditar(jtblLibros);   // mientras se escribe no se puede elegir otra fila
+        control.bloquearAlEditar(jtblLibros);
         control.agregarBotonDeSeleccion(jbtnEjemplares);
         tabla.alSeleccionar(this::mostrar);
-        tabla.usarBarra(barraBuscar);   // búsqueda al escribir + filtro por columnas
+        tabla.usarBarra(barraBuscar);
         cargarCombos();
         cancelar();
     }
-
-    // ---------- Acciones de los botones ----------
 
     private void nuevo() {
         actual = new modelo.Libro();
@@ -75,7 +67,6 @@ public class CRUDLibros extends componentes.VentanaBase {
         });
     }
 
-    /** Vuelve al estado inicial y recarga la tabla (descarta cambios sin guardar). */
     private void cancelar() {
         actual = null;
         limpiar();
@@ -83,22 +74,17 @@ public class CRUDLibros extends componentes.VentanaBase {
         control.consulta(false);
     }
 
-    /** Botón +: abre Autores y, al volver, recarga el combo. */
     private void agregarAutor() {
         util.Navegacion.abrir(this, new CRUDAutores(), this::cargarCombos);
     }
 
-    /** Botón +: abre Categorías y, al volver, recarga el combo. */
     private void agregarCategoria() {
         util.Navegacion.abrir(this, new CRUDCategoria(), this::cargarCombos);
     }
 
-    /** Los ejemplares solo se abren desde aquí, con el libro seleccionado. */
     private void abrirEjemplares() {
         ejecutar(() -> util.Navegacion.abrir(this, new CRUDEjemplares(tabla.exigirSeleccionado("un libro")), this::cancelar));
     }
-
-    // ---------- Métodos de apoyo ----------
 
     private void cargar() {
         ejecutar(() -> tabla.mostrar(servicio.listar()));
@@ -419,7 +405,6 @@ public class CRUDLibros extends componentes.VentanaBase {
 
         barraBuscar.setAyuda("Buscar por título, autor o ISBN");
         jpnlLibrosReg.add(barraBuscar, java.awt.BorderLayout.NORTH);
-
 
         jScrollPane1.setViewportView(jtblLibros);
 

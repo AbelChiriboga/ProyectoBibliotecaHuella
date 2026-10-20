@@ -1,10 +1,6 @@
 package modelo;
 
-/**
- * Rol del personal. Además de su valor en la BD, cada constante sabe CREAR su subclase de Usuario.
- * Es la "fábrica" que usa el DAO: no hay if/else ni switch para decidir qué objeto crear,
- * cada constante redefine crearUsuario() (polimorfismo dentro del enum).
- */
+/** Rol del personal. */
 public enum Rol implements ValorBD {
 
     ADMINISTRADOR("ADMIN", "Administrador") {
@@ -28,7 +24,6 @@ public enum Rol implements ValorBD {
         this.descripcion = descripcion;
     }
 
-    /** Crea un usuario vacío de la subclase que corresponde a este rol. */
     public abstract Usuario crearUsuario();
 
     @Override

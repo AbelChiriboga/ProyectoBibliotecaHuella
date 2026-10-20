@@ -4,20 +4,12 @@ import excepciones.BibliotecaException;
 import java.awt.Component;
 import javax.swing.JOptionPane;
 
-/**
- * Mensajes al usuario en un solo lugar. Las ventanas no repiten try/catch ni JOptionPane:
- * llaman a Mensajes.ejecutar(this, () -> ...) y si algo falla se muestra el mensaje
- * de la excepción propia con su título (polimorfismo: cada excepción sabe su título).
- */
+/** Mensajes al usuario en un solo lugar. */
 public final class Mensajes {
 
     private Mensajes() {
     }
 
-    /**
-     * Ejecuta una acción de la ventana. Si lanza una excepción del sistema, la muestra.
-     * Devuelve true si terminó bien (útil para limpiar el formulario solo cuando se guardó).
-     */
     public static boolean ejecutar(Component padre, Runnable accion) {
         try {
             accion.run();

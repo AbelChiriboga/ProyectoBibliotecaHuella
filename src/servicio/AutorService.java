@@ -5,11 +5,7 @@ import java.util.function.Predicate;
 import modelo.Autor;
 import modelo.Usuario;
 
-/**
- * Autores. Solo el bibliotecario los modifica.
- * Si el autor tiene libros, la BD impide eliminarlo y el usuario ve
- * "No se puede eliminar porque tiene registros relacionados."
- */
+/** Autores. */
 public class AutorService extends ServicioCrud<Autor> {
 
     public AutorService() {

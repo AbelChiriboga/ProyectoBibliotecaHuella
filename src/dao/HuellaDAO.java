@@ -7,10 +7,7 @@ import modelo.Dedo;
 import modelo.Huella;
 import modelo.ValorBD;
 
-/**
- * Plantillas de huella (columna template, BLOB). Un estudiante no puede repetir dedo
- * (UNIQUE id_estudiante + dedo en la BD).
- */
+/** Plantillas de huella (columna template, BLOB). */
 public class HuellaDAO extends BaseDAO<Huella, Integer> implements CrudDAO<Huella, Integer> {
 
     @Override
@@ -44,7 +41,6 @@ public class HuellaDAO extends BaseDAO<Huella, Integer> implements CrudDAO<Huell
         return h;
     }
 
-    /** Volver a capturar el mismo dedo: reemplaza la plantilla. */
     @Override
     public void actualizar(Huella h) {
         ejecutar("UPDATE huellas SET template = ?, fecha_registro = NOW() WHERE id_huella = ?",

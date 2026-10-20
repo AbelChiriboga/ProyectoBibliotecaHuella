@@ -6,11 +6,7 @@ import java.awt.Window;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-/**
- * Mensaje del estado del lector (conectado / desconectado) con un JOptionPane simple.
- * Si el lector cambia otra vez mientras el mensaje anterior sigue abierto, el anterior
- * se cierra y se muestra el nuevo (no se acumulan ventanas).
- */
+/** Mensaje del estado del lector (conectado / desconectado) con un JOptionPane simple. */
 public final class Aviso {
 
     private static JDialog actual;
@@ -18,7 +14,6 @@ public final class Aviso {
     private Aviso() {
     }
 
-    /** @param exito mensaje de información si es buena noticia; de advertencia si no */
     public static void mostrar(String texto, boolean exito) {
         if (actual != null) {
             actual.dispose();
@@ -31,7 +26,6 @@ public final class Aviso {
         dialogo.dispose();
     }
 
-    /** La ventana que el usuario está usando (o cualquier ventana visible). */
     private static Window ventanaActiva() {
         Window activa = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
         if (activa != null) {

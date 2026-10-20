@@ -1,25 +1,18 @@
 package vista;
 
-/**
- * Menú principal del administrador.
- * Hereda de VentanaBase (montarMenu): encabezado con Cerrar sesión y Salir, y pie.
- *
- * @author User
- */
+/** Menú principal del administrador. */
 public class MenuAdmin extends componentes.VentanaBase {
 
     private final servicio.IndicadorService indicadores = new servicio.IndicadorService();
-    /** Qué número muestra cada tarjeta. */
     private final java.util.Map<componentes.TarjetaIndicador, modelo.Indicador> tarjetas = new java.util.LinkedHashMap<>();
 
     public MenuAdmin() {
         initComponents();
-        montarMenu("MENÚ PRINCIPAL ADMINISTRADOR", jpnlContenido, Login::new);   // Cerrar sesión vuelve al Login
+        montarMenu("MENÚ PRINCIPAL ADMINISTRADOR", jpnlContenido, Login::new);
         tarjetas.put(jpnlEstRegistrados, modelo.Indicador.ESTUDIANTES_REGISTRADOS);
         tarjetas.put(jpnlBibliotecariosAct, modelo.Indicador.BIBLIOTECARIOS_ACTIVOS);
         tarjetas.put(jpnlPrestamosAct, modelo.Indicador.PRESTAMOS_ACTIVOS);
         tarjetas.put(jpnlHuellasFallidas, modelo.Indicador.HUELLAS_FALLIDAS_HOY);
-        // Cada vez que el menú vuelve a mostrarse (al regresar de otra ventana) se actualizan los números
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent e) {
@@ -29,7 +22,6 @@ public class MenuAdmin extends componentes.VentanaBase {
         actualizarIndicadores();
     }
 
-    /** Lee de la BD el número de cada tarjeta. */
     private void actualizarIndicadores() {
         ejecutar(() -> tarjetas.forEach((tarjeta, indicador) -> tarjeta.setValor(String.valueOf(indicadores.valor(indicador)))));
     }

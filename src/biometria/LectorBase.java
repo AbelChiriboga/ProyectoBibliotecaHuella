@@ -2,21 +2,13 @@ package biometria;
 
 import excepciones.LectorException;
 
-/**
- * Lo común a cualquier lector (clase ABSTRACTA + método plantilla).
- *
- * registrar() es igual para el lector real y el simulado: pide 3 muestras, verifica que sean
- * del mismo dedo y las une. Lo que cambia (cómo capturar, cómo comparar, cómo unir)
- * lo implementa cada hija.
- */
+/** Lo común a cualquier lector (clase ABSTRACTA + método plantilla). */
 public abstract class LectorBase implements LectorBiometrico {
 
     public static final int MUESTRAS_REGISTRO = 3;
 
-    /** ¿Las dos muestras son del mismo dedo? */
     protected abstract boolean mismoDedo(byte[] a, byte[] b);
 
-    /** Une las muestras en una plantilla de registro. */
     protected abstract byte[] fusionar(byte[][] muestras);
 
     @Override
@@ -26,7 +18,7 @@ public abstract class LectorBase implements LectorBiometrico {
         for (int i = 0; i < MUESTRAS_REGISTRO; i++) {
             aviso.avisar(i, "Coloque el dedo (" + (i + 1) + " de " + MUESTRAS_REGISTRO + ").");
             muestras[i] = capturar();
-            getUltimaImagen().ifPresent(aviso::imagen);          // se dibuja la huella en el recuadro
+            getUltimaImagen().ifPresent(aviso::imagen);
             if (i > 0 && !mismoDedo(muestras[i - 1], muestras[i])) {
                 aviso.avisar(i, "Las muestras no coinciden.");
                 throw new LectorException("Las muestras no son del mismo dedo. Intente de nuevo.");

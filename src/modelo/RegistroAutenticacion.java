@@ -3,15 +3,12 @@ package modelo;
 import java.time.LocalDateTime;
 import util.Validaciones;
 
-/**
- * Fila de la bitácora: cada intento de usar la huella (éxito o fallo).
- * Si la huella no se reconoció, no hay estudiante (cédula nula).
- */
+/** Fila de la bitácora: cada intento de usar la huella (éxito o fallo). */
 public class RegistroAutenticacion extends Entidad {
 
-    private Integer idEstudiante;      // nulo si la huella no se reconoció
-    private String cedulaEstudiante;   // solo para mostrar en la tabla
-    private String nombreEstudiante;   // solo para mostrar en la tabla
+    private Integer idEstudiante;
+    private String cedulaEstudiante;
+    private String nombreEstudiante;
     private OperacionAutenticacion operacion;
     private ResultadoAutenticacion resultado;
     private Integer puntaje;
@@ -78,10 +75,6 @@ public class RegistroAutenticacion extends Entidad {
         return puntaje;
     }
 
-    /**
-     * Puntaje que devuelve el SDK del lector (no negativo; el ZKTeco puede dar valores mayores a 100).
-     * Nulo cuando no aplica (por ejemplo, un registro de huella exitoso).
-     */
     public final void setPuntaje(Integer puntaje) {
         if (puntaje != null) {
             Validaciones.rango(puntaje, "puntaje", 0, Integer.MAX_VALUE);

@@ -15,7 +15,6 @@ public final class Coincidencia {
         return idHuella;
     }
 
-    /** Puntaje del SDK (más alto = más parecido). Se compara con el parámetro UMBRAL_HUELLA. */
     public int getPuntaje() {
         return puntaje;
     }

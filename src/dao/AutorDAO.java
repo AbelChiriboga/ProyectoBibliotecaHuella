@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 import modelo.Autor;
 
-/** CRUD de autores. Si el autor tiene libros, la BD no deja eliminarlo (se informa con NegocioException). */
+/** CRUD de autores. */
 public class AutorDAO extends BaseDAO<Autor, Integer> implements CrudDAO<Autor, Integer> {
 
     static final String COLUMNAS = "a.id_autor AS aut_id, a.nombres AS aut_nombres, "

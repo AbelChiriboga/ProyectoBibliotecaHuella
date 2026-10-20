@@ -5,13 +5,9 @@ import java.util.List;
 import modelo.Multa;
 import modelo.Prestamo;
 
-/**
- * Qué se ve en la pantalla Atrasos. Enum POLIMÓRFICO: cada opción sabe qué préstamos listar,
- * cuántos días y cuánta multa mostrar, y si se puede registrar el pago. La ventana no usa if/else.
- */
+/** Qué se ve en la pantalla Atrasos. */
 public enum TipoAtraso {
 
-    /** Libros que el estudiante todavía no devuelve y ya pasó la fecha: la multa va creciendo. */
     PRESTAMOS_ATRASADOS("Préstamos atrasados") {
         @Override
         public List<Prestamo> listar(AtrasoService s) {
@@ -25,16 +21,15 @@ public enum TipoAtraso {
 
         @Override
         public BigDecimal multa(Prestamo p, BigDecimal multaPorDia) {
-            return Multa.calcularMonto(p.diasAtraso(), multaPorDia);     // estimada a hoy
+            return Multa.calcularMonto(p.diasAtraso(), multaPorDia);
         }
 
         @Override
         public boolean permitePago() {
-            return false;                    // la multa se genera recién al devolver
+            return false;
         }
     },
 
-    /** Libros ya devueltos tarde: la multa está generada y falta pagarla. */
     MULTAS_PENDIENTES("Multas pendientes") {
         @Override
         public List<Prestamo> listar(AtrasoService s) {

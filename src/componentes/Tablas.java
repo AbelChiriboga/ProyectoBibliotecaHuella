@@ -4,24 +4,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-/**
- * Configuración de tablas en un solo lugar.
- * Préstamos y Devoluciones tenían copiado el mismo modelo con columna de casillas.
- */
+/** Configuración de tablas en un solo lugar. */
 public final class Tablas {
 
     private Tablas() {
     }
 
-    /** Tabla de solo lectura con el estilo del sistema. */
     public static void soloLectura(JTable tabla, JScrollPane scroll, String... columnas) {
         util.Estilos.tabla(tabla, scroll, columnas);
     }
 
-    /**
-     * Tabla con una primera columna de casillas (para marcar ejemplares o préstamos).
-     * Solo la casilla es editable.
-     */
     public static void conSeleccion(JTable tabla, JScrollPane scroll, String... columnas) {
         util.Estilos.tabla(tabla, scroll, columnas);
         String[] todas = new String[columnas.length + 1];
@@ -42,7 +34,6 @@ public final class Tablas {
         tabla.getColumnModel().getColumn(0).setMaxWidth(40);
     }
 
-    /** Anchos preferidos de las columnas, en orden. Usa 0 para dejar una columna con su ancho normal. */
     public static void anchos(JTable tabla, int... anchos) {
         for (int i = 0; i < anchos.length && i < tabla.getColumnCount(); i++) {
             if (anchos[i] > 0) {

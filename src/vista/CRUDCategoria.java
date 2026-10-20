@@ -1,17 +1,11 @@
 package vista;
 
-/**
- * Registro de categorías de libros.
- * Hereda de VentanaBase: encabezado, pie, tamaño y botón Regresar ya vienen listos.
- *
- * @author User
- */
+/** Registro de categorías de libros. */
 public class CRUDCategoria extends componentes.VentanaBase {
 
     private final servicio.CategoriaService servicio = new servicio.CategoriaService();
     private final componentes.TablaObjetos<modelo.Categoria> tabla;
     private final componentes.ControlCrud control;
-    /** Categoría que se está viendo o editando (una nueva al presionar Nuevo). */
     private modelo.Categoria actual;
 
     public CRUDCategoria() {
@@ -22,13 +16,11 @@ public class CRUDCategoria extends componentes.VentanaBase {
                 c -> new Object[]{c.getNombre(), c.getCantidadLibros(), c.getCantidadEjemplares()});
         control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtNombre},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
-        control.bloquearAlEditar(jtblCategorias);   // mientras se escribe no se puede elegir otra fila
+        control.bloquearAlEditar(jtblCategorias);
         tabla.alSeleccionar(this::mostrar);
-        tabla.usarBarra(barraBuscar);   // búsqueda al escribir + filtro por columnas
+        tabla.usarBarra(barraBuscar);
         cancelar();
     }
-
-    // ---------- Acciones de los botones ----------
 
     private void nuevo() {
         actual = new modelo.Categoria();
@@ -65,15 +57,12 @@ public class CRUDCategoria extends componentes.VentanaBase {
         });
     }
 
-    /** Vuelve al estado inicial y recarga la tabla (descarta cambios sin guardar). */
     private void cancelar() {
         actual = null;
         limpiar();
         cargar();
         control.consulta(false);
     }
-
-    // ---------- Métodos de apoyo ----------
 
     private void cargar() {
         ejecutar(() -> tabla.mostrar(servicio.listarConTotales()));
@@ -85,7 +74,6 @@ public class CRUDCategoria extends componentes.VentanaBase {
         tabla.seleccionar(c);
     }
 
-    /** Muestra en el formulario la categoría seleccionada en la tabla. */
     private void mostrar(modelo.Categoria c) {
         actual = c;
         jtxtNombre.setText(c.getNombre());
@@ -208,7 +196,6 @@ public class CRUDCategoria extends componentes.VentanaBase {
         barraBuscar.setAyuda("Escriba para buscar");
         jpnlCategoriasReg.add(barraBuscar, java.awt.BorderLayout.NORTH);
 
-
         jScrollPane1.setViewportView(jtblCategorias);
 
         jpnlCategoriasReg.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -219,7 +206,6 @@ public class CRUDCategoria extends componentes.VentanaBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
 
     private void jbtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnNuevoActionPerformed
         nuevo();

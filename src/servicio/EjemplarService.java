@@ -9,11 +9,7 @@ import modelo.EstadoEjemplar;
 import modelo.Libro;
 import modelo.Usuario;
 
-/**
- * Ejemplares (copias físicas) de un libro. Reglas:
- *  - El estado PRESTADO no se asigna a mano: lo ponen los triggers al prestar y devolver.
- *  - Un ejemplar prestado no se edita ni se elimina hasta que se devuelva.
- */
+/** Ejemplares (copias físicas) de un libro. */
 public class EjemplarService extends ServicioCrud<Ejemplar> {
 
     private final EjemplarDAO ejemplarDAO;
@@ -37,7 +33,6 @@ public class EjemplarService extends ServicioCrud<Ejemplar> {
         return "gestionar el catálogo";
     }
 
-    /** Código sugerido para un ejemplar nuevo: el siguiente al último registrado (LIB-0007). */
     public String siguienteCodigo() {
         return Ejemplar.codigoNumero(ejemplarDAO.ultimoNumeroCodigo() + 1);
     }
@@ -59,12 +54,10 @@ public class EjemplarService extends ServicioCrud<Ejemplar> {
         exigirQueNoEstePrestado(e);
     }
 
-    /** Antes de pasar a Editar: un ejemplar prestado no se toca hasta que se devuelva. */
     public void verificarEditable(Ejemplar e) {
         exigirQueNoEstePrestado(e);
     }
 
-    /** Revisa el estado ACTUAL en la BD (no el del formulario, que el usuario pudo cambiar). */
     private void exigirQueNoEstePrestado(Ejemplar e) {
         if (e.esNuevo()) {
             return;

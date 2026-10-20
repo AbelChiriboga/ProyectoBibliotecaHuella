@@ -5,10 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 import modelo.Categoria;
 
-/**
- * CRUD de categorías. listar() sirve para el combo de CRUDLibros;
- * listarConTotales() trae además cuántos libros y ejemplares tiene cada una (tabla de CRUDCategoria).
- */
+/** CRUD de categorías. */
 public class CategoriaDAO extends BaseDAO<Categoria, Integer> implements CrudDAO<Categoria, Integer> {
 
     static final String COLUMNAS = "c.id_categoria AS cat_id, c.nombre AS cat_nombre";
@@ -51,7 +48,6 @@ public class CategoriaDAO extends BaseDAO<Categoria, Integer> implements CrudDAO
         ejecutar("DELETE FROM categorias WHERE id_categoria = ?", id);
     }
 
-    /** Categorías con número de libros y de ejemplares; texto vacío = todas. */
     public List<Categoria> listarConTotales(String texto) {
         String sql = "SELECT " + COLUMNAS + ", COUNT(DISTINCT l.id_libro) AS libros, COUNT(ej.id_ejemplar) AS ejemplares "
                 + "FROM categorias c LEFT JOIN libros l ON l.id_categoria = c.id_categoria "

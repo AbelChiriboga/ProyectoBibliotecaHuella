@@ -16,14 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
-/**
- * Caja de búsqueda + botón de filtro (embudo).
- *  - La búsqueda se hace mientras se escribe (no hay botón Buscar).
- *  - El embudo abre un menú para elegir EN QUÉ COLUMNAS buscar. Si no están todas marcadas,
- *    el embudo se pinta verde para que se note que hay un filtro activo.
- *
- * Normalmente no se usa sola: TablaObjetos.usarBarra(barra) la conecta con la tabla.
- */
+/** Caja de búsqueda + botón de filtro (embudo). */
 public class BarraBusqueda extends JPanel {
 
     private final JTextField campo = new CampoConAyuda();
@@ -52,9 +45,6 @@ public class BarraBusqueda extends JPanel {
         util.Eventos.alCambiar(campo, this::avisarCambio);
     }
 
-    // ---------- Configuración ----------
-
-    /** Crea las opciones del filtro: una casilla por columna, todas marcadas. */
     public void configurarFiltro(List<String> nombresColumnas) {
         menuFiltro.removeAll();
         columnas.clear();
@@ -64,7 +54,7 @@ public class BarraBusqueda extends JPanel {
         menuFiltro.add(titulo);
         for (String nombre : nombresColumnas) {
             JCheckBoxMenuItem item = new JCheckBoxMenuItem(nombre, true);
-            item.putClientProperty("CheckBoxMenuItem.doNotCloseOnMouseClick", Boolean.TRUE); // el menú no se cierra
+            item.putClientProperty("CheckBoxMenuItem.doNotCloseOnMouseClick", Boolean.TRUE);
             item.addActionListener(e -> cambioDeColumnas(item));
             columnas.add(item);
             menuFiltro.add(item);
@@ -76,18 +66,14 @@ public class BarraBusqueda extends JPanel {
         actualizarBotonFiltro();
     }
 
-    /** Ejecuta la acción al escribir y al cambiar las columnas del filtro. Recibe el texto. */
     public void alBuscar(Consumer<String> accion) {
         alCambiar.add(() -> accion.accept(getTexto()));
     }
-
-    // ---------- Consultas ----------
 
     public String getTexto() {
         return campo.getText();
     }
 
-    /** Índices de las columnas marcadas en el filtro (en el orden de configurarFiltro). */
     public List<Integer> getColumnasSeleccionadas() {
         List<Integer> indices = new ArrayList<>();
         for (int i = 0; i < columnas.size(); i++) {
@@ -105,7 +91,6 @@ public class BarraBusqueda extends JPanel {
     public JTextField getCampo() { return campo; }
     public BotonSistema getBotonFiltro() { return botonFiltro; }
 
-    /** Texto gris que se ve dentro de la caja cuando está vacía (Properties → ayuda). */
     public String getAyuda() { return ayuda; }
 
     public void setAyuda(String ayuda) {
@@ -117,9 +102,6 @@ public class BarraBusqueda extends JPanel {
     public boolean isFiltroVisible() { return botonFiltro.isVisible(); }
     public void setFiltroVisible(boolean visible) { botonFiltro.setVisible(visible); }
 
-    // ---------- Internos ----------
-
-    /** Al menos una columna debe quedar marcada. */
     private void cambioDeColumnas(JCheckBoxMenuItem item) {
         if (getColumnasSeleccionadas().isEmpty()) {
             item.setSelected(true);
@@ -134,7 +116,6 @@ public class BarraBusqueda extends JPanel {
         avisarCambio();
     }
 
-    /** Embudo verde si no se busca en todas las columnas. */
     private void actualizarBotonFiltro() {
         boolean filtrado = getColumnasSeleccionadas().size() < columnas.size();
         botonFiltro.setPrimario(filtrado);

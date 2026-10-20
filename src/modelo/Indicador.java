@@ -1,9 +1,6 @@
 package modelo;
 
-/**
- * Números que muestran las tarjetas de los menús. Cada uno se cuenta en la BD (dao.IndicadorDAO).
- * Está en el paquete modelo para que dao y servicio lo usen sin depender uno del otro.
- */
+/** Números que muestran las tarjetas de los menús. */
 public enum Indicador {
     ESTUDIANTES_REGISTRADOS,
     BIBLIOTECARIOS_ACTIVOS,

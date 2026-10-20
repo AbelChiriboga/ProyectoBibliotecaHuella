@@ -2,11 +2,7 @@ package componentes;
 
 import javax.swing.JButton;
 
-/**
- * Botón con el estilo del sistema (blanco, verde suave al pasar el mouse, verde al hacer clic).
- * Con primario = true queda verde desde el inicio (para Guardar, Confirmar, etc.).
- * Se puede arrastrar desde la paleta y configurar el ícono en Properties.
- */
+/** Botón con el estilo del sistema (blanco, verde suave al pasar el mouse, verde al hacer clic). */
 public class BotonSistema extends JButton {
 
     private String rutaIcono = "";
@@ -23,7 +19,6 @@ public class BotonSistema extends JButton {
         util.Estilos.boton(this);
     }
 
-    /** Nombre del archivo dentro de /imagenes (por ejemplo "Regresar.png"). */
     public String getRutaIcono() { return rutaIcono; }
 
     public void setRutaIcono(String rutaIcono) {
@@ -38,7 +33,6 @@ public class BotonSistema extends JButton {
         aplicarIcono();
     }
 
-    /** true = texto debajo del ícono (botones de menú); false = texto a la derecha. */
     public boolean isTextoAbajo() { return textoAbajo; }
 
     public void setTextoAbajo(boolean textoAbajo) {
@@ -46,7 +40,6 @@ public class BotonSistema extends JButton {
         aplicarIcono();
     }
 
-    /** true = botón de la acción principal (verde con texto blanco), p. ej. Guardar o Confirmar. */
     public boolean isPrimario() { return primario; }
 
     public void setPrimario(boolean primario) {
@@ -55,10 +48,6 @@ public class BotonSistema extends JButton {
         util.Estilos.pintarBoton(this);
     }
 
-    /**
-     * El botón nunca se aplasta: si el formulario no entra en la pantalla (GridBagLayout usa
-     * entonces los tamaños mínimos), el botón conserva su alto y se achican los demás espacios.
-     */
     @Override
     public java.awt.Dimension getMinimumSize() {
         java.awt.Dimension min = super.getMinimumSize();
