@@ -59,6 +59,26 @@ public class LibroDAO extends BaseDAO<Libro, Integer> implements CrudDAO<Libro, 
         return l;
     }
 
+    /** Crea el libro y sus ejemplares (pueden ser cero) en una sola transacción. */
+    public void insertarConEjemplares(Libro l, List<modelo.Ejemplar> ejemplares) {
+        EjemplarDAO ejemplarDAO = new EjemplarDAO();
+        try {
+            enTransaccion(cn -> {
+                l.setId(insertarConId(cn, "INSERT INTO libros (isbn, titulo, id_autor, id_categoria, editorial, "
+                        + "anio_publicacion) VALUES (?,?,?,?,?,?)", l.getIsbn(), l.getTitulo(), l.getAutor().getId(),
+                        l.getCategoria().getId(), l.getEditorial(), l.getAnio()));
+                for (modelo.Ejemplar e : ejemplares) {
+                    e.setLibro(l);
+                    ejemplarDAO.insertar(cn, e);
+                }
+            });
+        } catch (RuntimeException ex) {
+            l.setId(0);
+            ejemplares.forEach(e -> e.setId(0));
+            throw ex;
+        }
+    }
+
     @Override
     public void actualizar(Libro l) {
         ejecutar("UPDATE libros SET isbn = ?, titulo = ?, id_autor = ?, id_categoria = ?, editorial = ?, "

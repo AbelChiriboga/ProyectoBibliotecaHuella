@@ -62,6 +62,13 @@ public class Atrasos extends componentes.VentanaBase {
         jbtnPagar.setEnabled(tipo().permitePago() && tabla.getSeleccionado().isPresent());
     }
 
+    private void generarReporte() {
+        java.util.Map<String, reportes.ReporteBase> porTipo = java.util.Map.of(
+                "PRESTAMOS_ATRASADOS", new reportes.ReporteAtrasos(),
+                "MULTAS_PENDIENTES", new reportes.ReporteMultas());
+        ejecutar(() -> porTipo.get(tipo().name()).generar(this));
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -131,6 +138,7 @@ public class Atrasos extends componentes.VentanaBase {
 
         jbtnGenReporte.setText("Generar reporte");
         jbtnGenReporte.setPreferredSize(new java.awt.Dimension(150, 36));
+        jbtnGenReporte.addActionListener(this::jbtnGenReporteActionPerformed);
         jpnlAcciones.add(jbtnGenReporte);
 
         jpnlBarra.add(jpnlAcciones, java.awt.BorderLayout.EAST);
@@ -164,6 +172,10 @@ public class Atrasos extends componentes.VentanaBase {
     private void jbtnPagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnPagarActionPerformed
         registrarPago();
     }//GEN-LAST:event_jbtnPagarActionPerformed
+
+    private void jbtnGenReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGenReporteActionPerformed
+        generarReporte();
+    }//GEN-LAST:event_jbtnGenReporteActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private componentes.BarraBusqueda barraBuscar;

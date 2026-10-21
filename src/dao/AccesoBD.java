@@ -60,6 +60,15 @@ public abstract class AccesoBD {
         return r.isEmpty() ? 0 : r.get(0);
     }
 
+    protected int consultarEntero(Connection cn, String sql, Object... parametros) throws SQLException {
+        try (PreparedStatement ps = cn.prepareStatement(sql)) {
+            asignarParametros(ps, parametros);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : 0;
+            }
+        }
+    }
+
     protected int ejecutar(String sql, Object... parametros) {
         try (Connection cn = obtenerConexion()) {
             return ejecutar(cn, sql, parametros);

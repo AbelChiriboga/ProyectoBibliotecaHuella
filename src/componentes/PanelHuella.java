@@ -23,7 +23,7 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
 
     private final JLabel lblHuella = new JLabel("Coloque el dedo");
     private final JLabel lblEstado = new JLabel(" ");
-    private final BotonSistema botonCapturar = new BotonSistema("Capturar huella");
+    private final BotonSistema botonRepetir = new BotonSistema("Registrar otra vez");
 
     private final JPanel pnlEstudiante = new JPanel(new GridLayout(4, 1, 0, 4));
     private final JLabel lblNombre = new JLabel("—");
@@ -61,7 +61,8 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         lblEstado.setHorizontalAlignment(SwingConstants.CENTER);
         lblEstado.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         lblEstado.setForeground(GRIS);
-        botonCapturar.setPreferredSize(new Dimension(200, 36));
+        botonRepetir.setPreferredSize(new Dimension(200, 36));
+        botonRepetir.setFocusable(false);
 
         pnlEstudiante.setBackground(new Color(247, 249, 250));
         pnlEstudiante.setBorder(BorderFactory.createCompoundBorder(
@@ -97,7 +98,7 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         barMuestras.setPreferredSize(new Dimension(100, 20));
         util.Estilos.barra(barMuestras);
         barMuestras.setStringPainted(true);
-        txtInfo.setText("Elija el dedo y presione Capturar huella.");
+        txtInfo.setText(" ");
         txtInfo.setEditable(false);
         txtInfo.setLineWrap(true);
         txtInfo.setWrapStyleWord(true);
@@ -119,7 +120,7 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         g.gridy = fila++; g.insets = new Insets(0, 6, 8, 6);   add(barMuestras, g);
         g.gridy = fila++; g.insets = new Insets(0, 6, 8, 6);   add(lblEstado, g);
         g.gridy = fila++; g.insets = new Insets(0, 6, 8, 6);   add(scrInfo, g);
-        g.gridy = fila++; g.insets = new Insets(0, 6, 14, 6);  add(botonCapturar, g);
+        g.gridy = fila++; g.insets = new Insets(0, 6, 14, 6);  add(botonRepetir, g);
         g.gridy = fila++; g.insets = new Insets(0, 6, 0, 6);   add(pnlEstudiante, g);
 
         g.gridy = fila;
@@ -141,9 +142,7 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
         scrInfo.setVisible(modoRegistro);
         pnlEstudiante.setVisible(!modoRegistro);
         lblEstado.setVisible(!modoRegistro);
-        botonCapturar.setText("Capturar huella");
-        botonCapturar.setVisible(modoRegistro);
-        botonCapturar.setPrimario(true);
+        botonRepetir.setVisible(false);
         revalidate();
         repaint();
     }
@@ -175,21 +174,18 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
     public void reiniciar() {
         lblHuella.setIcon(null);
         pintarHuella("Coloque el dedo", FONDO_NORMAL, new Color(90, 110, 115));
-        mostrarAvance(0, modoRegistro
-                ? "Elija el dedo y presione Capturar huella."
-                : "Coloque el dedo en el lector.");
+        mostrarAvance(0, modoRegistro ? " " : "Coloque el dedo en el lector.");
     }
 
-    public void iniciarCaptura() {
+    public void iniciarLectura() {
         lblHuella.setIcon(null);
-        botonCapturar.setEnabled(false);
-        cbxDedo.setEnabled(false);
-        pintarHuella("Leyendo...", FONDO_NORMAL, util.Estilos.VERDE_TITULO);
+        pintarHuella("Coloque el dedo", FONDO_NORMAL, util.Estilos.VERDE_TITULO);
     }
 
-    public void terminarCaptura() {
-        botonCapturar.setEnabled(true);
-        cbxDedo.setEnabled(true);
+    public void mostrarRepetir(boolean visible) {
+        botonRepetir.setVisible(visible);
+        revalidate();
+        repaint();
     }
 
     public void mostrarAvance(int muestras, String mensaje) {
@@ -267,7 +263,7 @@ public class PanelHuella extends PanelGrupo implements biometria.AvisoCaptura {
 
     public JLabel getLblHuella() { return lblHuella; }
     public JLabel getLblEstado() { return lblEstado; }
-    public BotonSistema getBotonCapturar() { return botonCapturar; }
+    public BotonSistema getBotonRepetir() { return botonRepetir; }
     public JLabel getLblNombre() { return lblNombre; }
     public JLabel getLblDatos() { return lblDatos; }
     public JLabel getLblActivos() { return lblActivos; }

@@ -3,15 +3,19 @@ package vista;
 /** Copias físicas de un libro. */
 public class CRUDEjemplares extends componentes.VentanaBase {
 
-    private final servicio.EjemplarService servicio = new servicio.EjemplarService();
+    private final componentes.Formulario formulario = new componentes.Formulario(this);
+
+    private final servicio.EjemplaresDeLibro ejemplares;
     private final componentes.TablaObjetos<modelo.Ejemplar> tabla;
     private final componentes.ControlCrud control;
     private final modelo.Libro libro;
     private modelo.Ejemplar actual;
 
-    public CRUDEjemplares(modelo.Libro libro) {
-        this.libro = util.Validaciones.requerido(libro, "un libro");
+    public CRUDEjemplares(servicio.EjemplaresDeLibro ejemplares) {
+        this.ejemplares = util.Validaciones.requerido(ejemplares, "los ejemplares");
+        this.libro = ejemplares.getLibro();
         initComponents();
+        configurarEntradas();
         montar("EJEMPLARES DEL LIBRO", jpnlContenido);
         componentes.Tablas.soloLectura(jtblEjemplares, jScrollPane1, "Código de inventario", "Ubicación", "Estado");
         tabla = new componentes.TablaObjetos<>(jtblEjemplares,
@@ -27,6 +31,16 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         cancelar();
     }
 
+    /** Caracteres permitidos, máximo de cada caja (según la base de datos) y validación con Enter. */
+    private void configurarEntradas() {
+        util.TipoEntrada.LIBRE.aplicar(jtxtUbicacion, 50);
+        formulario
+                .campo(jtxtUbicacion, () -> actual.setUbicacion(jtxtUbicacion.getText()))
+                .campo(jcbxEstado, () -> actual.setEstado(componentes.Combos.seleccionado(jcbxEstado)))
+                .terminarEn(jbtnGuardar)
+                .armar();
+    }
+
     private void nuevo() {
         actual = new modelo.Ejemplar();
         actual.setLibro(libro);
@@ -34,14 +48,14 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         tabla.limpiarSeleccion();
         llenarEstados(true);
         control.nuevo();
-        ejecutar(() -> jtxtCodInv.setText(servicio.siguienteCodigo()));
+        ejecutar(() -> jtxtCodInv.setText(ejemplares.siguienteCodigo()));
         jtxtUbicacion.requestFocus();
     }
 
     private void editar() {
         ejecutar(() -> {
             actual = tabla.exigirSeleccionado("un ejemplar");
-            servicio.verificarEditable(actual);
+            ejemplares.verificarEditable(actual);
             llenarEstados(true);
             componentes.Combos.seleccionar(jcbxEstado, actual.getEstado());
             control.edicion();
@@ -50,13 +64,16 @@ public class CRUDEjemplares extends componentes.VentanaBase {
     }
 
     private void guardar() {
+        if (!formulario.validar()) {
+            return;
+        }
         ejecutar(() -> {
             actual.setCodigoInventario(jtxtCodInv.getText());
             actual.setUbicacion(jtxtUbicacion.getText());
             actual.setEstado(componentes.Combos.seleccionado(jcbxEstado));
-            servicio.guardar(actual);
+            ejemplares.guardar(actual);
             util.Mensajes.info(this, "Ejemplar guardado.");
-            recargarYSeleccionar(actual);
+            cancelar();
         });
     }
 
@@ -64,7 +81,7 @@ public class CRUDEjemplares extends componentes.VentanaBase {
         ejecutar(() -> {
             modelo.Ejemplar e = tabla.exigirSeleccionado("un ejemplar");
             if (util.Mensajes.confirmar(this, "¿Eliminar el ejemplar " + e.getCodigoInventario() + "?")) {
-                servicio.eliminar(e);
+                ejemplares.eliminar(e);
                 cancelar();
             }
         });
@@ -80,19 +97,12 @@ public class CRUDEjemplares extends componentes.VentanaBase {
 
     private void cargar() {
         ejecutar(() -> {
-            java.util.List<modelo.Ejemplar> ejemplares = servicio.listarPorLibro(libro);
-            tabla.mostrar(ejemplares);
-            long disponibles = ejemplares.stream().filter(modelo.Ejemplar::estaDisponible).count();
-            jlblResumen.setText(ejemplares.size() + " ejemplar(es), " + disponibles
+            java.util.List<modelo.Ejemplar> lista = ejemplares.listar();
+            tabla.mostrar(lista);
+            long disponibles = lista.stream().filter(modelo.Ejemplar::estaDisponible).count();
+            jlblResumen.setText(lista.size() + " ejemplar(es), " + disponibles
                     + " disponible(s). Un ejemplar prestado no se puede editar hasta que se devuelva.");
         });
-    }
-
-    private void recargarYSeleccionar(modelo.Ejemplar e) {
-        llenarEstados(false);
-        cargar();
-        control.consulta(false);
-        tabla.seleccionar(e);
     }
 
     private void mostrarLibro() {
@@ -110,7 +120,7 @@ public class CRUDEjemplares extends componentes.VentanaBase {
     }
 
     private void llenarEstados(boolean soloEditables) {
-        componentes.Combos.llenar(jcbxEstado, java.util.Arrays.stream(modelo.EstadoEjemplar.values())
+        componentes.Combos.llenarSinElegir(jcbxEstado, java.util.Arrays.stream(modelo.EstadoEjemplar.values())
                 .filter(estado -> !soloEditables || estado.esEditableManualmente())
                 .collect(java.util.stream.Collectors.toList()));
     }
@@ -118,7 +128,7 @@ public class CRUDEjemplares extends componentes.VentanaBase {
     private void limpiar() {
         jtxtCodInv.setText("");
         jtxtUbicacion.setText("");
-        componentes.Combos.seleccionar(jcbxEstado, modelo.EstadoEjemplar.DISPONIBLE);
+        jcbxEstado.setSelectedIndex(-1);
     }
 
     /**

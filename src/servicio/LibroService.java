@@ -15,9 +15,23 @@ public class LibroService extends ServicioCrud<Libro> {
 
     private final AutorDAO autorDAO = new AutorDAO();
     private final CategoriaDAO categoriaDAO = new CategoriaDAO();
+    private final LibroDAO libroDAO;
 
     public LibroService() {
-        super(new LibroDAO());
+        this(new LibroDAO());
+    }
+
+    private LibroService(LibroDAO dao) {
+        super(dao);
+        this.libroDAO = dao;
+    }
+
+    /** Guarda un libro nuevo junto con los ejemplares que se agregaron antes de guardarlo (pueden ser cero). */
+    public void crear(Libro l, List<modelo.Ejemplar> ejemplares) {
+        exigirPermiso();
+        util.Validaciones.requerido(l, "un libro");
+        validar(l);
+        libroDAO.insertarConEjemplares(l, ejemplares);
     }
 
     @Override

@@ -26,6 +26,14 @@ public class MenuAdmin extends componentes.VentanaBase {
         ejecutar(() -> tarjetas.forEach((tarjeta, indicador) -> tarjeta.setValor(String.valueOf(indicadores.valor(indicador)))));
     }
 
+    private void generarInventario() {
+        ejecutar(() -> new reportes.ReporteInventario().generar(this));
+    }
+
+    private void generarHistorial() {
+        ejecutar(() -> new reportes.ReporteHistorial().generar(this));
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -82,7 +90,7 @@ public class MenuAdmin extends componentes.VentanaBase {
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
         jpnlUsuarios.add(jbtnEstudiantes, gridBagConstraints);
 
-        jbtnBibliotecarios.setText("Bibliotecarios");
+        jbtnBibliotecarios.setText("Usuarios");
         jbtnBibliotecarios.setRutaIcono("Bibliotecarios.png");
         jbtnBibliotecarios.setTamanoIcono(56);
         jbtnBibliotecarios.setTextoAbajo(true);
@@ -161,6 +169,7 @@ public class MenuAdmin extends componentes.VentanaBase {
         jbtnInventario.setTamanoIcono(56);
         jbtnInventario.setTextoAbajo(true);
         jbtnInventario.setPreferredSize(new java.awt.Dimension(120, 116));
+        jbtnInventario.addActionListener(this::jbtnInventarioActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -172,6 +181,7 @@ public class MenuAdmin extends componentes.VentanaBase {
         jbtnHistorial.setTamanoIcono(56);
         jbtnHistorial.setTextoAbajo(true);
         jbtnHistorial.setPreferredSize(new java.awt.Dimension(120, 116));
+        jbtnHistorial.addActionListener(this::jbtnHistorialActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -240,6 +250,14 @@ public class MenuAdmin extends componentes.VentanaBase {
     private void jbtnParametrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnParametrosActionPerformed
         util.Navegacion.abrir(this, new Parametros());
     }//GEN-LAST:event_jbtnParametrosActionPerformed
+
+    private void jbtnInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnInventarioActionPerformed
+        generarInventario();
+    }//GEN-LAST:event_jbtnInventarioActionPerformed
+
+    private void jbtnHistorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnHistorialActionPerformed
+        generarHistorial();
+    }//GEN-LAST:event_jbtnHistorialActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private componentes.BotonSistema jbtnBibliotecarios;

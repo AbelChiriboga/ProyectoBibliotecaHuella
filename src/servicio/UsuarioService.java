@@ -26,14 +26,19 @@ public class UsuarioService {
 
     public void registrar(Usuario u, String clave, String repetida) {
         exigirPermiso();
-        Validaciones.cedulaEcuatoriana(u.getCedula());
-        if (dao.buscarPorId(u.getCedula()).isPresent()) {
-            throw new ValidacionException("Ya existe un usuario con esa cédula.");
-        }
-        cedulaUnica.exigirQueNoSeaDeEstudiante(u.getCedula());
+        validarCedulaNueva(u.getCedula());
         u.setPasswordHash(Seguridad.sha256(Seguridad.validarNueva(clave, repetida)));
         u.setActivo(true);
         dao.insertar(u);
+    }
+
+    /** Revisa la cédula de un usuario nuevo: ecuatoriana y que no la tenga otra persona. */
+    public void validarCedulaNueva(String cedula) {
+        Validaciones.cedulaEcuatoriana(cedula);
+        if (dao.buscarPorId(cedula).isPresent()) {
+            throw new ValidacionException("Ya existe un usuario con esa cédula.");
+        }
+        cedulaUnica.exigirQueNoSeaDeEstudiante(cedula);
     }
 
     public void actualizar(Usuario u, String clave, String repetida) {

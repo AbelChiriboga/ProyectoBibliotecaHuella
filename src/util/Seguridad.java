@@ -51,11 +51,16 @@ public final class Seguridad {
         return fortaleza < 40 ? "Débil" : fortaleza < 70 ? "Media" : "Fuerte";
     }
 
-    public static String validarNueva(String clave, String repetida) {
+    public static String validarLongitud(String clave) {
         String c = Validaciones.obligatorio(clave, "contraseña");
         if (c.length() < LONGITUD_MINIMA) {
             throw new ValidacionException("La contraseña debe tener al menos " + LONGITUD_MINIMA + " caracteres.");
         }
+        return c;
+    }
+
+    public static String validarNueva(String clave, String repetida) {
+        String c = validarLongitud(clave);
         if (!c.equals(repetida)) {
             throw new ValidacionException("Las contraseñas no coinciden.");
         }

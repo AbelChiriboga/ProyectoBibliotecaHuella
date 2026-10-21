@@ -3,16 +3,17 @@ package vista;
 /** Registro de estudiantes con su huella (solo el administrador). */
 public class CRUDEstudiantes extends componentes.VentanaBase {
 
+    private final componentes.Formulario formulario = new componentes.Formulario(this);
+
     private final servicio.EstudianteService servicio = new servicio.EstudianteService();
-    private final servicio.BiometriaService biometria = new servicio.BiometriaService();
     private final componentes.TablaObjetos<modelo.Estudiante> tabla;
     private final componentes.ControlCrud control;
     private modelo.Estudiante actual;
-    private final java.util.Map<modelo.Dedo, byte[]> huellasCapturadas = new java.util.EnumMap<>(modelo.Dedo.class);
-    private int capturaVigente;
+    private final RegistroHuella registro;
 
     public CRUDEstudiantes() {
         initComponents();
+        configurarEntradas();
         montar("GESTIÓN DE ESTUDIANTES", jpnlContenido);
         componentes.Tablas.soloLectura(jtblEstudiantes, jScrollPane1,
                 "Cédula", "Nombres", "Apellidos", "Carrera", "Semestre", "Huellas", "Estado");
@@ -20,46 +21,58 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         tabla = new componentes.TablaObjetos<>(jtblEstudiantes, e -> new Object[]{e.getCedula(), e.getNombres(),
             e.getApellidos(), e.getCarrera(), e.getSemestre(), e.getHuellas().size(), e.getEstado()});
         control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtCedula, jtxtNombres, jtxtApellidos,
-            jtxtTelefono, jtxtCorreo, jcbxCarrera, jcbxSemestre, jpnlHuella.getCbxDedo(), jpnlHuella.getBotonCapturar()},
+            jtxtTelefono, jtxtCorreo, jcbxCarrera, jcbxSemestre},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
         control.bloquearAlEditar(jtblEstudiantes);
-        jpnlHuella.getBotonCapturar().addActionListener(e -> capturarHuella());
-        jpnlHuella.getBotonCapturar().setFocusable(false);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosed(java.awt.event.WindowEvent e) {
-                detenerCaptura();
-            }
-        });
-        alCambiarLector(jpnlHuella::mostrarLector);
+        registro = new RegistroHuella(this, jpnlHuella);
+        alCambiarLector(registro::lectorCambio);
         tabla.alSeleccionar(this::mostrar);
         tabla.usarBarra(barraBuscar);
         cargarCarreras();
         cancelar();
     }
 
+    /** Caracteres permitidos, máximo de cada caja (según la base de datos) y validación con Enter. */
+    private void configurarEntradas() {
+        util.TipoEntrada.NUMEROS.aplicar(jtxtCedula, 10);
+        util.TipoEntrada.TEXTO.aplicar(jtxtNombres, 60);
+        util.TipoEntrada.TEXTO.aplicar(jtxtApellidos, 60);
+        util.TipoEntrada.NUMEROS.aplicar(jtxtTelefono, 10);
+        util.TipoEntrada.CORREO.aplicar(jtxtCorreo, 100);
+        formulario
+                .campo(jtxtCedula, () -> servicio.validarCedula(actual, jtxtCedula.getText()))
+                .campo(jtxtNombres, () -> actual.setNombres(jtxtNombres.getText()))
+                .campo(jtxtApellidos, () -> actual.setApellidos(jtxtApellidos.getText()))
+                .campo(jtxtTelefono, () -> actual.setTelefono(util.Validaciones.obligatorio(jtxtTelefono.getText(), "teléfono")))
+                .campo(jtxtCorreo, () -> actual.setCorreo(jtxtCorreo.getText()))
+                .campo(jcbxCarrera, () -> actual.setCarrera(componentes.Combos.seleccionado(jcbxCarrera)))
+                .campo(jcbxSemestre, () -> util.Validaciones.requerido(jcbxSemestre.getSelectedItem(), "el semestre"))
+                .terminarEn(jbtnGuardar)
+                .armar();
+    }
+
     private void nuevo() {
-        detenerCaptura();
         actual = new modelo.Estudiante();
         limpiar();
         tabla.limpiarSeleccion();
         control.nuevo();
-        jpnlHuella.setInfo(textoHuellas());
+        registro.activar(actual);
         jtxtCedula.requestFocus();
     }
 
     private void editar() {
         ejecutar(() -> {
             actual = tabla.exigirSeleccionado("un estudiante");
-            detenerCaptura();
-            huellasCapturadas.clear();
             control.edicion();
-            jpnlHuella.setInfo(textoHuellas());
+            registro.activar(actual);
             jtxtNombres.requestFocus();
         });
     }
 
     private void guardar() {
+        if (!formulario.validar()) {
+            return;
+        }
         ejecutar(() -> {
             actual.setCedula(jtxtCedula.getText());
             actual.setNombres(jtxtNombres.getText());
@@ -68,9 +81,9 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
             actual.setCorreo(jtxtCorreo.getText());
             actual.setCarrera(componentes.Combos.seleccionado(jcbxCarrera));
             actual.setSemestre(Integer.parseInt(util.Validaciones.requerido((String) jcbxSemestre.getSelectedItem(), "el semestre")));
-            servicio.guardar(actual, huellasCapturadas);
+            servicio.guardar(actual, registro.getCapturadas());
             util.Mensajes.info(this, "Estudiante guardado.");
-            recargarYSeleccionar(actual);
+            cancelar();
         });
     }
 
@@ -85,28 +98,10 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
     }
 
     private void cancelar() {
-        detenerCaptura();
         actual = null;
-        huellasCapturadas.clear();
         limpiar();
         cargar();
         control.consulta(false);
-    }
-
-    private void capturarHuella() {
-        ejecutar(() -> {
-            modelo.Dedo dedo = componentes.Combos.seleccionado(jpnlHuella.getCbxDedo());
-            if (confirmarReemplazo(dedo)) {
-                modelo.Estudiante estudiante = actual;
-                int esta = ++capturaVigente;
-                jpnlHuella.iniciarCaptura();
-                util.Tareas.enSegundoPlano(this,
-                        () -> biometria.capturarHuella(estudiante, jpnlHuella),
-                        plantilla -> siSigueVigente(esta, () -> huellaCapturada(dedo, plantilla)),
-                        error -> siSigueVigente(esta, () -> capturaFallida(error)),
-                        () -> siSigueVigente(esta, jpnlHuella::terminarCaptura));
-            }
-        });
     }
 
     private void cargar() {
@@ -115,55 +110,13 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
 
     private void cargarCarreras() {
         ejecutar(() -> {
-            componentes.Combos.llenar(jcbxCarrera, servicio.listarCarreras());
+            componentes.Combos.llenarSinElegir(jcbxCarrera, servicio.listarCarreras());
             componentes.Combos.ajustarAncho(jcbxCarrera);
         });
     }
 
-    private void recargarYSeleccionar(modelo.Estudiante e) {
-        detenerCaptura();
-        huellasCapturadas.clear();
-        cargar();
-        control.consulta(false);
-        tabla.seleccionar(e);
-    }
-
-    private boolean confirmarReemplazo(modelo.Dedo dedo) {
-        boolean yaExiste = actual.buscarHuella(dedo).isPresent() || huellasCapturadas.containsKey(dedo);
-        return !yaExiste
-                || util.Mensajes.confirmar(this, "El " + dedo + " ya tiene huella. ¿Desea reemplazarla?");
-    }
-
-    private void detenerCaptura() {
-        capturaVigente++;
-        biometria.cancelarCaptura();
-    }
-
-    private void siSigueVigente(int captura, Runnable accion) {
-        if (captura == capturaVigente) {
-            accion.run();
-        }
-    }
-
-    private void capturaFallida(excepciones.BibliotecaException error) {
-        if (error.getReaccion() == excepciones.Reaccion.MOSTRAR_ERROR) {
-            util.Mensajes.error(this, error);
-            jpnlHuella.reiniciar();
-        } else {
-            jpnlHuella.mostrarAviso(error.getMessage(), error.getReaccion() == excepciones.Reaccion.ALERTA);
-        }
-    }
-
-    private void huellaCapturada(modelo.Dedo dedo, byte[] plantilla) {
-        huellasCapturadas.put(dedo, plantilla);
-        jpnlHuella.mostrarResultado("Huella capturada", true);
-        jpnlHuella.setInfo(textoHuellas());
-    }
-
     private void mostrar(modelo.Estudiante e) {
-        detenerCaptura();
         actual = e;
-        huellasCapturadas.clear();
         jtxtCedula.setText(e.getCedula());
         jtxtNombres.setText(e.getNombres());
         jtxtApellidos.setText(e.getApellidos());
@@ -171,22 +124,8 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         jtxtCorreo.setText(e.getCorreo());
         componentes.Combos.seleccionar(jcbxCarrera, e.getCarrera());
         jcbxSemestre.setSelectedItem(String.valueOf(e.getSemestre()));
-        jpnlHuella.reiniciar();
-        jpnlHuella.setInfo(textoHuellas());
+        registro.mostrar(e);
         control.consulta(true);
-    }
-
-    private String textoHuellas() {
-        String guardadas = actual == null ? "" : actual.getHuellas().stream().map(h -> h.getDedo().toString())
-                .collect(java.util.stream.Collectors.joining(", "));
-        String pendientes = huellasCapturadas.keySet().stream().map(Object::toString)
-                .collect(java.util.stream.Collectors.joining(", "));
-        if (guardadas.isEmpty() && pendientes.isEmpty()) {
-            return "Sin huellas. Capture al menos una.";
-        }
-        return (guardadas.isEmpty() ? "" : "Registradas: " + guardadas + ".")
-                + (guardadas.isEmpty() || pendientes.isEmpty() ? "" : "\n")
-                + (pendientes.isEmpty() ? "" : "Por guardar: " + pendientes + ".");
     }
 
     private void limpiar() {
@@ -196,7 +135,7 @@ public class CRUDEstudiantes extends componentes.VentanaBase {
         }
         jcbxCarrera.setSelectedIndex(-1);
         jcbxSemestre.setSelectedIndex(-1);
-        jpnlHuella.reiniciar();
+        registro.desactivar();
     }
 
     /**

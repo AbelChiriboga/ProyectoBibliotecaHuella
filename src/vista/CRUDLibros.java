@@ -3,13 +3,17 @@ package vista;
 /** Registro de libros. */
 public class CRUDLibros extends componentes.VentanaBase {
 
+    private final componentes.Formulario formulario = new componentes.Formulario(this);
+
     private final servicio.LibroService servicio = new servicio.LibroService();
     private final componentes.TablaObjetos<modelo.Libro> tabla;
     private final componentes.ControlCrud control;
     private modelo.Libro actual;
+    private servicio.EjemplaresDeLibro ejemplares;
 
     public CRUDLibros() {
         initComponents();
+        configurarEntradas();
         montar("GESTIÓN DE LIBROS", jpnlContenido);
         componentes.Tablas.soloLectura(jtblLibros, jScrollPane1,
                 "ISBN", "Título", "Autor", "Categoría", "Año", "Disponibles");
@@ -17,18 +21,35 @@ public class CRUDLibros extends componentes.VentanaBase {
         tabla = new componentes.TablaObjetos<>(jtblLibros, l -> new Object[]{l.getIsbn(), l.getTitulo(),
             l.getAutor(), l.getCategoria(), l.getAnio(), l.getResumenDisponibles()});
         control = new componentes.ControlCrud(new javax.swing.JComponent[]{jtxtISBN, jtxtTitulo, jcbxAutor, jbtnAutor,
-            jcbxCategoria, jbtnCategoria, jtxtEditorial, jtxtAnio},
+            jcbxCategoria, jbtnCategoria, jtxtEditorial, jtxtAnio, jbtnEjemplares},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnEliminar, jbtnCancelar);
         control.bloquearAlEditar(jtblLibros);
-        control.agregarBotonDeSeleccion(jbtnEjemplares);
         tabla.alSeleccionar(this::mostrar);
         tabla.usarBarra(barraBuscar);
         cargarCombos();
         cancelar();
     }
 
+    /** Caracteres permitidos, máximo de cada caja (según la base de datos) y validación con Enter. */
+    private void configurarEntradas() {
+        util.TipoEntrada.ISBN.aplicar(jtxtISBN, 17);
+        util.TipoEntrada.LIBRE.aplicar(jtxtTitulo, 150);
+        util.TipoEntrada.LIBRE.aplicar(jtxtEditorial, 100);
+        util.TipoEntrada.NUMEROS.aplicar(jtxtAnio, 4);
+        formulario
+                .campo(jtxtISBN, () -> actual.setIsbn(jtxtISBN.getText()))
+                .campo(jtxtTitulo, () -> actual.setTitulo(jtxtTitulo.getText()))
+                .campo(jcbxAutor, () -> actual.setAutor(componentes.Combos.seleccionado(jcbxAutor)))
+                .campo(jcbxCategoria, () -> actual.setCategoria(componentes.Combos.seleccionado(jcbxCategoria)))
+                .campo(jtxtEditorial, () -> actual.setEditorial(jtxtEditorial.getText()))
+                .campo(jtxtAnio, () -> actual.setAnio(util.Validaciones.enteroOpcional(jtxtAnio.getText(), "año", 0, 9999)))
+                .terminarEn(jbtnGuardar)
+                .armar();
+    }
+
     private void nuevo() {
         actual = new modelo.Libro();
+        ejemplares = new servicio.EjemplaresPendientes(actual);
         limpiar();
         tabla.limpiarSeleccion();
         control.nuevo();
@@ -38,12 +59,16 @@ public class CRUDLibros extends componentes.VentanaBase {
     private void editar() {
         ejecutar(() -> {
             actual = tabla.exigirSeleccionado("un libro");
+            ejemplares = new servicio.EjemplaresGuardados(actual);
             control.edicion();
             jtxtTitulo.requestFocus();
         });
     }
 
     private void guardar() {
+        if (!formulario.validar()) {
+            return;
+        }
         ejecutar(() -> {
             actual.setIsbn(jtxtISBN.getText());
             actual.setTitulo(jtxtTitulo.getText());
@@ -51,9 +76,14 @@ public class CRUDLibros extends componentes.VentanaBase {
             actual.setCategoria(componentes.Combos.seleccionado(jcbxCategoria));
             actual.setEditorial(jtxtEditorial.getText());
             actual.setAnio(util.Validaciones.enteroOpcional(jtxtAnio.getText(), "año", 0, 9999));
-            servicio.guardar(actual);
-            util.Mensajes.info(this, "Libro guardado.");
-            recargarYSeleccionar(actual);
+            if (actual.esNuevo()) {
+                servicio.crear(actual, ejemplares.listar());
+            } else {
+                servicio.guardar(actual);
+            }
+            int cantidad = ejemplares.listar().size();
+            util.Mensajes.info(this, "Libro guardado correctamente\n" + cantidad + (cantidad == 1 ? " ejemplar" : " ejemplares"));
+            cancelar();
         });
     }
 
@@ -69,6 +99,7 @@ public class CRUDLibros extends componentes.VentanaBase {
 
     private void cancelar() {
         actual = null;
+        ejemplares = null;
         limpiar();
         cargar();
         control.consulta(false);
@@ -82,8 +113,11 @@ public class CRUDLibros extends componentes.VentanaBase {
         util.Navegacion.abrir(this, new CRUDCategoria(), this::cargarCombos);
     }
 
+    /** En Nuevo los ejemplares quedan pendientes hasta Guardar; en Editar se guardan al momento. */
     private void abrirEjemplares() {
-        ejecutar(() -> util.Navegacion.abrir(this, new CRUDEjemplares(tabla.exigirSeleccionado("un libro")), this::cancelar));
+        if (formulario.validar()) {
+            util.Navegacion.abrir(this, new CRUDEjemplares(ejemplares));
+        }
     }
 
     private void cargar() {
@@ -92,15 +126,9 @@ public class CRUDLibros extends componentes.VentanaBase {
 
     private void cargarCombos() {
         ejecutar(() -> {
-            componentes.Combos.llenar(jcbxAutor, servicio.listarAutores());
-            componentes.Combos.llenar(jcbxCategoria, servicio.listarCategorias());
+            componentes.Combos.llenarSinElegir(jcbxAutor, servicio.listarAutores());
+            componentes.Combos.llenarSinElegir(jcbxCategoria, servicio.listarCategorias());
         });
-    }
-
-    private void recargarYSeleccionar(modelo.Libro l) {
-        cargar();
-        control.consulta(false);
-        tabla.seleccionar(l);
     }
 
     private void mostrar(modelo.Libro l) {

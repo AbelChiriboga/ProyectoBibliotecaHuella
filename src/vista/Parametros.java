@@ -3,12 +3,15 @@ package vista;
 /** Parámetros del sistema (días de préstamo, máximo de préstamos, multa y umbral de huella). */
 public class Parametros extends componentes.VentanaBase {
 
+    private final componentes.Formulario formulario = new componentes.Formulario(this);
+
     private final servicio.ParametroService parametros = new servicio.ParametroService();
     private final java.util.Map<servicio.ParametroEditable, javax.swing.JTextField> campos =
             new java.util.EnumMap<>(servicio.ParametroEditable.class);
 
     public Parametros() {
         initComponents();
+        configurarEntradas();
         montar("PARÁMETROS DEL SISTEMA", jpnlContenido);
         javax.swing.JTextField[] cajas = {jtxtDias, jtxtMaxPrestamos, jtxtMultaDia, jtxtUmbralHuella};
         servicio.ParametroEditable[] orden = servicio.ParametroEditable.values();
@@ -16,6 +19,21 @@ public class Parametros extends componentes.VentanaBase {
             campos.put(orden[i], cajas[i]);
         }
         cargar();
+    }
+
+    /** Caracteres permitidos, máximo de cada caja (según la base de datos) y validación con Enter. */
+    private void configurarEntradas() {
+        util.TipoEntrada.NUMEROS.aplicar(jtxtDias, 2);
+        util.TipoEntrada.NUMEROS.aplicar(jtxtMaxPrestamos, 2);
+        util.TipoEntrada.DECIMAL.aplicar(jtxtMultaDia, 5);
+        util.TipoEntrada.NUMEROS.aplicar(jtxtUmbralHuella, 4);
+        formulario
+                .campo(jtxtDias, () -> servicio.ParametroEditable.DIAS_PRESTAMO.validar(jtxtDias.getText()))
+                .campo(jtxtMaxPrestamos, () -> servicio.ParametroEditable.MAX_PRESTAMOS.validar(jtxtMaxPrestamos.getText()))
+                .campo(jtxtMultaDia, () -> servicio.ParametroEditable.MULTA_POR_DIA.validar(jtxtMultaDia.getText()))
+                .campo(jtxtUmbralHuella, () -> servicio.ParametroEditable.UMBRAL_HUELLA.validar(jtxtUmbralHuella.getText()))
+                .terminarEn(jbtnGuardar)
+                .armar();
     }
 
     private void cargar() {
@@ -26,6 +44,9 @@ public class Parametros extends componentes.VentanaBase {
     }
 
     private void guardar() {
+        if (!formulario.validar()) {
+            return;
+        }
         ejecutar(() -> {
             java.util.Map<servicio.ParametroEditable, String> escritos = new java.util.EnumMap<>(servicio.ParametroEditable.class);
             campos.forEach((p, caja) -> escritos.put(p, caja.getText()));

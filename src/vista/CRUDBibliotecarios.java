@@ -3,14 +3,18 @@ package vista;
 /** Registro de usuarios del sistema (administradores y bibliotecarios). */
 public class CRUDBibliotecarios extends componentes.VentanaBase {
 
+    private final componentes.Formulario formulario = new componentes.Formulario(this);
+
     private final servicio.UsuarioService servicio = new servicio.UsuarioService();
     private final componentes.TablaObjetos<modelo.Usuario> tabla;
     private final componentes.ControlCrud control;
     private java.util.function.Consumer<modelo.Usuario> alGuardar = u -> { };
     private boolean activoActual = true;
+    private boolean nuevoUsuario;
 
     public CRUDBibliotecarios() {
         initComponents();
+        configurarEntradas();
         montar("GESTIÓN DE USUARIOS", jpnlContenido);
         componentes.Tablas.soloLectura(jtblUsuarios, jScrollPane1,
                 "Cédula", "Nombres", "Apellidos", "Usuario", "Rol", "Estado");
@@ -21,11 +25,45 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
             jtxtCorreo, jtxtDireccion, jtxtTelefono, jtxtUsuario, jcbxRol, jpswClave, jpswRepClave},
                 jbtnNuevo, jbtnGuardar, jbtnEditar, jbtnDesactivar, jbtnCancelar);
         control.bloquearAlEditar(jtblUsuarios);
-        componentes.Combos.llenar(jcbxRol, modelo.Rol.class);
+        componentes.Combos.llenarSinElegir(jcbxRol, java.util.List.of(modelo.Rol.values()));
         tabla.alSeleccionar(this::mostrar);
         tabla.usarBarra(barraBuscar);
         util.Eventos.alCambiar(jpswClave, this::mostrarFortaleza);
         cancelar();
+    }
+
+    /** Caracteres permitidos, máximo de cada caja (según la base de datos) y validación con Enter. */
+    private void configurarEntradas() {
+        util.TipoEntrada.NUMEROS.aplicar(jtxtCedula, 10);
+        util.TipoEntrada.TEXTO.aplicar(jtxtNombres, 60);
+        util.TipoEntrada.TEXTO.aplicar(jtxtApellidos, 60);
+        util.TipoEntrada.CORREO.aplicar(jtxtCorreo, 100);
+        util.TipoEntrada.LIBRE.aplicar(jtxtDireccion, 150);
+        util.TipoEntrada.NUMEROS.aplicar(jtxtTelefono, 10);
+        util.TipoEntrada.USUARIO.aplicar(jtxtUsuario, 50);
+        util.TipoEntrada.LIBRE.aplicar(jpswClave, 50);
+        util.TipoEntrada.LIBRE.aplicar(jpswRepClave, 50);
+        formulario
+                .campo(jtxtCedula, () -> servicio.validarCedulaNueva(jtxtCedula.getText()))
+                .campo(jtxtNombres, () -> muestra().setNombres(jtxtNombres.getText()))
+                .campo(jtxtApellidos, () -> muestra().setApellidos(jtxtApellidos.getText()))
+                .campo(jtxtCorreo, () -> muestra().setCorreo(jtxtCorreo.getText()))
+                .campo(jtxtDireccion, () -> muestra().setDireccion(jtxtDireccion.getText()))
+                .campo(jtxtTelefono, () -> muestra().setTelefono(util.Validaciones.obligatorio(jtxtTelefono.getText(), "teléfono")))
+                .campo(jtxtUsuario, () -> muestra().setUsuario(jtxtUsuario.getText()))
+                .campo(jcbxRol, () -> util.Validaciones.requerido(componentes.Combos.seleccionado(jcbxRol), "el rol"))
+                .campo(jpswClave, () -> {
+                    if (cambiaClave()) {
+                        util.Seguridad.validarLongitud(clave());
+                    }
+                })
+                .campo(jpswRepClave, () -> {
+                    if (cambiaClave()) {
+                        util.Seguridad.validarNueva(clave(), claveRepetida());
+                    }
+                })
+                .terminarEn(jbtnGuardar)
+                .armar();
     }
 
     private void nuevo() {
@@ -33,6 +71,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         tabla.limpiarSeleccion();
         activoActual = true;
         alGuardar = u -> servicio.registrar(u, clave(), claveRepetida());
+        nuevoUsuario = true;
         control.nuevo();
         jtxtCedula.requestFocus();
     }
@@ -41,6 +80,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         ejecutar(() -> {
             tabla.exigirSeleccionado("un usuario");
             alGuardar = u -> servicio.actualizar(u, clave(), claveRepetida());
+            nuevoUsuario = false;
             control.edicion();
             componentes.ControlCrud.permitirEscribir(jtxtCedula, false);
             jlblSeguridad.setText("Deje la contraseña vacía para no cambiarla");
@@ -49,11 +89,14 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
     }
 
     private void guardar() {
+        if (!formulario.validar()) {
+            return;
+        }
         ejecutar(() -> {
             modelo.Usuario u = leerFormulario();
             alGuardar.accept(u);
             util.Mensajes.info(this, "Usuario guardado.");
-            recargarYSeleccionar(u);
+            cancelar();
         });
     }
 
@@ -118,7 +161,7 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
             jtxtCorreo, jtxtDireccion, jtxtTelefono, jtxtUsuario}) {
             t.setText("");
         }
-        componentes.Combos.seleccionar(jcbxRol, modelo.Rol.BIBLIOTECARIO);
+        jcbxRol.setSelectedIndex(-1);
         jbtnDesactivar.setText("Desactivar");
         limpiarClaves();
     }
@@ -134,6 +177,16 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         jpgrSeguridad.setValue(fortaleza);
         jlblSeguridad.setText(fortaleza == 0 ? "Seguridad de la contraseña"
                 : "Seguridad de la contraseña: " + util.Seguridad.nivel(fortaleza));
+    }
+
+    /** Usuario de prueba para revisar un dato con las mismas reglas del modelo. */
+    private modelo.Usuario muestra() {
+        return modelo.Rol.values()[0].crearUsuario();
+    }
+
+    /** Al crear la contraseña es obligatoria; al editar, solo si escribió una nueva. */
+    private boolean cambiaClave() {
+        return nuevoUsuario || !clave().isEmpty();
     }
 
     private String clave() {

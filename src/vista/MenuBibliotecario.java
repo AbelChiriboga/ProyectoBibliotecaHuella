@@ -26,6 +26,14 @@ public class MenuBibliotecario extends componentes.VentanaBase {
         ejecutar(() -> tarjetas.forEach((tarjeta, indicador) -> tarjeta.setValor(String.valueOf(indicadores.valor(indicador)))));
     }
 
+    private void generarInventario() {
+        ejecutar(() -> new reportes.ReporteInventario().generar(this));
+    }
+
+    private void generarHistorial() {
+        ejecutar(() -> new reportes.ReporteHistorial().generar(this));
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -177,6 +185,7 @@ public class MenuBibliotecario extends componentes.VentanaBase {
         jbtnInventario.setTamanoIcono(56);
         jbtnInventario.setTextoAbajo(true);
         jbtnInventario.setPreferredSize(new java.awt.Dimension(120, 116));
+        jbtnInventario.addActionListener(this::jbtnInventarioActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -188,6 +197,7 @@ public class MenuBibliotecario extends componentes.VentanaBase {
         jbtnHistorial.setTamanoIcono(56);
         jbtnHistorial.setTextoAbajo(true);
         jbtnHistorial.setPreferredSize(new java.awt.Dimension(120, 116));
+        jbtnHistorial.addActionListener(this::jbtnHistorialActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -260,6 +270,14 @@ public class MenuBibliotecario extends componentes.VentanaBase {
     private void jbtnPrestamoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnPrestamoActionPerformed
         util.Navegacion.abrir(this, new Prestamos());
     }//GEN-LAST:event_jbtnPrestamoActionPerformed
+
+    private void jbtnInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnInventarioActionPerformed
+        generarInventario();
+    }//GEN-LAST:event_jbtnInventarioActionPerformed
+
+    private void jbtnHistorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnHistorialActionPerformed
+        generarHistorial();
+    }//GEN-LAST:event_jbtnHistorialActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private componentes.BotonSistema jbtnAtrasados;

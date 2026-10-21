@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -40,11 +41,26 @@ public class EjemplarDAO extends BaseDAO<Ejemplar, Integer> implements CrudDAO<E
         return e;
     }
 
+    private static final String SQL_INSERTAR =
+            "INSERT INTO ejemplares (id_libro, codigo_inventario, estado, ubicacion) VALUES (?,?,?,?)";
+    private static final String SQL_ULTIMO_NUMERO =
+            "SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(codigo_inventario, '-', -1) AS UNSIGNED)), 0) FROM ejemplares";
+
     @Override
     public Ejemplar insertar(Ejemplar e) {
-        e.setId(insertarConId("INSERT INTO ejemplares (id_libro, codigo_inventario, estado, ubicacion) VALUES (?,?,?,?)",
+        e.setId(insertarConId(SQL_INSERTAR,
                 e.getLibro().getId(), e.getCodigoInventario(), bd(e.getEstado()), e.getUbicacion()));
         return e;
+    }
+
+    /** Inserta dentro de una transacción ya abierta (lo usa LibroDAO al crear un libro). */
+    void insertar(Connection cn, Ejemplar e) throws SQLException {
+        e.setId(insertarConId(cn, SQL_INSERTAR,
+                e.getLibro().getId(), e.getCodigoInventario(), bd(e.getEstado()), e.getUbicacion()));
+    }
+
+    int ultimoNumeroCodigo(Connection cn) throws SQLException {
+        return consultarEntero(cn, SQL_ULTIMO_NUMERO);
     }
 
     @Override
@@ -63,8 +79,7 @@ public class EjemplarDAO extends BaseDAO<Ejemplar, Integer> implements CrudDAO<E
     }
 
     public int ultimoNumeroCodigo() {
-        return consultarEntero("SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(codigo_inventario, '-', -1) AS UNSIGNED)), 0) "
-                + "FROM ejemplares");
+        return consultarEntero(SQL_ULTIMO_NUMERO);
     }
 
     public List<Ejemplar> buscarDisponibles(String texto) {

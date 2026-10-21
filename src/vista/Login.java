@@ -2,6 +2,8 @@ package vista;
 
 /** Inicio de sesión del personal y consulta del estudiante por cédula. */
 public class Login extends javax.swing.JFrame {
+
+    private final componentes.Formulario formulario = new componentes.Formulario(this);
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Login.class.getName());
 
@@ -10,11 +12,29 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         setUndecorated(true);
         initComponents();
+        configurarEntradas();
         util.Arrastre.permitir(this, getContentPane());
         InicializarElementos();
         armarLogin();
         estiloSalir();
         setLocationRelativeTo(null);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                jtxtUsuario.requestFocusInWindow();
+            }
+        });
+    }
+
+    /** Caracteres permitidos, máximo de cada caja (según la base de datos) y validación con Enter. */
+    private void configurarEntradas() {
+        util.TipoEntrada.USUARIO.aplicar(jtxtUsuario, 50);
+        util.TipoEntrada.LIBRE.aplicar(jpswClave, 50);
+        util.TipoEntrada.NUMEROS.aplicar(jtxtCedulaE, 10);
+        formulario
+                .campo(jtxtUsuario, () -> util.Validaciones.obligatorio(jtxtUsuario.getText(), "usuario"))
+                .campo(jpswClave, () -> util.Validaciones.obligatorio(new String(jpswClave.getPassword()), "contraseña"))
+                .armar();
     }
     
     private void estiloSalir() {
@@ -152,6 +172,7 @@ public class Login extends javax.swing.JFrame {
         estiloToggle(jtglEstudiante, nombre.equals("estudiante"), verde);
 
         getRootPane().setDefaultButton(nombre.equals("personal") ? jbtnIngresar : jbtnConsultar);
+        javax.swing.SwingUtilities.invokeLater(() -> (nombre.equals("personal") ? jtxtUsuario : jtxtCedulaE).requestFocusInWindow());
     }
 
     private void estiloToggle(javax.swing.JToggleButton t, boolean activo, java.awt.Color verde) {
@@ -165,6 +186,9 @@ public class Login extends javax.swing.JFrame {
     }
 
     private void iniciarSesion() {
+        if (!formulario.validar()) {
+            return;
+        }
         boolean ingreso = util.Mensajes.ejecutar(this, () -> {
             modelo.Usuario usuario = autenticacion.iniciarSesion(jtxtUsuario.getText(), new String(jpswClave.getPassword()));
             util.Navegacion.cambiar(this, MenuPorRol.crearPara(usuario));

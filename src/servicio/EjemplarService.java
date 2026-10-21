@@ -43,10 +43,14 @@ public class EjemplarService extends ServicioCrud<Ejemplar> {
 
     @Override
     protected void validar(Ejemplar e) {
+        exigirEstadoElegible(e);
+        exigirQueNoEstePrestado(e);
+    }
+
+    public void exigirEstadoElegible(Ejemplar e) {
         if (!e.getEstado().esEditableManualmente()) {
             throw new NegocioException("El estado " + e.getEstado().getDescripcion() + " no se puede elegir.");
         }
-        exigirQueNoEstePrestado(e);
     }
 
     @Override

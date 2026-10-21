@@ -3,6 +3,8 @@ package vista;
 /** Registro de autores. */
 public class CRUDAutores extends componentes.VentanaBase {
 
+    private final componentes.Formulario formulario = new componentes.Formulario(this);
+
     private final servicio.AutorService servicio = new servicio.AutorService();
     private final componentes.TablaObjetos<modelo.Autor> tabla;
     private final componentes.ControlCrud control;
@@ -10,6 +12,7 @@ public class CRUDAutores extends componentes.VentanaBase {
 
     public CRUDAutores() {
         initComponents();
+        configurarEntradas();
         montar("GESTIÓN DE AUTORES", jpnlContenido);
         componentes.Tablas.soloLectura(jtblAutores, jScrollPane1, "Nombres", "Apellidos", "Nacionalidad");
         tabla = new componentes.TablaObjetos<>(jtblAutores,
@@ -20,6 +23,19 @@ public class CRUDAutores extends componentes.VentanaBase {
         tabla.alSeleccionar(this::mostrar);
         tabla.usarBarra(barraBuscar);
         cancelar();
+    }
+
+    /** Caracteres permitidos, máximo de cada caja (según la base de datos) y validación con Enter. */
+    private void configurarEntradas() {
+        util.TipoEntrada.TEXTO.aplicar(jtxtNombres, 60);
+        util.TipoEntrada.TEXTO.aplicar(jtxtApellidos, 60);
+        util.TipoEntrada.TEXTO.aplicar(jtxtNacionalidad, 50);
+        formulario
+                .campo(jtxtNombres, () -> actual.setNombres(jtxtNombres.getText()))
+                .campo(jtxtApellidos, () -> actual.setApellidos(jtxtApellidos.getText()))
+                .campo(jtxtNacionalidad, () -> actual.setNacionalidad(jtxtNacionalidad.getText()))
+                .terminarEn(jbtnGuardar)
+                .armar();
     }
 
     private void nuevo() {
@@ -39,13 +55,16 @@ public class CRUDAutores extends componentes.VentanaBase {
     }
 
     private void guardar() {
+        if (!formulario.validar()) {
+            return;
+        }
         ejecutar(() -> {
             actual.setNombres(jtxtNombres.getText());
             actual.setApellidos(jtxtApellidos.getText());
             actual.setNacionalidad(jtxtNacionalidad.getText());
             servicio.guardar(actual);
             util.Mensajes.info(this, "Autor guardado.");
-            recargarYSeleccionar(actual);
+            cancelar();
         });
     }
 
@@ -68,12 +87,6 @@ public class CRUDAutores extends componentes.VentanaBase {
 
     private void cargar() {
         ejecutar(() -> tabla.mostrar(servicio.listar()));
-    }
-
-    private void recargarYSeleccionar(modelo.Autor a) {
-        cargar();
-        control.consulta(false);
-        tabla.seleccionar(a);
     }
 
     private void mostrar(modelo.Autor a) {

@@ -63,10 +63,7 @@ public class EstudianteService {
 
     public Estudiante guardar(Estudiante e, Map<Dedo, byte[]> huellasCapturadas) {
         exigir(Usuario::puedeRegistrarEstudiantes, "registrar estudiantes");
-        if (e.esNuevo()) {
-            Validaciones.cedulaEcuatoriana(e.getCedula());
-        }
-        cedulaUnica.exigirQueNoSeaDeUsuario(e.getCedula());
+        validarCedula(e, e.getCedula());
         if (!e.tieneHuella() && huellasCapturadas.isEmpty()) {
             throw new ValidacionException("Registre la huella del estudiante.");
         }
@@ -75,6 +72,20 @@ public class EstudianteService {
                 OperacionAutenticacion.REGISTRO_HUELLA, ResultadoAutenticacion.EXITO, null,
                 dedo.getDescripcion() + ", 3 muestras")));
         return e;
+    }
+
+    /** Revisa la cédula escrita: formato, que sea ecuatoriana (si es nuevo) y que no la tenga otra persona. */
+    public void validarCedula(Estudiante e, String cedula) {
+        e.setCedula(cedula);
+        if (e.esNuevo()) {
+            Validaciones.cedulaEcuatoriana(cedula);
+        }
+        dao.buscarPorCedula(cedula)
+                .filter(otro -> otro.getIdEstudiante() != e.getIdEstudiante())
+                .ifPresent(otro -> {
+                    throw new ValidacionException("Esa cédula ya es de " + otro.getNombreCompleto() + ".");
+                });
+        cedulaUnica.exigirQueNoSeaDeUsuario(cedula);
     }
 
     public void eliminar(Estudiante e) {

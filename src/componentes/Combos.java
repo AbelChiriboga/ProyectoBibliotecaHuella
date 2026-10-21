@@ -19,6 +19,16 @@ public final class Combos {
         }
     }
 
+    /** Para formularios: llena sin elegir nada (conserva lo que estaba elegido, si sigue en la lista). */
+    public static <T> void llenarSinElegir(JComboBox<T> combo, List<T> elementos) {
+        Object anterior = combo.getSelectedItem();
+        combo.setModel(new DefaultComboBoxModel<>(new java.util.Vector<>(elementos)));
+        combo.setSelectedItem(anterior);
+        if (anterior == null) {
+            combo.setSelectedIndex(-1);
+        }
+    }
+
     public static <E extends Enum<E>> void llenar(JComboBox<E> combo, Class<E> tipoEnum) {
         llenar(combo, List.of(tipoEnum.getEnumConstants()));
     }

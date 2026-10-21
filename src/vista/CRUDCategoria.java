@@ -3,6 +3,8 @@ package vista;
 /** Registro de categorías de libros. */
 public class CRUDCategoria extends componentes.VentanaBase {
 
+    private final componentes.Formulario formulario = new componentes.Formulario(this);
+
     private final servicio.CategoriaService servicio = new servicio.CategoriaService();
     private final componentes.TablaObjetos<modelo.Categoria> tabla;
     private final componentes.ControlCrud control;
@@ -10,6 +12,7 @@ public class CRUDCategoria extends componentes.VentanaBase {
 
     public CRUDCategoria() {
         initComponents();
+        configurarEntradas();
         montar("GESTIÓN DE CATEGORÍAS", jpnlContenido);
         componentes.Tablas.soloLectura(jtblCategorias, jScrollPane1, "Categoría", "Libros", "Ejemplares");
         tabla = new componentes.TablaObjetos<>(jtblCategorias,
@@ -20,6 +23,15 @@ public class CRUDCategoria extends componentes.VentanaBase {
         tabla.alSeleccionar(this::mostrar);
         tabla.usarBarra(barraBuscar);
         cancelar();
+    }
+
+    /** Caracteres permitidos, máximo de cada caja (según la base de datos) y validación con Enter. */
+    private void configurarEntradas() {
+        util.TipoEntrada.TEXTO.aplicar(jtxtNombre, 60);
+        formulario
+                .campo(jtxtNombre, () -> actual.setNombre(jtxtNombre.getText()))
+                .terminarEn(jbtnGuardar)
+                .armar();
     }
 
     private void nuevo() {
@@ -39,11 +51,14 @@ public class CRUDCategoria extends componentes.VentanaBase {
     }
 
     private void guardar() {
+        if (!formulario.validar()) {
+            return;
+        }
         ejecutar(() -> {
             actual.setNombre(jtxtNombre.getText());
             servicio.guardar(actual);
             util.Mensajes.info(this, "Categoría guardada.");
-            recargarYSeleccionar(actual);
+            cancelar();
         });
     }
 
@@ -66,12 +81,6 @@ public class CRUDCategoria extends componentes.VentanaBase {
 
     private void cargar() {
         ejecutar(() -> tabla.mostrar(servicio.listarConTotales()));
-    }
-
-    private void recargarYSeleccionar(modelo.Categoria c) {
-        cargar();
-        control.consulta(false);
-        tabla.seleccionar(c);
     }
 
     private void mostrar(modelo.Categoria c) {
