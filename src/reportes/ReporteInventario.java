@@ -1,8 +1,7 @@
 package reportes;
 
 import java.util.List;
-import modelo.Categoria;
-import modelo.EstadoEjemplar;
+import modelo.*;
 
 /** Inventario de ejemplares por categoría y estado. */
 public class ReporteInventario extends ReporteBase {

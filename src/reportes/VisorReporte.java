@@ -1,13 +1,9 @@
 package reportes;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.view.JRSaveContributor;
-import net.sf.jasperreports.view.JasperViewer;
-import net.sf.jasperreports.view.save.JRDocxSaveContributor;
-import net.sf.jasperreports.view.save.JRPdfSaveContributor;
-import net.sf.jasperreports.view.save.JRSingleSheetXlsSaveContributor;
+import net.sf.jasperreports.view.*;
+import net.sf.jasperreports.view.save.*;
 
 /** Visor de Jasper que guarda en PDF por defecto (también Word y Excel). */
 public class VisorReporte extends JasperViewer {

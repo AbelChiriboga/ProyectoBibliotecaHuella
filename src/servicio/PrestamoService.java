@@ -1,21 +1,11 @@
 package servicio;
 
-import excepciones.NegocioException;
-import excepciones.ValidacionException;
+import excepciones.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
-import modelo.Ejemplar;
-import modelo.OperacionAutenticacion;
-import modelo.Parametro;
-import modelo.Prestamo;
-import servicio.reglas.EstudianteActivo;
-import servicio.reglas.LimitePrestamos;
-import servicio.reglas.ReglaPrestamo;
-import servicio.reglas.SinMultasPendientes;
+import modelo.*;
+import servicio.reglas.*;
 
 /** Préstamo de uno o varios libros a la vez, SOLO con la huella del estudiante. */
 public class PrestamoService extends AtencionConHuella {

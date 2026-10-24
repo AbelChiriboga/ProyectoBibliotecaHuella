@@ -2,12 +2,9 @@ package servicio;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.OptionalDouble;
+import java.util.*;
 import java.util.function.Predicate;
-import modelo.OperacionAutenticacion;
-import modelo.RegistroAutenticacion;
-import modelo.ResultadoAutenticacion;
+import modelo.*;
 
 /** Cálculos del panel de la Bitácora a partir de los intentos ya filtrados: totales, tasa de éxito, intentos de. */
 public final class ResumenBitacora {

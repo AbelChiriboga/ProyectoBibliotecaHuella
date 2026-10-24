@@ -1,12 +1,8 @@
 package dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
-import modelo.EstadoPrestamo;
-import modelo.Multa;
-import modelo.Prestamo;
-import modelo.ValorBD;
+import modelo.*;
 
 /** DAO de préstamos. */
 public class PrestamoDAO extends BaseDAO<Prestamo, Integer> {

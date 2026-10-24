@@ -1,17 +1,10 @@
 package componentes;
 
 import excepciones.ValidacionException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import javax.swing.JTable;
-import javax.swing.RowFilter;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
+import java.util.*;
+import java.util.function.*;
+import javax.swing.*;
+import javax.swing.table.*;
 
 /** Une una JTable con la lista de OBJETOS que muestra (genérica: TablaObjetos, TablaObjetos...). */
 public class TablaObjetos<T> {

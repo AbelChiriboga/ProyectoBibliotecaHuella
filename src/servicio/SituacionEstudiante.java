@@ -1,12 +1,9 @@
 package servicio;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
-import modelo.Estudiante;
-import modelo.Prestamo;
+import modelo.*;
 
 /** Situación de un estudiante en la biblioteca: sus préstamos, cuántos puede tener y cuánto debe. */
 public class SituacionEstudiante {

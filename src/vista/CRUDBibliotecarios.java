@@ -41,8 +41,8 @@ public class CRUDBibliotecarios extends componentes.VentanaBase {
         util.TipoEntrada.LIBRE.aplicar(jtxtDireccion, 150);
         util.TipoEntrada.NUMEROS.aplicar(jtxtTelefono, 10);
         util.TipoEntrada.USUARIO.aplicar(jtxtUsuario, 50);
-        util.TipoEntrada.LIBRE.aplicar(jpswClave, 50);
-        util.TipoEntrada.LIBRE.aplicar(jpswRepClave, 50);
+        util.TipoEntrada.CLAVE.aplicar(jpswClave, 50);
+        util.TipoEntrada.CLAVE.aplicar(jpswRepClave, 50);
         formulario
                 .campo(jtxtCedula, () -> servicio.validarCedulaNueva(jtxtCedula.getText()))
                 .campo(jtxtNombres, () -> muestra().setNombres(jtxtNombres.getText()))

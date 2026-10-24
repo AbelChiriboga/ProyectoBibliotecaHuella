@@ -1,11 +1,7 @@
 package servicio;
 
-import dao.MultaDAO;
-import dao.ParametroDAO;
-import dao.PrestamoDAO;
-import modelo.OperacionAutenticacion;
-import modelo.Parametro;
-import modelo.Usuario;
+import dao.*;
+import modelo.*;
 
 /** Lo que tienen en común el préstamo y la devolución: las dos se atienden SOLO con huella. */
 public abstract class AtencionConHuella {

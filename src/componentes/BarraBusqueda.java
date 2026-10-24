@@ -40,6 +40,7 @@ public class BarraBusqueda extends JPanel {
         botonFiltro.addActionListener(e -> menuFiltro.show(botonFiltro, 0, botonFiltro.getHeight()));
 
         add(campo, BorderLayout.CENTER);
+        util.TipoEntrada.LIBRE.aplicar(campo, 100);
         add(botonFiltro, BorderLayout.EAST);
 
         util.Eventos.alCambiar(campo, this::avisarCambio);

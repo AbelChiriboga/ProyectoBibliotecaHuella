@@ -1,8 +1,7 @@
 package servicio;
 
 import java.util.List;
-import modelo.Ejemplar;
-import modelo.Libro;
+import modelo.*;
 
 /** Ejemplares de un libro que ya existe: cada cambio se guarda en la BD al momento. */
 public class EjemplaresGuardados implements EjemplaresDeLibro {

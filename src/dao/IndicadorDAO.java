@@ -1,7 +1,6 @@
 package dao;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 import modelo.Indicador;
 
 /** Conteos para las tarjetas de los menús. */

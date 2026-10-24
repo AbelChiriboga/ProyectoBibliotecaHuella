@@ -1,14 +1,9 @@
 package servicio;
 
-import dao.AutorDAO;
-import dao.CategoriaDAO;
-import dao.LibroDAO;
+import dao.*;
 import java.util.List;
 import java.util.function.Predicate;
-import modelo.Autor;
-import modelo.Categoria;
-import modelo.Libro;
-import modelo.Usuario;
+import modelo.*;
 
 /** Libros del catálogo. */
 public class LibroService extends ServicioCrud<Libro> {

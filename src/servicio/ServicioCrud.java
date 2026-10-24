@@ -3,8 +3,7 @@ package servicio;
 import dao.CrudDAO;
 import java.util.List;
 import java.util.function.Predicate;
-import modelo.Entidad;
-import modelo.Usuario;
+import modelo.*;
 import util.Validaciones;
 
 /** Servicio CRUD GENÉRICO y ABSTRACTO para las entidades con id numérico. */

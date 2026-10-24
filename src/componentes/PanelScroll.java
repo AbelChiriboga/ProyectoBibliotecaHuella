@@ -1,11 +1,7 @@
 package componentes;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import javax.swing.JPanel;
-import javax.swing.Scrollable;
+import java.awt.*;
+import javax.swing.*;
 
 /** Panel que se ajusta al ancho del JScrollPane: solo hay scroll vertical. */
 public class PanelScroll extends JPanel implements Scrollable {

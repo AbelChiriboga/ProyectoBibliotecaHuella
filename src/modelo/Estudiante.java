@@ -1,8 +1,6 @@
 package modelo;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import util.Validaciones;
 
 /** Estudiante: hereda los datos personales de Persona y agrega carrera, semestre, estado y huellas. */

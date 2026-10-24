@@ -1,7 +1,6 @@
 package modelo;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import util.Validaciones;
 
 /** Libro del catálogo (la obra). */

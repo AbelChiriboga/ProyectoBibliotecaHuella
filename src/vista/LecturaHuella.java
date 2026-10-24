@@ -1,11 +1,8 @@
 package vista;
 
-import excepciones.BibliotecaException;
-import excepciones.Reaccion;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import excepciones.*;
+import java.util.*;
+import java.util.function.*;
 
 /** Lectura AUTOMÁTICA de la huella en Préstamos y Devoluciones (sin botón): - mientras no hay estudiante. */
 public class LecturaHuella {

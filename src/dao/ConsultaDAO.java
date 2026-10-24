@@ -1,7 +1,6 @@
 package dao;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /** Operaciones de SOLO LECTURA, comunes a todos los DAO. */
 public interface ConsultaDAO<T, ID> {

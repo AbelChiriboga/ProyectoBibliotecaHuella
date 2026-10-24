@@ -1,8 +1,7 @@
 package util;
 
 import java.util.Locale;
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.JTextComponent;
+import javax.swing.text.*;
 
 /** Qué caracteres acepta una caja de texto mientras se escribe (cada tipo decide su regla). */
 public enum TipoEntrada {
@@ -77,7 +76,20 @@ public enum TipoEntrada {
             return sb.toString();
         }
     },
+    /** Texto libre (títulos, direcciones, búsquedas...): cualquier carácter, en MAYÚSCULAS. */
     LIBRE {
+        @Override
+        protected boolean admite(char c) {
+            return !Character.isISOControl(c);
+        }
+
+        @Override
+        protected String ajustar(String texto) {
+            return texto.toUpperCase(ES);
+        }
+    },
+    /** Contraseñas: cualquier carácter, tal como se escribe (no se cambia a mayúsculas). */
+    CLAVE {
         @Override
         protected boolean admite(char c) {
             return !Character.isISOControl(c);

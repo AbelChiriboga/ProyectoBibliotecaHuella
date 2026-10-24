@@ -1,12 +1,8 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
-import modelo.Ejemplar;
-import modelo.EstadoEjemplar;
-import modelo.ValorBD;
+import modelo.*;
 
 /** CRUD de ejemplares (copias físicas). */
 public class EjemplarDAO extends BaseDAO<Ejemplar, Integer> implements CrudDAO<Ejemplar, Integer> {

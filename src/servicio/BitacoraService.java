@@ -1,13 +1,9 @@
 package servicio;
 
-import dao.ParametroDAO;
-import dao.RegistroAutenticacionDAO;
+import dao.*;
 import excepciones.ValidacionException;
 import java.time.LocalDate;
-import modelo.OperacionAutenticacion;
-import modelo.Parametro;
-import modelo.ResultadoAutenticacion;
-import modelo.Usuario;
+import modelo.*;
 
 /** Bitácora de autenticación biométrica (solo el administrador). */
 public class BitacoraService {

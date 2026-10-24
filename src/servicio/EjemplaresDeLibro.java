@@ -1,8 +1,7 @@
 package servicio;
 
 import java.util.List;
-import modelo.Ejemplar;
-import modelo.Libro;
+import modelo.*;
 
 /** Los ejemplares de UN libro: guardados en la BD o pendientes (libro nuevo que aún no se guarda). */
 public interface EjemplaresDeLibro {

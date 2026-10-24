@@ -1,12 +1,8 @@
 package dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
-import modelo.EstadoEstudiante;
-import modelo.Estudiante;
-import modelo.ValorBD;
+import java.sql.*;
+import java.util.*;
+import modelo.*;
 
 /** DAO de estudiantes. */
 public class EstudianteDAO extends BaseDAO<Estudiante, Integer> implements CrudDAO<Estudiante, Integer> {

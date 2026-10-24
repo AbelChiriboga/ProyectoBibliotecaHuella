@@ -1,10 +1,8 @@
 package vista;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
-import modelo.Rol;
-import modelo.Usuario;
+import modelo.*;
 
 /** Decide qué menú abrir después del login SIN if/else ni instanceof. */
 public final class MenuPorRol {

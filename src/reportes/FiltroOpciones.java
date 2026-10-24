@@ -3,8 +3,7 @@ package reportes;
 import componentes.Opcion;
 import java.util.List;
 import java.util.function.Function;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
+import javax.swing.*;
 
 /** Filtro con un combo de opciones; la primera ("Todas") envía null, que en la consulta significa "sin filtrar". */
 public class FiltroOpciones<T> implements FiltroReporte {

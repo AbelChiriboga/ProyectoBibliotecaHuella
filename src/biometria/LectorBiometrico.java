@@ -1,7 +1,6 @@
 package biometria;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /** Contrato de un lector de huella. */
 public interface LectorBiometrico extends AutoCloseable {

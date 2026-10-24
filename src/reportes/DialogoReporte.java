@@ -1,17 +1,8 @@
 package reportes;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Window;
+import java.awt.*;
 import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 /** Ventana donde se eligen los filtros del reporte antes de generarlo. */
 public class DialogoReporte extends JDialog {

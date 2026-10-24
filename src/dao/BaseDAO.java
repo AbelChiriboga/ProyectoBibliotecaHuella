@@ -1,9 +1,7 @@
 package dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import java.sql.*;
+import java.util.*;
 
 /** DAO de una tabla de ENTIDADES (autores, libros, estudiantes...). */
 public abstract class BaseDAO<T, ID> extends AccesoBD implements ConsultaDAO<T, ID> {

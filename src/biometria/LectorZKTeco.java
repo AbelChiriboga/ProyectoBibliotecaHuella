@@ -1,11 +1,8 @@
 package biometria;
 
-import com.zkteco.biometric.FingerprintSensorErrorCode;
-import com.zkteco.biometric.FingerprintSensorEx;
+import com.zkteco.biometric.*;
 import excepciones.LectorException;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 /** Lector USB ZKTeco usando el SDK ZKFinger (ZKFingerReader.jar + libzkfp.dll del driver). */

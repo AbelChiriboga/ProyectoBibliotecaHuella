@@ -1,10 +1,7 @@
 package util;
 
-import java.awt.Component;
-import java.awt.Point;
-import java.awt.Window;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 
 /** Las ventanas no tienen la barra de título de Windows (setUndecorated). */
 public final class Arrastre {

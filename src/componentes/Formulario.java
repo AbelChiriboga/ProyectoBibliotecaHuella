@@ -1,11 +1,8 @@
 package componentes;
 
 import java.awt.Component;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.AbstractButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
+import java.util.*;
+import javax.swing.*;
 import javax.swing.text.JTextComponent;
 
 /** Cajas de un formulario en orden: Enter valida la caja y pasa a la siguiente; validar() revisa todas. */

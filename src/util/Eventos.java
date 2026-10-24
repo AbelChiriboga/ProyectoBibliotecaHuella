@@ -1,7 +1,6 @@
 package util;
 
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.event.*;
 import javax.swing.text.JTextComponent;
 
 /** Atajos para eventos que Swing hace largos de escribir. */

@@ -1,12 +1,8 @@
 package dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
-import modelo.Rol;
-import modelo.Usuario;
-import modelo.ValorBD;
+import java.sql.*;
+import java.util.*;
+import modelo.*;
 
 /** DAO del personal (tabla usuarios). */
 public class UsuarioDAO extends BaseDAO<Usuario, String> implements CrudDAO<Usuario, String> {

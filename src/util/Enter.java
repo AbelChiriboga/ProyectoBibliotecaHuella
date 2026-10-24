@@ -1,10 +1,7 @@
 package util;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
+import java.awt.event.*;
+import javax.swing.*;
 
 /** Asigna una acción a la tecla Enter de un componente. */
 public final class Enter {

@@ -1,7 +1,6 @@
 package componentes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /** Elemento de un combo de FILTRO: un valor con su texto. */
 public final class Opcion<T> {

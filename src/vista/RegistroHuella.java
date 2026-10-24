@@ -1,10 +1,8 @@
 package vista;
 
-import excepciones.BibliotecaException;
-import excepciones.Reaccion;
+import excepciones.*;
 import java.awt.image.BufferedImage;
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import modelo.Dedo;
 

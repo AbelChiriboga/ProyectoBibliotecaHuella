@@ -1,11 +1,8 @@
 package dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
-import modelo.Dedo;
-import modelo.Huella;
-import modelo.ValorBD;
+import modelo.*;
 
 /** Plantillas de huella (columna template, BLOB). */
 public class HuellaDAO extends BaseDAO<Huella, Integer> implements CrudDAO<Huella, Integer> {

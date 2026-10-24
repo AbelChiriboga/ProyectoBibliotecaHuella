@@ -3,8 +3,7 @@ package servicio;
 import dao.CategoriaDAO;
 import java.util.List;
 import java.util.function.Predicate;
-import modelo.Categoria;
-import modelo.Usuario;
+import modelo.*;
 
 /** Categorías de libros. */
 public class CategoriaService extends ServicioCrud<Categoria> {

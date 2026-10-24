@@ -1,7 +1,6 @@
 package componentes;
 
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 /** Configuración de tablas en un solo lugar. */

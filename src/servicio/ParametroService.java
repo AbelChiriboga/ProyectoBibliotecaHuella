@@ -1,12 +1,8 @@
 package servicio;
 
 import dao.ParametroDAO;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import modelo.Parametro;
-import modelo.Usuario;
+import java.util.*;
+import modelo.*;
 
 /** Lectura y cambio de los parámetros del sistema (solo el administrador). */
 public class ParametroService {

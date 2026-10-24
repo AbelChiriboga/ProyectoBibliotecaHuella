@@ -1,16 +1,7 @@
 package componentes;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.Timer;
+import java.awt.*;
+import javax.swing.*;
 
 /** Encabezado verde común a todas las ventanas. */
 public class Encabezado extends JPanel {

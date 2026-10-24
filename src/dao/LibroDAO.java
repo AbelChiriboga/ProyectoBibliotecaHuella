@@ -1,7 +1,6 @@
 package dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import modelo.Libro;
 

@@ -4,10 +4,7 @@ import dao.EjemplarDAO;
 import excepciones.NegocioException;
 import java.util.List;
 import java.util.function.Predicate;
-import modelo.Ejemplar;
-import modelo.EstadoEjemplar;
-import modelo.Libro;
-import modelo.Usuario;
+import modelo.*;
 
 /** Ejemplares (copias físicas) de un libro. */
 public class EjemplarService extends ServicioCrud<Ejemplar> {

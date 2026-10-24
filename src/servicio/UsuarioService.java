@@ -1,13 +1,10 @@
 package servicio;
 
 import dao.UsuarioDAO;
-import excepciones.NegocioException;
-import excepciones.ValidacionException;
+import excepciones.*;
 import java.util.List;
-import modelo.Rol;
-import modelo.Usuario;
-import util.Seguridad;
-import util.Validaciones;
+import modelo.*;
+import util.*;
 
 /** Personal del sistema (administradores y bibliotecarios). */
 public class UsuarioService {

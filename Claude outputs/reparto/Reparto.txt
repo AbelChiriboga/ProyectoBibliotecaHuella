@@ -1,0 +1,164 @@
+REPARTO DE ARCHIVOS - ProyectoBibliotecaHuella
+(un commit por archivo; vistas y reportes los sube el encargado aparte)
+
+Orden para subir: Vinicio -> Damian -> Alexis -> Juan Pablo -> Jostin
+
+=== Vinicio (30 archivos) ===
+ 1. .gitignore                                    -> chore: agregar .gitignore
+ 2. README.md                                     -> docs: agregar README
+ 3. build.xml                                     -> build: agregar build.xml
+ 4. manifest.mf                                   -> build: agregar manifest.mf
+ 5. nbproject/project.properties                  -> build(nbproject): agregar project.properties
+ 6. nbproject/project.xml                         -> build(nbproject): agregar project.xml
+ 7. nbproject/build-impl.xml                      -> build(nbproject): agregar build-impl.xml
+ 8. nbproject/genfiles.properties                 -> build(nbproject): agregar genfiles.properties
+ 9. src/conexion/Conexion.java                    -> feat(conexion): agregar Conexion
+10. src/excepciones/BibliotecaException.java      -> feat(excepciones): agregar BibliotecaException
+11. src/excepciones/Reaccion.java                 -> feat(excepciones): agregar Reaccion
+12. src/excepciones/DatosException.java           -> feat(excepciones): agregar DatosException
+13. src/excepciones/ValidacionException.java      -> feat(excepciones): agregar ValidacionException
+14. src/excepciones/NegocioException.java         -> feat(excepciones): agregar NegocioException
+15. src/excepciones/LectorException.java          -> feat(excepciones): agregar LectorException
+16. src/excepciones/SinDedoException.java         -> feat(excepciones): agregar SinDedoException
+17. src/excepciones/HuellaNoReconocidaException.java -> feat(excepciones): agregar HuellaNoReconocidaException
+18. src/excepciones/HuellaDuplicadaException.java -> feat(excepciones): agregar HuellaDuplicadaException
+19. src/util/Validaciones.java                    -> feat(util): agregar Validaciones
+20. src/util/Seguridad.java                       -> feat(util): agregar Seguridad
+21. src/util/Formatos.java                        -> feat(util): agregar Formatos
+22. src/util/Mensajes.java                        -> feat(util): agregar Mensajes
+23. src/util/Estilos.java                         -> feat(util): agregar Estilos
+24. src/util/Eventos.java                         -> feat(util): agregar Eventos
+25. src/util/Arrastre.java                        -> feat(util): agregar Arrastre
+26. src/util/Navegacion.java                      -> feat(util): agregar Navegacion
+27. src/util/Tareas.java                          -> feat(util): agregar Tareas
+28. src/util/TipoEntrada.java                     -> feat(util): agregar TipoEntrada
+29. src/util/FiltroEntrada.java                   -> feat(util): agregar FiltroEntrada
+30. src/util/Enter.java                           -> feat(util): agregar Enter
+
+=== Damian (30 archivos) ===
+ 1. src/modelo/ValorBD.java                       -> feat(modelo): agregar ValorBD
+ 2. src/modelo/Entidad.java                       -> feat(modelo): agregar Entidad
+ 3. src/modelo/Persona.java                       -> feat(modelo): agregar Persona
+ 4. src/modelo/Rol.java                           -> feat(modelo): agregar Rol
+ 5. src/modelo/Usuario.java                       -> feat(modelo): agregar Usuario
+ 6. src/modelo/Administrador.java                 -> feat(modelo): agregar Administrador
+ 7. src/modelo/Bibliotecario.java                 -> feat(modelo): agregar Bibliotecario
+ 8. src/modelo/Carrera.java                       -> feat(modelo): agregar Carrera
+ 9. src/modelo/EstadoEstudiante.java              -> feat(modelo): agregar EstadoEstudiante
+10. src/modelo/Dedo.java                          -> feat(modelo): agregar Dedo
+11. src/modelo/Huella.java                        -> feat(modelo): agregar Huella
+12. src/modelo/Estudiante.java                    -> feat(modelo): agregar Estudiante
+13. src/modelo/Autor.java                         -> feat(modelo): agregar Autor
+14. src/modelo/Categoria.java                     -> feat(modelo): agregar Categoria
+15. src/modelo/Libro.java                         -> feat(modelo): agregar Libro
+16. src/modelo/EstadoEjemplar.java                -> feat(modelo): agregar EstadoEjemplar
+17. src/modelo/Ejemplar.java                      -> feat(modelo): agregar Ejemplar
+18. src/modelo/EstadoPrestamo.java                -> feat(modelo): agregar EstadoPrestamo
+19. src/modelo/Multa.java                         -> feat(modelo): agregar Multa
+20. src/modelo/Prestamo.java                      -> feat(modelo): agregar Prestamo
+21. src/modelo/Parametro.java                     -> feat(modelo): agregar Parametro
+22. src/modelo/OperacionAutenticacion.java        -> feat(modelo): agregar OperacionAutenticacion
+23. src/modelo/ResultadoAutenticacion.java        -> feat(modelo): agregar ResultadoAutenticacion
+24. src/modelo/RegistroAutenticacion.java         -> feat(modelo): agregar RegistroAutenticacion
+25. src/modelo/Indicador.java                     -> feat(modelo): agregar Indicador
+26. src/biometria/EstadoLector.java               -> feat(biometria): agregar EstadoLector
+27. src/biometria/AvisoCaptura.java               -> feat(biometria): agregar AvisoCaptura
+28. src/biometria/Coincidencia.java               -> feat(biometria): agregar Coincidencia
+29. src/biometria/LectorBiometrico.java           -> feat(biometria): agregar LectorBiometrico
+30. src/biblioteca/Main.java                      -> feat(biblioteca): agregar Main
+
+=== Alexis (30 archivos) ===
+ 1. src/biometria/LectorBase.java                 -> feat(biometria): agregar LectorBase
+ 2. src/biometria/LectorSimulado.java             -> feat(biometria): agregar LectorSimulado
+ 3. src/biometria/LectorZKTeco.java               -> feat(biometria): agregar LectorZKTeco
+ 4. src/biometria/FabricaLector.java              -> feat(biometria): agregar FabricaLector
+ 5. src/biometria/MonitorLector.java              -> feat(biometria): agregar MonitorLector
+ 6. src/dao/AccesoBD.java                         -> feat(dao): agregar AccesoBD
+ 7. src/dao/ConsultaDAO.java                      -> feat(dao): agregar ConsultaDAO
+ 8. src/dao/CrudDAO.java                          -> feat(dao): agregar CrudDAO
+ 9. src/dao/BaseDAO.java                          -> feat(dao): agregar BaseDAO
+10. src/dao/CarreraDAO.java                       -> feat(dao): agregar CarreraDAO
+11. src/dao/AutorDAO.java                         -> feat(dao): agregar AutorDAO
+12. src/dao/CategoriaDAO.java                     -> feat(dao): agregar CategoriaDAO
+13. src/dao/LibroDAO.java                         -> feat(dao): agregar LibroDAO
+14. src/dao/EjemplarDAO.java                      -> feat(dao): agregar EjemplarDAO
+15. src/dao/EstudianteDAO.java                    -> feat(dao): agregar EstudianteDAO
+16. src/dao/HuellaDAO.java                        -> feat(dao): agregar HuellaDAO
+17. src/dao/UsuarioDAO.java                       -> feat(dao): agregar UsuarioDAO
+18. src/dao/PrestamoDAO.java                      -> feat(dao): agregar PrestamoDAO
+19. src/dao/MultaDAO.java                         -> feat(dao): agregar MultaDAO
+20. src/dao/ParametroDAO.java                     -> feat(dao): agregar ParametroDAO
+21. src/dao/RegistroAutenticacionDAO.java         -> feat(dao): agregar RegistroAutenticacionDAO
+22. src/dao/IndicadorDAO.java                     -> feat(dao): agregar IndicadorDAO
+23. src/dao/ReporteDAO.java                       -> feat(dao): agregar ReporteDAO
+24. src/imagenes/Atrasado.png                     -> feat(imagenes): agregar icono Atrasado.png
+25. src/imagenes/Bibliotecarios.png               -> feat(imagenes): agregar icono Bibliotecarios.png
+26. src/imagenes/Bitacora.png                     -> feat(imagenes): agregar icono Bitacora.png
+27. src/imagenes/Buscar.png                       -> feat(imagenes): agregar icono Buscar.png
+28. src/imagenes/Cerrar.png                       -> feat(imagenes): agregar icono Cerrar.png
+29. src/imagenes/Devolver.png                     -> feat(imagenes): agregar icono Devolver.png
+30. src/imagenes/Estudiantes.png                  -> feat(imagenes): agregar icono Estudiantes.png
+
+=== Juan Pablo (30 archivos) ===
+ 1. src/imagenes/Exit.png                         -> feat(imagenes): agregar icono Exit.png
+ 2. src/imagenes/Historial.png                    -> feat(imagenes): agregar icono Historial.png
+ 3. src/imagenes/Invetario.png                    -> feat(imagenes): agregar icono Invetario.png
+ 4. src/imagenes/Parametros.png                   -> feat(imagenes): agregar icono Parametros.png
+ 5. src/imagenes/Prestamo.png                     -> feat(imagenes): agregar icono Prestamo.png
+ 6. src/imagenes/Regresar.png                     -> feat(imagenes): agregar icono Regresar.png
+ 7. src/imagenes/filtro.png                       -> feat(imagenes): agregar icono filtro.png
+ 8. src/imagenes/libros.png                       -> feat(imagenes): agregar icono libros.png
+ 9. src/imagenes/logo.png                         -> feat(imagenes): agregar icono logo.png
+10. src/componentes/PanelGrupo.java               -> feat(componentes): agregar PanelGrupo
+11. src/componentes/PanelScroll.java              -> feat(componentes): agregar PanelScroll
+12. src/componentes/PanelFormulario.java          -> feat(componentes): agregar PanelFormulario
+13. src/componentes/Encabezado.java               -> feat(componentes): agregar Encabezado
+14. src/componentes/PiePagina.java                -> feat(componentes): agregar PiePagina
+15. src/componentes/VentanaBase.java              -> feat(componentes): agregar VentanaBase
+16. src/componentes/BotonSistema.java             -> feat(componentes): agregar BotonSistema
+17. src/componentes/Aviso.java                    -> feat(componentes): agregar Aviso
+18. src/componentes/Opcion.java                   -> feat(componentes): agregar Opcion
+19. src/componentes/Combos.java                   -> feat(componentes): agregar Combos
+20. src/componentes/Tablas.java                   -> feat(componentes): agregar Tablas
+21. src/componentes/TablaObjetos.java             -> feat(componentes): agregar TablaObjetos
+22. src/componentes/BarraBusqueda.java            -> feat(componentes): agregar BarraBusqueda
+23. src/componentes/ControlCrud.java              -> feat(componentes): agregar ControlCrud
+24. src/componentes/Formulario.java               -> feat(componentes): agregar Formulario
+25. src/componentes/TarjetaIndicador.java         -> feat(componentes): agregar TarjetaIndicador
+26. src/componentes/GraficoBarras.java            -> feat(componentes): agregar GraficoBarras
+27. src/componentes/PanelHuella.java              -> feat(componentes): agregar PanelHuella
+28. src/servicio/Sesion.java                      -> feat(servicio): agregar Sesion
+29. src/servicio/ServicioCrud.java                -> feat(servicio): agregar ServicioCrud
+30. src/servicio/CedulaUnica.java                 -> feat(servicio): agregar CedulaUnica
+
+=== Jostin (30 archivos) ===
+ 1. src/servicio/AutorService.java                -> feat(servicio): agregar AutorService
+ 2. src/servicio/CategoriaService.java            -> feat(servicio): agregar CategoriaService
+ 3. src/servicio/LibroService.java                -> feat(servicio): agregar LibroService
+ 4. src/servicio/EjemplarService.java             -> feat(servicio): agregar EjemplarService
+ 5. src/servicio/EjemplaresDeLibro.java           -> feat(servicio): agregar EjemplaresDeLibro
+ 6. src/servicio/EjemplaresGuardados.java         -> feat(servicio): agregar EjemplaresGuardados
+ 7. src/servicio/EjemplaresPendientes.java        -> feat(servicio): agregar EjemplaresPendientes
+ 8. src/servicio/EstudianteService.java           -> feat(servicio): agregar EstudianteService
+ 9. src/servicio/AccionRetiro.java                -> feat(servicio): agregar AccionRetiro
+10. src/servicio/FiltroEstudiante.java            -> feat(servicio): agregar FiltroEstudiante
+11. src/servicio/SituacionEstudiante.java         -> feat(servicio): agregar SituacionEstudiante
+12. src/servicio/UsuarioService.java              -> feat(servicio): agregar UsuarioService
+13. src/servicio/AutenticacionService.java        -> feat(servicio): agregar AutenticacionService
+14. src/servicio/BiometriaService.java            -> feat(servicio): agregar BiometriaService
+15. src/servicio/FichaEstudiante.java             -> feat(servicio): agregar FichaEstudiante
+16. src/servicio/AtencionConHuella.java           -> feat(servicio): agregar AtencionConHuella
+17. src/servicio/PrestamoService.java             -> feat(servicio): agregar PrestamoService
+18. src/servicio/ResumenDevolucion.java           -> feat(servicio): agregar ResumenDevolucion
+19. src/servicio/DevolucionService.java           -> feat(servicio): agregar DevolucionService
+20. src/servicio/TipoAtraso.java                  -> feat(servicio): agregar TipoAtraso
+21. src/servicio/AtrasoService.java               -> feat(servicio): agregar AtrasoService
+22. src/servicio/ParametroEditable.java           -> feat(servicio): agregar ParametroEditable
+23. src/servicio/ParametroService.java            -> feat(servicio): agregar ParametroService
+24. src/servicio/BitacoraService.java             -> feat(servicio): agregar BitacoraService
+25. src/servicio/ResumenBitacora.java             -> feat(servicio): agregar ResumenBitacora
+26. src/servicio/IndicadorService.java            -> feat(servicio): agregar IndicadorService
+27. src/servicio/reglas/ReglaPrestamo.java        -> feat(reglas): agregar ReglaPrestamo
+28. src/servicio/reglas/EstudianteActivo.java     -> feat(reglas): agregar EstudianteActivo
+29. src/servicio/reglas/LimitePrestamos.java      -> feat(reglas): agregar LimitePrestamos
+30. src/servicio/reglas/SinMultasPendientes.java  -> feat(reglas): agregar SinMultasPendientes

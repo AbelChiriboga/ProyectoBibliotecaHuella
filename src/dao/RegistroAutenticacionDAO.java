@@ -1,14 +1,9 @@
 package dao;
 
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.List;
-import modelo.OperacionAutenticacion;
-import modelo.RegistroAutenticacion;
-import modelo.ResultadoAutenticacion;
-import modelo.ValorBD;
+import modelo.*;
 
 /** Bitácora de autenticación biométrica. */
 public class RegistroAutenticacionDAO extends BaseDAO<RegistroAutenticacion, Integer> {

@@ -2,8 +2,7 @@ package dao;
 
 import excepciones.DatosException;
 import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import modelo.Parametro;
 

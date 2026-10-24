@@ -2,8 +2,7 @@ package util;
 
 import excepciones.BibliotecaException;
 import java.awt.Component;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.*;
 import javax.swing.SwingWorker;
 
 /** Ejecuta un trabajo lento (por ejemplo, esperar el dedo en el lector) en segundo plano, para que la ventana no. */

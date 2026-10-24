@@ -1,13 +1,9 @@
 package dao;
 
 import excepciones.DatosException;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Map;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.*;
 
 /** Llena un reporte Jasper con la conexión del sistema (la consulta SQL está en el .jrxml). */
 public class ReporteDAO extends AccesoBD {

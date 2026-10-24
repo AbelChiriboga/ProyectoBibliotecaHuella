@@ -1,24 +1,10 @@
 package servicio;
 
-import biometria.AvisoCaptura;
-import biometria.FabricaLector;
-import biometria.LectorBiometrico;
-import dao.EstudianteDAO;
-import dao.HuellaDAO;
-import dao.ParametroDAO;
-import dao.RegistroAutenticacionDAO;
+import biometria.*;
+import dao.*;
 import excepciones.BibliotecaException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import modelo.Estudiante;
-import modelo.Huella;
-import modelo.OperacionAutenticacion;
-import modelo.Parametro;
-import modelo.RegistroAutenticacion;
-import modelo.ResultadoAutenticacion;
-import modelo.Usuario;
+import java.util.*;
+import modelo.*;
 import util.Validaciones;
 
 /** Todo lo que tiene que ver con huellas: registrar, identificar 1:N y anotar cada intento en la bitácora. */

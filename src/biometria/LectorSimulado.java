@@ -2,12 +2,8 @@ package biometria;
 
 import excepciones.LectorException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
+import java.util.*;
+import javax.swing.*;
 
 /** Lector SIMULADO para probar el sistema sin el lector conectado. */
 public class LectorSimulado extends LectorBase {

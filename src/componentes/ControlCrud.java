@@ -1,10 +1,7 @@
 package componentes;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JComponent;
+import java.util.*;
+import javax.swing.*;
 
 /** Habilita y deshabilita los campos y botones de un formulario CRUD según el modo. */
 public class ControlCrud {

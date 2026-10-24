@@ -2,8 +2,7 @@ package servicio;
 
 import java.math.BigDecimal;
 import java.util.List;
-import modelo.Multa;
-import modelo.Prestamo;
+import modelo.*;
 
 /** Cálculo de lo que se va a cobrar al devolver los libros marcados. */
 public final class ResumenDevolucion {

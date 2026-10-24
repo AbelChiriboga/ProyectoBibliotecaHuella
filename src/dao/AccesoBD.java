@@ -1,19 +1,10 @@
 package dao;
 
 import conexion.Conexion;
-import excepciones.BibliotecaException;
-import excepciones.DatosException;
-import excepciones.NegocioException;
-import excepciones.ValidacionException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import excepciones.*;
+import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /** Clase ABSTRACTA con lo común a TODO acceso a la BD: obtener la conexión, preparar los parámetros. */
 public abstract class AccesoBD {

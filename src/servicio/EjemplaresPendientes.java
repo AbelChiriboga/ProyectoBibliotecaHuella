@@ -1,9 +1,7 @@
 package servicio;
 
-import java.util.ArrayList;
-import java.util.List;
-import modelo.Ejemplar;
-import modelo.Libro;
+import java.util.*;
+import modelo.*;
 
 /** Ejemplares de un libro NUEVO: quedan en memoria y se guardan junto con el libro. */
 public class EjemplaresPendientes implements EjemplaresDeLibro {

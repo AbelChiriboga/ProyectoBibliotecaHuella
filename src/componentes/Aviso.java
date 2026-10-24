@@ -1,10 +1,7 @@
 package componentes;
 
-import java.awt.Frame;
-import java.awt.KeyboardFocusManager;
-import java.awt.Window;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
+import java.awt.*;
+import javax.swing.*;
 
 /** Mensaje del estado del lector (conectado / desconectado) con un JOptionPane simple. */
 public final class Aviso {

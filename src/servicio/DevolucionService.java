@@ -1,14 +1,10 @@
 package servicio;
 
-import excepciones.NegocioException;
-import excepciones.ValidacionException;
+import excepciones.*;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
-import modelo.OperacionAutenticacion;
-import modelo.Parametro;
-import modelo.Prestamo;
+import modelo.*;
 
 /** Devolución de uno o varios libros, SOLO con la huella del mismo estudiante que los llevó. */
 public class DevolucionService extends AtencionConHuella {

@@ -2,8 +2,7 @@ package servicio;
 
 import java.math.BigDecimal;
 import java.util.List;
-import modelo.Multa;
-import modelo.Prestamo;
+import modelo.*;
 
 /** Qué se ve en la pantalla Atrasos. */
 public enum TipoAtraso {

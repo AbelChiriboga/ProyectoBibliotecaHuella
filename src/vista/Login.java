@@ -29,7 +29,7 @@ public class Login extends javax.swing.JFrame {
     /** Caracteres permitidos, máximo de cada caja (según la base de datos) y validación con Enter. */
     private void configurarEntradas() {
         util.TipoEntrada.USUARIO.aplicar(jtxtUsuario, 50);
-        util.TipoEntrada.LIBRE.aplicar(jpswClave, 50);
+        util.TipoEntrada.CLAVE.aplicar(jpswClave, 50);
         util.TipoEntrada.NUMEROS.aplicar(jtxtCedulaE, 10);
         formulario
                 .campo(jtxtUsuario, () -> util.Validaciones.obligatorio(jtxtUsuario.getText(), "usuario"))

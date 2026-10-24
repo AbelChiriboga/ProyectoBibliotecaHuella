@@ -1,7 +1,6 @@
 package servicio;
 
-import dao.EstudianteDAO;
-import dao.UsuarioDAO;
+import dao.*;
 import excepciones.ValidacionException;
 
 /** Una cédula pertenece a UNA sola persona del sistema: o es estudiante o es usuario (administrador /. */

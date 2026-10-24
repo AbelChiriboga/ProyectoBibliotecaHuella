@@ -1,14 +1,10 @@
 package servicio;
 
-import dao.MultaDAO;
-import dao.ParametroDAO;
-import dao.PrestamoDAO;
+import dao.*;
 import excepciones.NegocioException;
 import java.math.BigDecimal;
 import java.util.List;
-import modelo.Parametro;
-import modelo.Prestamo;
-import modelo.Usuario;
+import modelo.*;
 
 /** Préstamos atrasados, multas pendientes y registro del pago de una multa. */
 public class AtrasoService {

@@ -1,12 +1,9 @@
 package servicio;
 
-import dao.EstudianteDAO;
-import dao.UsuarioDAO;
+import dao.*;
 import excepciones.NegocioException;
-import modelo.Estudiante;
-import modelo.Usuario;
-import util.Seguridad;
-import util.Validaciones;
+import modelo.*;
+import util.*;
 
 /** Reglas del ingreso al sistema: - Personal: usuario + contraseña (SHA-256). */
 public class AutenticacionService {

@@ -1,17 +1,8 @@
 package componentes;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
+import java.awt.*;
 import java.util.function.Supplier;
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 /** Clase padre de todas las ventanas internas del sistema (todas menos el Login). */
 public class VentanaBase extends JFrame {

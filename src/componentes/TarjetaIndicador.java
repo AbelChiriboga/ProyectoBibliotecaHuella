@@ -1,12 +1,7 @@
 package componentes;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import java.awt.*;
+import javax.swing.*;
 
 /** Tarjeta con título pequeño, número grande y una línea de detalle opcional. */
 public class TarjetaIndicador extends JPanel {

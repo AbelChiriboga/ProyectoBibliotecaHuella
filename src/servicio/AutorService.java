@@ -2,8 +2,7 @@ package servicio;
 
 import dao.AutorDAO;
 import java.util.function.Predicate;
-import modelo.Autor;
-import modelo.Usuario;
+import modelo.*;
 
 /** Autores. */
 public class AutorService extends ServicioCrud<Autor> {

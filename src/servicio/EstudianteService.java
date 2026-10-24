@@ -1,23 +1,10 @@
 package servicio;
 
-import dao.CarreraDAO;
-import dao.EstudianteDAO;
-import dao.HuellaDAO;
-import dao.PrestamoDAO;
-import excepciones.NegocioException;
-import excepciones.ValidacionException;
-import java.util.List;
-import java.util.Map;
+import dao.*;
+import excepciones.*;
+import java.util.*;
 import java.util.stream.Collectors;
-import modelo.Carrera;
-import modelo.Dedo;
-import modelo.EstadoEstudiante;
-import modelo.Estudiante;
-import modelo.Huella;
-import modelo.OperacionAutenticacion;
-import modelo.RegistroAutenticacion;
-import modelo.ResultadoAutenticacion;
-import modelo.Usuario;
+import modelo.*;
 import util.Validaciones;
 
 /** Estudiantes. */

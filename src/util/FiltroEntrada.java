@@ -1,8 +1,6 @@
 package util;
 
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
+import javax.swing.text.*;
 
 /** Filtro de una caja de texto: bloquea caracteres no permitidos y corta al llegar al máximo. */
 public class FiltroEntrada extends DocumentFilter {

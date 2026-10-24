@@ -1,11 +1,7 @@
 package componentes;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.awt.*;
+import javax.swing.*;
 
 /** Barra verde inferior común (reemplaza el jPanel6 repetido en todos los frames). */
 public class PiePagina extends JPanel {

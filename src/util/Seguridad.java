@@ -2,8 +2,7 @@ package util;
 
 import excepciones.ValidacionException;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 
 /** Contraseñas: nunca se guardan ni se comparan en texto plano. */
 public final class Seguridad {

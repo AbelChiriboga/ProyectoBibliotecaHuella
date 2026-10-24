@@ -1,7 +1,6 @@
 package servicio;
 
-import modelo.EstadoEstudiante;
-import modelo.Estudiante;
+import modelo.*;
 
 /** Qué hace el botón Eliminar de Estudiantes: sin historial se elimina; con historial solo se desactiva o activa. */
 public enum AccionRetiro {

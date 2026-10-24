@@ -3,8 +3,7 @@ package reportes;
 import excepciones.ValidacionException;
 import java.time.LocalDate;
 import java.util.List;
-import modelo.Carrera;
-import modelo.EstadoPrestamo;
+import modelo.*;
 
 /** Historial de préstamos entre dos fechas, por carrera y estado. */
 public class ReporteHistorial extends ReporteBase {

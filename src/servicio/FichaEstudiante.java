@@ -2,8 +2,7 @@ package servicio;
 
 import java.math.BigDecimal;
 import java.util.List;
-import modelo.Estudiante;
-import modelo.Prestamo;
+import modelo.*;
 
 /** El estudiante que acaba de poner el dedo en Préstamo o Devolución. */
 public final class FichaEstudiante extends SituacionEstudiante {
